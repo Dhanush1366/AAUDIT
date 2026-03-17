@@ -1,0 +1,370 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); }
+.dash { padding: 16px; }
+.header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 8px; }
+.title-area h2 { font-size: 18px; font-weight: 500; color: var(--color-text-primary); }
+.title-area p { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
+.block-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+.tab { padding: 6px 14px; font-size: 12px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: var(--color-background-secondary); color: var(--color-text-secondary); cursor: pointer; transition: all .15s; }
+.tab.active { background: #185FA5; color: #E6F1FB; border-color: #185FA5; }
+.metrics { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; margin-bottom: 16px; }
+.metric-card { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 12px 14px; }
+.metric-card .label { font-size: 11px; color: var(--color-text-secondary); margin-bottom: 4px; text-transform: uppercase; letter-spacing: .04em; }
+.metric-card .value { font-size: 22px; font-weight: 500; color: var(--color-text-primary); }
+.metric-card .sub { font-size: 11px; color: var(--color-text-secondary); margin-top: 2px; }
+.charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+.chart-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 14px; }
+.chart-card h3 { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 12px; }
+.chart-full { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 14px; margin-bottom: 12px; }
+.chart-full h3 { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 12px; }
+.legend { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 8px; font-size: 11px; color: var(--color-text-secondary); }
+.legend span { display: flex; align-items: center; gap: 4px; }
+.legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+.table-wrap { overflow-x: auto; }
+table { width: 100%; font-size: 12px; border-collapse: collapse; }
+th { text-align: left; padding: 6px 10px; color: var(--color-text-secondary); font-weight: 500; border-bottom: 0.5px solid var(--color-border-tertiary); white-space: nowrap; }
+td { padding: 6px 10px; border-bottom: 0.5px solid var(--color-border-tertiary); color: var(--color-text-primary); }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--color-background-secondary); }
+.bar-mini { height: 6px; border-radius: 3px; background: #3266ad; display: inline-block; }
+.search-box { padding: 6px 10px; font-size: 12px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); background: var(--color-background-secondary); color: var(--color-text-primary); width: 180px; }
+.footer-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+</style>
+
+<div class="dash">
+  <div class="header">
+    <div class="title-area">
+      <h2>Device Inventory Dashboard</h2>
+      <p>Admin Block · EB Block · EB Block 3 &nbsp;|&nbsp; Asset Audit Report</p>
+    </div>
+    <div class="block-tabs">
+      <button class="tab active" onclick="setBlock('all')">All Blocks</button>
+      <button class="tab" onclick="setBlock('admin')">Admin Block</button>
+      <button class="tab" onclick="setBlock('eb')">EB Block</button>
+      <button class="tab" onclick="setBlock('eb3')">EB Block 3</button>
+    </div>
+  </div>
+
+  <div class="metrics" id="metrics"></div>
+
+  <div class="charts-row">
+    <div class="chart-card">
+      <h3>Devices by block</h3>
+      <div style="position:relative;height:180px;"><canvas id="blockChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <h3>Top 8 device types</h3>
+      <div style="position:relative;height:180px;"><canvas id="catChart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="chart-full">
+    <h3 id="floorTitle">Floor-wise distribution — All Blocks</h3>
+    <div id="floorLegend" class="legend"></div>
+    <div style="position:relative;" id="floorWrap"><canvas id="floorChart"></canvas></div>
+  </div>
+
+  <div class="chart-full">
+    <div class="footer-row" style="margin-bottom:10px;">
+      <h3 style="margin:0">Device inventory table</h3>
+      <input class="search-box" id="searchBox" placeholder="Search device…" oninput="renderTable()">
+    </div>
+    <div class="table-wrap"><table id="devTable"><thead></thead><tbody></tbody></table></div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const DATA = {
+  admin: {
+    label: "Admin Block",
+    color: "#185FA5",
+    floors: ["Ground"],
+    devices: [
+      ["200W Focus",1],["AC",9],["BLDC Fan",5],["Camera Server",2],
+      ["Ceiling Light",22],["Circle Light",15],["Exhaust",1],["Fan",9],
+      ["Fingerprint Reader",5],["Fluorescent Tube",3],["Focus Light",7],
+      ["Fridge",1],["LED",12],["Light",16],["Network Switch",1],
+      ["Notice Board",1],["PC",18],["Printer",14],["Scanner",1],
+      ["Small Ceiling Light",2],["Smart Board",2],["Square Light",14],
+      ["TV",4],["Wall Mount Fan",3]
+    ],
+    floorData: { "Ground": null }
+  },
+  eb: {
+    label: "EB Block",
+    color: "#0F6E56",
+    floors: ["Ground","1st","2nd","3rd","4th","5th","6th","7th"],
+    devices: [
+      ["AC",19],["Battery",52],["BLDC Fan",18],["Ceiling Light",51],
+      ["Central AC",3],["Diesel Generator",1],["Exhaust Fan",8],["Fan",141],
+      ["Fire Alarm Panel",1],["Fluorescent Tube",77],["Inverter",3],["LED",106],
+      ["LED Square Lamp",6],["LED Tube",7],["LED TV",1],["Light",42],
+      ["Network Switch",5],["PC",154],["Printer",6],["Smart Board",3],
+      ["Wall Mount Fan",3]
+    ],
+    floorData: {
+      "Ground":{AC:0,Battery:0,"BLDC Fan":0,"Ceiling Light":0,"Central AC":0,"Diesel Generator":1,"Exhaust Fan":0,Fan:0,"Fire Alarm Panel":1,"Fluorescent Tube":1,Inverter:0,LED:0,"LED Square Lamp":6,"LED Tube":1,"LED TV":1,Light:0,"Network Switch":0,PC:0,Printer:0,"Smart Board":0,"Wall Mount Fan":0},
+      "1st":{AC:0,Battery:0,"BLDC Fan":0,"Ceiling Light":0,"Central AC":0,"Diesel Generator":0,"Exhaust Fan":1,Fan:37,"Fire Alarm Panel":0,"Fluorescent Tube":16,Inverter:0,LED:17,"LED Square Lamp":0,"LED Tube":6,"LED TV":0,Light:0,"Network Switch":1,PC:5,Printer:2,"Smart Board":0,"Wall Mount Fan":0},
+      "2nd":{AC:0,Battery:0,"BLDC Fan":0,"Ceiling Light":0,"Central AC":0,"Diesel Generator":0,"Exhaust Fan":2,Fan:40,"Fire Alarm Panel":0,"Fluorescent Tube":26,Inverter:0,LED:31,"LED Square Lamp":0,"LED Tube":0,"LED TV":0,Light:0,"Network Switch":0,PC:0,Printer:0,"Smart Board":0,"Wall Mount Fan":0},
+      "3rd":{AC:5,Battery:16,"BLDC Fan":9,"Ceiling Light":28,"Central AC":0,"Diesel Generator":0,"Exhaust Fan":1,Fan:11,"Fire Alarm Panel":0,"Fluorescent Tube":3,Inverter:2,LED:7,"LED Square Lamp":0,"LED Tube":0,"LED TV":0,Light:0,"Network Switch":2,PC:56,Printer:0,"Smart Board":0,"Wall Mount Fan":1},
+      "4th":{AC:0,Battery:0,"BLDC Fan":0,"Ceiling Light":0,"Central AC":0,"Diesel Generator":0,"Exhaust Fan":2,Fan:11,"Fire Alarm Panel":0,"Fluorescent Tube":19,Inverter:0,LED:3,"LED Square Lamp":0,"LED Tube":0,"LED TV":0,Light:0,"Network Switch":0,PC:2,Printer:3,"Smart Board":0,"Wall Mount Fan":2},
+      "5th":{AC:5,Battery:20,"BLDC Fan":3,"Ceiling Light":15,"Central AC":0,"Diesel Generator":0,"Exhaust Fan":1,Fan:27,"Fire Alarm Panel":0,"Fluorescent Tube":8,Inverter:0,LED:32,"LED Square Lamp":0,"LED Tube":0,"LED TV":0,Light:0,"Network Switch":1,PC:38,Printer:1,"Smart Board":2,"Wall Mount Fan":0},
+      "6th":{AC:6,Battery:16,"BLDC Fan":0,"Ceiling Light":0,"Central AC":3,"Diesel Generator":0,"Exhaust Fan":1,Fan:15,"Fire Alarm Panel":0,"Fluorescent Tube":4,Inverter:1,LED:14,"LED Square Lamp":0,"LED Tube":0,"LED TV":0,Light:42,"Network Switch":0,PC:37,Printer:0,"Smart Board":0,"Wall Mount Fan":0},
+      "7th":{AC:3,Battery:0,"BLDC Fan":6,"Ceiling Light":8,"Central AC":0,"Diesel Generator":0,"Exhaust Fan":0,Fan:0,"Fire Alarm Panel":0,"Fluorescent Tube":0,Inverter:0,LED:2,"LED Square Lamp":0,"LED Tube":0,"LED TV":0,Light:0,"Network Switch":1,PC:16,Printer:0,"Smart Board":1,"Wall Mount Fan":0}
+    }
+  },
+  eb3: {
+    label: "EB Block 3",
+    color: "#993C1D",
+    floors: ["Ground","First","Second"],
+    devices: [
+      ["20KVA Inverter",1],["55\" TV",1],["AC",14],["BOD Incubator",1],
+      ["Battery (40Ah)",20],["CFL Bulb",4],["Fluorescent Tube",34],
+      ["Camera Server",4],["Centralized AC",2],["Circle Light",5],
+      ["Exhaust",13],["Fan",176],["Fire Alarm Panel",1],
+      ["Fluorescent Instrument",2],["Fridge",1],["LED Circular Light",6],
+      ["LED Tube",132],["Light Square",12],["Medi. Square Light",20],
+      ["Motor (45KW)",1],["Muffle Furnace",1],["Network Server",3],
+      ["Network Switch",3],["PC",64],["Pedestal Fan",20],["Printer",6],
+      ["Projector",8],["Robotic Arm",1],["Scanner",1],["Small Square Light",14],
+      ["Speaker",1],["Square Ceiling Light",130],["Tower Fan",1],
+      ["Wall Fan",6],["Wall Mount Fan",8],["Weight Scale",1]
+    ],
+    floorData: {
+      "Ground":{Fan:58,PC:41,"LED Tube":8,"Square Ceiling Light":58,AC:4,Battery:20,Exhaust:0,Printer:1,Projector:1,others:41},
+      "First":{Fan:31,PC:19,"LED Tube":56,"Square Ceiling Light":6,AC:9,Battery:0,Exhaust:1,Printer:4,Projector:3,others:92},
+      "Second":{Fan:87,PC:4,"LED Tube":68,"Square Ceiling Light":66,AC:1,Battery:0,Exhaust:12,Printer:1,Projector:4,others:32}
+    }
+  }
+};
+
+let currentBlock = 'all';
+let blockChart, catChart, floorChart;
+
+function getBlockDevices(block) {
+  if (block === 'all') {
+    const map = {};
+    ['admin','eb','eb3'].forEach(b => {
+      DATA[b].devices.forEach(([name,qty]) => { map[name] = (map[name]||0)+qty; });
+    });
+    return Object.entries(map).sort((a,b)=>b[1]-a[1]);
+  }
+  return [...DATA[block].devices].sort((a,b)=>b[1]-a[1]);
+}
+
+function getTotal(block) {
+  return getBlockDevices(block).reduce((s,[,q])=>s+q,0);
+}
+
+function renderMetrics(block) {
+  const el = document.getElementById('metrics');
+  const devices = getBlockDevices(block);
+  const total = devices.reduce((s,[,q])=>s+q,0);
+  const types = devices.length;
+  const top = devices[0];
+  const blocks = block==='all'?3:1;
+  el.innerHTML = `
+    <div class="metric-card"><div class="label">Total Devices</div><div class="value">${total.toLocaleString()}</div><div class="sub">${blocks} block${blocks>1?'s':''}</div></div>
+    <div class="metric-card"><div class="label">Device Types</div><div class="value">${types}</div><div class="sub">Unique categories</div></div>
+    <div class="metric-card"><div class="label">Top Device</div><div class="value" style="font-size:16px">${top[0]}</div><div class="sub">${top[1]} units</div></div>
+    <div class="metric-card"><div class="label">Avg per Type</div><div class="value">${Math.round(total/types)}</div><div class="sub">Devices per category</div></div>
+  `;
+}
+
+function renderBlockChart(block) {
+  const ctx = document.getElementById('blockChart');
+  if (blockChart) blockChart.destroy();
+  const labels = block==='all'
+    ? ['Admin Block','EB Block','EB Block 3']
+    : [DATA[block].label];
+  const data = block==='all'
+    ? [getTotal('admin'),getTotal('eb'),getTotal('eb3')]
+    : [getTotal(block)];
+  const colors = block==='all'
+    ? ['#185FA5','#0F6E56','#993C1D']
+    : [DATA[block].color];
+  blockChart = new Chart(ctx, {
+    type:'doughnut',
+    data:{ labels, datasets:[{ data, backgroundColor:colors, borderWidth:0, hoverOffset:4 }] },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{display:true, position:'bottom', labels:{font:{size:11},padding:8,usePointStyle:true,pointStyleWidth:10}},
+        tooltip:{callbacks:{label:ctx=>`${ctx.label}: ${ctx.raw} devices`}}
+      }
+    }
+  });
+}
+
+function renderCatChart(block) {
+  const ctx = document.getElementById('catChart');
+  if (catChart) catChart.destroy();
+  const devices = getBlockDevices(block).slice(0,8);
+  const labels = devices.map(([n])=>n.length>12?n.slice(0,12)+'…':n);
+  const data = devices.map(([,q])=>q);
+  catChart = new Chart(ctx, {
+    type:'bar',
+    data:{ labels, datasets:[{ data, backgroundColor:'#185FA5', borderRadius:4, borderSkipped:false }] },
+    options:{
+      responsive:true, maintainAspectRatio:false, indexAxis:'y',
+      plugins:{legend:{display:false}, tooltip:{callbacks:{label:c=>`${c.raw} units`}}},
+      scales:{
+        x:{grid:{color:'rgba(128,128,128,0.1)'},ticks:{font:{size:10}}},
+        y:{ticks:{font:{size:10}}}
+      }
+    }
+  });
+}
+
+function renderFloorChart(block) {
+  const wrap = document.getElementById('floorWrap');
+  const title = document.getElementById('floorTitle');
+  const legendEl = document.getElementById('floorLegend');
+
+  if (floorChart) floorChart.destroy();
+
+  if (block === 'all') {
+    title.textContent = 'Floor-wise distribution — All Blocks';
+    const blockColors = { 'Admin Block':'#185FA5', 'EB Block':'#0F6E56', 'EB Block 3':'#993C1D' };
+    legendEl.innerHTML = Object.entries(blockColors).map(([l,c])=>`<span><span class="legend-dot" style="background:${c}"></span>${l}</span>`).join('');
+
+    const adminTotal = getTotal('admin');
+    const ebFloors = DATA.eb.floors;
+    const ebTotals = ebFloors.map(f => Object.values(DATA.eb.floorData[f]).reduce((s,v)=>s+v,0));
+    const eb3Floors = DATA.eb3.floors;
+    const eb3Totals = eb3Floors.map(f => Object.values(DATA.eb3.floorData[f]).reduce((s,v)=>s+v,0));
+
+    wrap.style.height = '200px';
+    const ctx = document.getElementById('floorChart');
+    floorChart = new Chart(ctx,{
+      type:'bar',
+      data:{
+        labels:['Admin\n(Ground)','EB G','EB 1','EB 2','EB 3','EB 4','EB 5','EB 6','EB 7','EB3\nGnd','EB3\n1st','EB3\n2nd'],
+        datasets:[
+          {label:'Admin Block',data:[adminTotal,null,null,null,null,null,null,null,null,null,null,null],backgroundColor:'#185FA5',borderRadius:4,borderSkipped:false},
+          {label:'EB Block',data:[null,...ebTotals,null,null,null],backgroundColor:'#0F6E56',borderRadius:4,borderSkipped:false},
+          {label:'EB Block 3',data:[null,null,null,null,null,null,null,null,null,...eb3Totals],backgroundColor:'#993C1D',borderRadius:4,borderSkipped:false},
+        ]
+      },
+      options:{
+        responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${c.raw} devices`}}},
+        scales:{x:{stacked:false,grid:{display:false},ticks:{font:{size:10}}},y:{grid:{color:'rgba(128,128,128,0.1)'},ticks:{font:{size:10}}}}
+      }
+    });
+  } else if (block === 'admin') {
+    title.textContent = 'Floor-wise distribution — Admin Block';
+    legendEl.innerHTML = '';
+    wrap.style.height = '120px';
+    const ctx = document.getElementById('floorChart');
+    floorChart = new Chart(ctx,{
+      type:'bar',
+      data:{labels:['Ground Floor'],datasets:[{data:[168],backgroundColor:'#185FA5',borderRadius:6,borderSkipped:false}]},
+      options:{
+        responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:false}},
+        scales:{x:{grid:{display:false},ticks:{font:{size:11}}},y:{grid:{color:'rgba(128,128,128,0.1)'},ticks:{font:{size:11}}}}
+      }
+    });
+  } else if (block === 'eb') {
+    title.textContent = 'Floor-wise distribution — EB Block';
+    const topDevices = ['Fan','PC','LED','Fluorescent Tube','Ceiling Light','Battery'];
+    const floorColors = ['#185FA5','#0F6E56','#EF9F27','#993C1D','#7F77DD','#1D9E75'];
+    legendEl.innerHTML = topDevices.map((d,i)=>`<span><span class="legend-dot" style="background:${floorColors[i]}"></span>${d}</span>`).join('');
+
+    const floors = DATA.eb.floors;
+    const fd = DATA.eb.floorData;
+    wrap.style.height = '220px';
+    const ctx = document.getElementById('floorChart');
+    floorChart = new Chart(ctx,{
+      type:'bar',
+      data:{
+        labels:floors.map(f=>f+' Fl'),
+        datasets: topDevices.map((d,i)=>({
+          label:d,
+          data:floors.map(f=>fd[f][d]||0),
+          backgroundColor:floorColors[i],
+          borderRadius:2,
+          borderSkipped:false,
+          stack:'s'
+        }))
+      },
+      options:{
+        responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false}},
+        scales:{x:{stacked:true,grid:{display:false},ticks:{font:{size:10}}},y:{stacked:true,grid:{color:'rgba(128,128,128,0.1)'},ticks:{font:{size:10}}}}
+      }
+    });
+  } else {
+    title.textContent = 'Floor-wise distribution — EB Block 3';
+    const topDevices = ['Fan','LED Tube','Square Ceiling Light','PC','Exhaust','AC'];
+    const floorColors = ['#185FA5','#0F6E56','#EF9F27','#993C1D','#7F77DD','#1D9E75'];
+    legendEl.innerHTML = topDevices.map((d,i)=>`<span><span class="legend-dot" style="background:${floorColors[i]}"></span>${d}</span>`).join('');
+
+    const fd3 = DATA.eb3.floorData;
+    const keyMap = {Fan:'Fan','LED Tube':'LED Tube','Square Ceiling Light':'Square Ceiling Light',PC:'PC',Exhaust:'Exhaust',AC:'AC'};
+    wrap.style.height = '180px';
+    const ctx = document.getElementById('floorChart');
+    floorChart = new Chart(ctx,{
+      type:'bar',
+      data:{
+        labels:['Ground','First','Second'],
+        datasets: topDevices.map((d,i)=>({
+          label:d,
+          data:['Ground','First','Second'].map(f=>fd3[f][keyMap[d]]||0),
+          backgroundColor:floorColors[i],
+          borderRadius:2,
+          borderSkipped:false,
+          stack:'s'
+        }))
+      },
+      options:{
+        responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false}},
+        scales:{x:{stacked:true,grid:{display:false},ticks:{font:{size:11}}},y:{stacked:true,grid:{color:'rgba(128,128,128,0.1)'},ticks:{font:{size:10}}}}
+      }
+    });
+  }
+}
+
+function renderTable() {
+  const q = document.getElementById('searchBox').value.toLowerCase();
+  const devices = getBlockDevices(currentBlock);
+  const filtered = q ? devices.filter(([n])=>n.toLowerCase().includes(q)) : devices;
+  const total = filtered.reduce((s,[,v])=>s+v,0);
+  const maxQ = filtered.length ? filtered[0][1] : 1;
+  const thead = document.querySelector('#devTable thead');
+  const tbody = document.querySelector('#devTable tbody');
+  const cols = currentBlock==='all'
+    ? ['Device Type','Total Units','% of Total','Visual']
+    : ['Device Type','Count','% of Total','Bar'];
+  thead.innerHTML = `<tr>${cols.map(c=>`<th>${c}</th>`).join('')}</tr>`;
+  tbody.innerHTML = filtered.map(([name,qty])=>{
+    const pct = ((qty/total)*100).toFixed(1);
+    const bw = Math.round((qty/maxQ)*120);
+    return `<tr>
+      <td>${name}</td>
+      <td style="font-weight:500">${qty}</td>
+      <td>${pct}%</td>
+      <td><span class="bar-mini" style="width:${bw}px"></span></td>
+    </tr>`;
+  }).join('');
+}
+
+function setBlock(block) {
+  currentBlock = block;
+  document.querySelectorAll('.tab').forEach((t,i)=>{
+    t.classList.toggle('active',['all','admin','eb','eb3'][i]===block);
+  });
+  renderMetrics(block);
+  renderBlockChart(block);
+  renderCatChart(block);
+  renderFloorChart(block);
+  renderTable();
+}
+
+setBlock('all');
+</script>
