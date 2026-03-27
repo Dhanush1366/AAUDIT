@@ -1,0 +1,361 @@
+S.No.,Block,Floor,Room No. / Location,Component Name,Count,Ratings,Source,Estimated Rating (W),Total Load (W)
+1,EB Block-1,Ground,corridor,LED TV,1,,Energy Audit (EB Block-1 & Admin Block),60,60
+2,EB Block-1,Ground,corridor,LED Panel Lamp,6,,Energy Audit (EB Block-1 & Admin Block),15,90
+3,EB Block-1,Ground,corridor,Fire Alarm Panel,1,,Energy Audit (EB Block-1 & Admin Block),50,50
+4,EB Block-1,Ground,corridor,Diesel Generator,1,,Energy Audit (EB Block-1 & Admin Block),0,0
+5,EB Block-1,G To F Staircase,corridor,LED Tube,1,,Energy Audit (EB Block-1 & Admin Block),20,20
+6,EB Block-1,First Floor,corridor,LED Tube,1,,Energy Audit (EB Block-1 & Admin Block),20,20
+7,EB Block-1,First Floor,corridor,Fluorescent Tube,3,,Energy Audit (EB Block-1 & Admin Block),40,120
+8,EB Block-1,First Floor,LH-32,Induction Fan,8,,Energy Audit (EB Block-1 & Admin Block),75,600
+9,EB Block-1,First Floor,LH-32,LED Tube,6,,Energy Audit (EB Block-1 & Admin Block),20,120
+10,EB Block-1,First Floor,LH-32,Fluorescent Tube,2,,Energy Audit (EB Block-1 & Admin Block),40,80
+11,EB Block-1,First Floor,LH-31,Induction Fan,8,,Energy Audit (EB Block-1 & Admin Block),75,600
+12,EB Block-1,First Floor,LH-31,LED Tube,7,,Energy Audit (EB Block-1 & Admin Block),20,140
+13,EB Block-1,First Floor,LH-31,Fluorescent Tube,1,,Energy Audit (EB Block-1 & Admin Block),40,40
+14,EB Block-1,First Floor,LH-30,Induction Fan,8,,Energy Audit (EB Block-1 & Admin Block),75,600
+15,EB Block-1,First Floor,LH-30,LED Tube,5,,Energy Audit (EB Block-1 & Admin Block),20,100
+16,EB Block-1,First Floor,LH-30,Fluorescent Tube,3,,Energy Audit (EB Block-1 & Admin Block),40,120
+17,EB Block-1,First Floor,LH-29,Induction Fan,8,,Energy Audit (EB Block-1 & Admin Block),75,600
+18,EB Block-1,First Floor,LH-29,LED Tube,4,,Energy Audit (EB Block-1 & Admin Block),20,80
+19,EB Block-1,First Floor,LH-29,Fluorescent Tube,4,,Energy Audit (EB Block-1 & Admin Block),40,160
+20,EB Block-1,First Floor,HOD & Staff Room,PC,5,,Energy Audit (EB Block-1 & Admin Block),200,1000
+21,EB Block-1,First Floor,HOD & Staff Room,Printer,2,,Energy Audit (EB Block-1 & Admin Block),100,200
+22,EB Block-1,First Floor,HOD & Staff Room,Induction Fan,5,,Energy Audit (EB Block-1 & Admin Block),75,375
+23,EB Block-1,First Floor,HOD & Staff Room,Network Switch,1,,Energy Audit (EB Block-1 & Admin Block),20,20
+24,EB Block-1,F To S Staircase,corridor,Fluorescent Tube,1,,Energy Audit (EB Block-1 & Admin Block),40,40
+25,EB Block-1,Second Floor,corridor,Fluorescent Tube,1,,Energy Audit (EB Block-1 & Admin Block),40,40
+26,EB Block-1,Second Floor,corridor,LED Tube,2,,Energy Audit (EB Block-1 & Admin Block),20,40
+27,EB Block-1,Second Floor,LH-36,Fluorescent Tube,4,,Energy Audit (EB Block-1 & Admin Block),40,160
+28,EB Block-1,Second Floor,LH-36,LED Tube,5,,Energy Audit (EB Block-1 & Admin Block),20,100
+29,EB Block-1,Second Floor,LH-36,Induction Fan,8,,Energy Audit (EB Block-1 & Admin Block),75,600
+30,EB Block-1,Second Floor,LH-35,Induction Fan,8,,Energy Audit (EB Block-1 & Admin Block),75,600
+31,EB Block-1,Second Floor,LH-35,LED Tube,5,,Energy Audit (EB Block-1 & Admin Block),20,100
+32,EB Block-1,Second Floor,LH-35,Fluorescent Tube,5,,Energy Audit (EB Block-1 & Admin Block),40,200
+33,EB Block-1,Second Floor,Staff Room,PC,5,,Energy Audit (EB Block-1 & Admin Block),200,1000
+34,EB Block-1,Second Floor,Staff Room,Printer,2,,Energy Audit (EB Block-1 & Admin Block),100,200
+35,EB Block-1,Second Floor,Staff Room,Induction Fan,5,,Energy Audit (EB Block-1 & Admin Block),75,375
+36,EB Block-1,Second Floor,Staff Room,Network Switch,1,,Energy Audit (EB Block-1 & Admin Block),20,20
+37,EB Block-1,Second Floor,LH-34,Fluorescent Tube,4,,Energy Audit (EB Block-1 & Admin Block),40,160
+38,EB Block-1,Second Floor,LH-34,LED Tube,6,,Energy Audit (EB Block-1 & Admin Block),20,120
+39,EB Block-1,Second Floor,LH-34,Induction Fan,8,,Energy Audit (EB Block-1 & Admin Block),75,600
+40,EB Block-1,Second Floor,LH-33,Fluorescent Tube,4,,Energy Audit (EB Block-1 & Admin Block),40,160
+41,EB Block-1,Second Floor,LH-33,LED Tube,6,,Energy Audit (EB Block-1 & Admin Block),20,120
+42,EB Block-1,Second Floor,LH-33,Induction Fan,8,,Energy Audit (EB Block-1 & Admin Block),75,600
+43,EB Block-1,S To T Staircase,Corridor,LED Tube,1,,Energy Audit (EB Block-1 & Admin Block),20,20
+44,EB Block-1,Third Floor,Corridor,LED Tube,2,,Energy Audit (EB Block-1 & Admin Block),20,40
+45,EB Block-1,Third Floor,Chip Design Lab,PC,30,,Energy Audit (EB Block-1 & Admin Block),200,6000
+46,EB Block-1,Third Floor,Chip Design Lab,Smart Board,1,,Energy Audit (EB Block-1 & Admin Block),200,200
+47,EB Block-1,Third Floor,Chip Design Lab,BLDC Fan,9,,Energy Audit (EB Block-1 & Admin Block),30,270
+48,EB Block-1,Third Floor,Chip Design Lab,Wall Mount Fan,1,,Energy Audit (EB Block-1 & Admin Block),60,60
+49,EB Block-1,Third Floor,Chip Design Lab,AC,2,,Energy Audit (EB Block-1 & Admin Block),1500,3000
+50,EB Block-1,Third Floor,Chip Design Lab,Network Switch,1,,Energy Audit (EB Block-1 & Admin Block),20,20
+51,EB Block-1,Third Floor,Chip Design Lab,Square Ceiling Light,19,,Energy Audit (EB Block-1 & Admin Block),18,342
+52,EB Block-1,Third Floor,Chip Design Lab,LED Tube,1,,Energy Audit (EB Block-1 & Admin Block),20,20
+53,EB Block-1,Third Floor,Microprocessor Lab,AC,3,,Energy Audit (EB Block-1 & Admin Block),1500,4500
+54,EB Block-1,Third Floor,Microprocessor Lab,PC,26,,Energy Audit (EB Block-1 & Admin Block),200,5200
+55,EB Block-1,Third Floor,Microprocessor Lab,Square Ceiling Light,27,,Energy Audit (EB Block-1 & Admin Block),18,486
+56,EB Block-1,Third Floor,Microprocessor Lab,Induction Fan,11,,Energy Audit (EB Block-1 & Admin Block),75,825
+57,EB Block-1,Third Floor,Microprocessor Lab,Inverter,2,,Energy Audit (EB Block-1 & Admin Block),50,100
+58,EB Block-1,Third Floor,Microprocessor Lab,"Battery (40Ah, 12V)",16,,Energy Audit (EB Block-1 & Admin Block),0,0
+59,EB Block-1,Third Floor,Microprocessor Lab,"Battery (65Ah, 12V)",16,,Energy Audit (EB Block-1 & Admin Block),0,0
+60,EB Block-1,Third Floor,Microprocessor Lab,Network Switch,1,,Energy Audit (EB Block-1 & Admin Block),20,20
+61,EB Block-1,Third Floor,Microprocessor Lab,Fluorescent Tube,1,,Energy Audit (EB Block-1 & Admin Block),40,40
+62,EB Block-1,Third Floor,Microprocessor Lab,LED Tube,5,,Energy Audit (EB Block-1 & Admin Block),20,100
+63,EB Block-1,Third Floor,BME HOD Room,Fluorescent Tube,1,,Energy Audit (EB Block-1 & Admin Block),40,40
+64,EB Block-1,Third Floor,BME HOD Room,LED Tube,2,,Energy Audit (EB Block-1 & Admin Block),20,40
+65,EB Block-1,Third Floor,BME HOD Room,Induction Fan,1,,Energy Audit (EB Block-1 & Admin Block),75,75
+66,EB Block-1,Third Floor,BME HOD Room,PC,1,,Energy Audit (EB Block-1 & Admin Block),200,200
+67,EB Block-1,Third Floor,BME HOD Room,AC,1,,Energy Audit (EB Block-1 & Admin Block),1500,1500
+68,EB Block-1,Third Floor,BME HOD Room,Exhaust,1,,Energy Audit (EB Block-1 & Admin Block),40,40
+69,EB Block-1,Third Floor,BME HOD Room,Printer,2,,Energy Audit (EB Block-1 & Admin Block),100,200
+70,EB Block-1,Third Floor,BME HOD Room,Network Switch,1,,Energy Audit (EB Block-1 & Admin Block),20,20
+71,EB Block-1,Third Floor,BME Department Office,PC,2,,Energy Audit (EB Block-1 & Admin Block),200,400
+72,EB Block-1,Third Floor,BME Department Office,LED Tube,2,,Energy Audit (EB Block-1 & Admin Block),20,40
+73,EB Block-1,Third Floor,BME Department Office,Induction Fan,2,,Energy Audit (EB Block-1 & Admin Block),75,150
+74,EB Block-1,Third Floor,BME Department Office,Printer,1,,Energy Audit (EB Block-1 & Admin Block),100,100
+75,EB Block-1,Third Floor,BME Department Office,Fluorescent Tube,1,,Energy Audit (EB Block-1 & Admin Block),40,40
+76,EB Block-1,Third Floor,BME Corridor,Fluorescent Tube,1,,Energy Audit (EB Block-1 & Admin Block),40,40
+77,EB Block-1,Third Floor,BME Corridor,LED Tube,1,,Energy Audit (EB Block-1 & Admin Block),20,20
+78,EB Block-1,Third Floor,LH-38,Induction Fan,6,,Energy Audit (EB Block-1 & Admin Block),75,450
+79,EB Block-1,Third Floor,LH-38,Fluorescent Tube,3,,Energy Audit (EB Block-1 & Admin Block),40,120
+80,EB Block-1,Third Floor,LH-38,LED Tube,3,,Energy Audit (EB Block-1 & Admin Block),20,60
+81,EB Block-1,Third Floor,LH-37,LED Tube,2,,Energy Audit (EB Block-1 & Admin Block),20,40
+82,EB Block-1,Third Floor,LH-37,Fluorescent Tube,1,,Energy Audit (EB Block-1 & Admin Block),40,40
+83,EB Block-1,Third Floor,LH-37,Induction Fan,2,,Energy Audit (EB Block-1 & Admin Block),75,150
+84,EB Block-1,T To F Staircase,corridor,Fluorescent Tube,1,,Energy Audit (EB Block-1 & Admin Block),40,40
+85,EB Block-1,Fourth Floor,corridor,Fluorescent Tube,4,,Energy Audit (EB Block-1 & Admin Block),40,160
+86,EB Block-1,Fourth Floor,ECE HOD Office,Printer,1,,Energy Audit (EB Block-1 & Admin Block),100,100
+87,EB Block-1,Fourth Floor,ECE HOD Office,PC,1,,Energy Audit (EB Block-1 & Admin Block),200,200
+88,EB Block-1,Fourth Floor,ECE HOD Office,Wall Mount Fan,1,,Energy Audit (EB Block-1 & Admin Block),60,60
+89,EB Block-1,Fourth Floor,ECE HOD Office,Induction Fan,1,,Energy Audit (EB Block-1 & Admin Block),75,75
+90,EB Block-1,Fourth Floor,ECE HOD Office,LED Tube,2,,Energy Audit (EB Block-1 & Admin Block),20,40
+91,EB Block-1,Fourth Floor,ECE HOD Office,Fluorescent Tube,1,,Energy Audit (EB Block-1 & Admin Block),40,40
+92,EB Block-1,Fourth Floor,ECE Staff Room,Fluorescent Tube,4,,Energy Audit (EB Block-1 & Admin Block),40,160
+93,EB Block-1,Fourth Floor,ECE Staff Room,LED Tube,1,,Energy Audit (EB Block-1 & Admin Block),20,20
+94,EB Block-1,Fourth Floor,ECE Staff Room,Induction Fan,1,,Energy Audit (EB Block-1 & Admin Block),75,75
+95,EB Block-1,Fourth Floor,ECE Staff Room,Printer,1,,Energy Audit (EB Block-1 & Admin Block),100,100
+96,EB Block-1,Fourth Floor,Maths Staff Room,Induction Fan,9,,Energy Audit (EB Block-1 & Admin Block),75,675
+97,EB Block-1,Fourth Floor,Maths Staff Room,Fluorescent Tube,8,,Energy Audit (EB Block-1 & Admin Block),40,320
+98,EB Block-1,Fourth Floor,Maths Staff Room,Wall Mount Fan,1,,Energy Audit (EB Block-1 & Admin Block),60,60
+99,EB Block-1,Fourth Floor,Maths HOD Room,Printer,1,,Energy Audit (EB Block-1 & Admin Block),100,100
+100,EB Block-1,Fourth Floor,Maths HOD Room,PC,1,,Energy Audit (EB Block-1 & Admin Block),200,200
+101,EB Block-1,F To F Staircase,Corridor,LED Tube,1,,Energy Audit (EB Block-1 & Admin Block),20,20
+102,EB Block-1,Fifth Floor,Corridor,Square Ceiling Light,7,,Energy Audit (EB Block-1 & Admin Block),18,126
+103,EB Block-1,Fifth Floor,Corridor,LED Tube,1,,Energy Audit (EB Block-1 & Admin Block),20,20
+104,EB Block-1,Fifth Floor,ECE Library ,BLDC Fan,1,,Energy Audit (EB Block-1 & Admin Block),30,30
+105,EB Block-1,Fifth Floor,ECE Library ,Induction Fan,1,,Energy Audit (EB Block-1 & Admin Block),75,75
+106,EB Block-1,Fifth Floor,ECE Library ,PC,1,,Energy Audit (EB Block-1 & Admin Block),200,200
+107,EB Block-1,Fifth Floor,ECE Library ,Printer,1,,Energy Audit (EB Block-1 & Admin Block),100,100
+108,EB Block-1,Fifth Floor,ECE Library ,LED Tube,2,,Energy Audit (EB Block-1 & Admin Block),20,40
+109,EB Block-1,Fifth Floor,ECE Library ,Fluorescent Tube,1,,Energy Audit (EB Block-1 & Admin Block),40,40
+110,EB Block-1,Fifth Floor,ECE Library ,AC,1,,Energy Audit (EB Block-1 & Admin Block),1500,1500
+111,EB Block-1,Fifth Floor,ECE Staff Room,Induction Fan,2,,Energy Audit (EB Block-1 & Admin Block),75,150
+112,EB Block-1,Fifth Floor,ECE Staff Room,Fluorescent Tube,2,,Energy Audit (EB Block-1 & Admin Block),40,80
+113,EB Block-1,Fifth Floor,ECE Staff Room,LED Tube,1,,Energy Audit (EB Block-1 & Admin Block),20,20
+114,EB Block-1,Fifth Floor,Analog Circuits Lab,PC,15,,Energy Audit (EB Block-1 & Admin Block),200,3000
+115,EB Block-1,Fifth Floor,Analog Circuits Lab,AC,3,,Energy Audit (EB Block-1 & Admin Block),1500,4500
+116,EB Block-1,Fifth Floor,Analog Circuits Lab,Induction Fan,10,,Energy Audit (EB Block-1 & Admin Block),75,750
+117,EB Block-1,Fifth Floor,Analog Circuits Lab,Fluorescent Tube,2,,Energy Audit (EB Block-1 & Admin Block),40,80
+118,EB Block-1,Fifth Floor,Analog Circuits Lab,LED Tube,5,,Energy Audit (EB Block-1 & Admin Block),20,100
+119,EB Block-1,Fifth Floor,E-Con Lab,AC,1,,Energy Audit (EB Block-1 & Admin Block),1500,1500
+120,EB Block-1,Fifth Floor,E-Con Lab,Square Ceiling Light,6,,Energy Audit (EB Block-1 & Admin Block),18,108
+121,EB Block-1,Fifth Floor,E-Con Lab,Smart Board,1,,Energy Audit (EB Block-1 & Admin Block),200,200
+122,EB Block-1,Fifth Floor,Digital Circuits Lab,PC,12,,Energy Audit (EB Block-1 & Admin Block),200,2400
+123,EB Block-1,Fifth Floor,Digital Circuits Lab,Induction Fan,8,,Energy Audit (EB Block-1 & Admin Block),75,600
+124,EB Block-1,Fifth Floor,Digital Circuits Lab,"Battery (42Ah, 12V)",20,,Energy Audit (EB Block-1 & Admin Block),0,0
+125,EB Block-1,Fifth Floor,Digital Circuits Lab,"Battery (40Ah, 12V)",17,,Energy Audit (EB Block-1 & Admin Block),0,0
+126,EB Block-1,Fifth Floor,Digital Circuits Lab,LED Focus Light,23,,Energy Audit (EB Block-1 & Admin Block),50,1150
+127,EB Block-1,Fifth Floor,Digital Circuits Lab,Network Switch,1,,Energy Audit (EB Block-1 & Admin Block),20,20
+128,EB Block-1,Fifth Floor,Microwave Lab,LED Tube,2,,Energy Audit (EB Block-1 & Admin Block),20,40
+129,EB Block-1,Fifth Floor,Microwave Lab,BLDC Fan,2,,Energy Audit (EB Block-1 & Admin Block),30,60
+130,EB Block-1,Fifth Floor,Microwave Lab,PC,10,,Energy Audit (EB Block-1 & Admin Block),200,2000
+131,EB Block-1,Fifth Floor,Microwave Lab,Smart Board,1,,Energy Audit (EB Block-1 & Admin Block),200,200
+132,EB Block-1,F To S Staircase,Corridor,Fluorescent Tube,1,,Energy Audit (EB Block-1 & Admin Block),40,40
+133,EB Block-1,Sixth Floor,DSP Lab,Induction Fan,8,,Energy Audit (EB Block-1 & Admin Block),75,600
+134,EB Block-1,Sixth Floor,DSP Lab,Square Ceiling Light,21,,Energy Audit (EB Block-1 & Admin Block),18,378
+135,EB Block-1,Sixth Floor,DSP Lab,PC,17,,Energy Audit (EB Block-1 & Admin Block),200,3400
+136,EB Block-1,Sixth Floor,DSP Lab,"Battery (65Ah, 12V)",16,,Energy Audit (EB Block-1 & Admin Block),0,0
+137,EB Block-1,Sixth Floor,DSP Lab,Inverter,1,,Energy Audit (EB Block-1 & Admin Block),50,50
+138,EB Block-1,Sixth Floor,DSP Lab,AC,3,,Energy Audit (EB Block-1 & Admin Block),1500,4500
+139,EB Block-1,Sixth Floor,HVAC Lab,Centralized AC,3,,Energy Audit (EB Block-1 & Admin Block),5000,15000
+140,EB Block-1,Sixth Floor,Optical Microwave Lab,PC,20,,Energy Audit (EB Block-1 & Admin Block),200,4000
+141,EB Block-1,Sixth Floor,Optical Microwave Lab,AC,3,,Energy Audit (EB Block-1 & Admin Block),1500,4500
+142,EB Block-1,Sixth Floor,Optical Microwave Lab,Induction Fan,7,,Energy Audit (EB Block-1 & Admin Block),75,525
+143,EB Block-1,Sixth Floor,Optical Microwave Lab,Square Ceiling Light,21,,Energy Audit (EB Block-1 & Admin Block),18,378
+144,EB Block-1,Sixth Floor,Corridor,Fluorescent Tube,2,,Energy Audit (EB Block-1 & Admin Block),40,80
+145,EB Block-1,Sixth Floor,Corridor,LED Tube,2,,Energy Audit (EB Block-1 & Admin Block),20,40
+146,EB Block-1,S To S Staircase,Corridor,LED Tube,1,,Energy Audit (EB Block-1 & Admin Block),20,20
+147,EB Block-1,Seventh Floor,Silicon Lab,Smart Board,1,,Energy Audit (EB Block-1 & Admin Block),200,200
+148,EB Block-1,Seventh Floor,Silicon Lab,PC,16,,Energy Audit (EB Block-1 & Admin Block),200,3200
+149,EB Block-1,Seventh Floor,Silicon Lab,Square Ceiling Light,6,,Energy Audit (EB Block-1 & Admin Block),18,108
+150,EB Block-1,Seventh Floor,Silicon Lab,BLDC Fan,6,,Energy Audit (EB Block-1 & Admin Block),30,180
+151,EB Block-1,Seventh Floor,Silicon Lab,AC,3,,Energy Audit (EB Block-1 & Admin Block),1500,4500
+152,EB Block-1,Seventh Floor,Silicon Lab,Network Switch,1,,Energy Audit (EB Block-1 & Admin Block),20,20
+153,ADMIN BLK,OUTSIDE,PASSAGE,Fan,2,,Energy Audit (EB Block-1 & Admin Block),75,150
+154,ADMIN BLK,OUTSIDE,PASSAGE,Square Light,14,,Energy Audit (EB Block-1 & Admin Block),18,252
+155,ADMIN BLK,OUTSIDE,PASSAGE,Notice Board,1,,Energy Audit (EB Block-1 & Admin Block),10,10
+156,ADMIN BLK,OUTSIDE,PASSAGE,Fingerprint Reader,5,,Energy Audit (EB Block-1 & Admin Block),10,50
+157,ADMIN BLK,Ground,REGISTER ROOM,Square Ceiling Light,2,,Energy Audit (EB Block-1 & Admin Block),18,36
+158,ADMIN BLK,Ground,REGISTER ROOM,Fan,1,,Energy Audit (EB Block-1 & Admin Block),75,75
+159,ADMIN BLK,Ground,REGISTER ROOM,Printer,1,,Energy Audit (EB Block-1 & Admin Block),100,100
+160,ADMIN BLK,Ground,REGISTER ROOM,PC,2,,Energy Audit (EB Block-1 & Admin Block),200,400
+161,ADMIN BLK,Ground,VP ROOM -A,AC,1,,Energy Audit (EB Block-1 & Admin Block),1500,1500
+162,ADMIN BLK,Ground,VP ROOM -A,PC,2,,Energy Audit (EB Block-1 & Admin Block),200,400
+163,ADMIN BLK,Ground,VP ROOM -A,Printer,2,,Energy Audit (EB Block-1 & Admin Block),100,200
+164,ADMIN BLK,Ground,VP ROOM -A,Light,2,,Energy Audit (EB Block-1 & Admin Block),15,30
+165,ADMIN BLK,Ground,VP ROOM -A,Fan,1,,Energy Audit (EB Block-1 & Admin Block),75,75
+166,ADMIN BLK,Ground,MANAGER ROOM,PC,1,,Energy Audit (EB Block-1 & Admin Block),200,200
+167,ADMIN BLK,Ground,MANAGER ROOM,Printer,1,,Energy Audit (EB Block-1 & Admin Block),100,100
+168,ADMIN BLK,Ground,MANAGER ROOM,LED TV,1,,Energy Audit (EB Block-1 & Admin Block),60,60
+169,ADMIN BLK,Ground,MANAGER ROOM,BLDC Fan,2,,Energy Audit (EB Block-1 & Admin Block),30,60
+170,ADMIN BLK,Ground,MANAGER ROOM,Square Ceiling Light,3,,Energy Audit (EB Block-1 & Admin Block),18,54
+171,ADMIN BLK,Ground,MANAGER ROOM,Printer,1,,Energy Audit (EB Block-1 & Admin Block),100,100
+172,ADMIN BLK,Ground,ADMIN,Light,4,,Energy Audit (EB Block-1 & Admin Block),15,60
+173,ADMIN BLK,Ground,ADMIN,Fan,2,,Energy Audit (EB Block-1 & Admin Block),75,150
+174,ADMIN BLK,Ground,ADMIN,PC,5,,Energy Audit (EB Block-1 & Admin Block),200,1000
+175,ADMIN BLK,Ground,ADMIN,AC,1,,Energy Audit (EB Block-1 & Admin Block),1500,1500
+176,ADMIN BLK,Ground,ADMIN,Printer,3,,Energy Audit (EB Block-1 & Admin Block),100,300
+177,ADMIN BLK,Ground,VP-ADMIN,PC,1,,Energy Audit (EB Block-1 & Admin Block),200,200
+178,ADMIN BLK,Ground,VP-ADMIN,Light,4,,Energy Audit (EB Block-1 & Admin Block),15,60
+179,ADMIN BLK,Ground,VP-ADMIN,Fan,2,,Energy Audit (EB Block-1 & Admin Block),75,150
+180,ADMIN BLK,Ground,VP-ADMIN,AC,1,,Energy Audit (EB Block-1 & Admin Block),1500,1500
+181,ADMIN BLK,Ground,PS(P),Light,2,,Energy Audit (EB Block-1 & Admin Block),15,30
+182,ADMIN BLK,Ground,PS(P),AC,1,,Energy Audit (EB Block-1 & Admin Block),1500,1500
+183,ADMIN BLK,Ground,PS(P),Printer,3,,Energy Audit (EB Block-1 & Admin Block),100,300
+184,ADMIN BLK,Ground,PS(P),Fluorescent Tube,1,,Energy Audit (EB Block-1 & Admin Block),40,40
+185,ADMIN BLK,Ground,PS(P),Scanner,1,,Energy Audit (EB Block-1 & Admin Block),30,30
+186,ADMIN BLK,Ground,PS(P),PC,3,,Energy Audit (EB Block-1 & Admin Block),200,600
+187,ADMIN BLK,Ground,PS(P),Wall Mount Fan,1,,Energy Audit (EB Block-1 & Admin Block),60,60
+188,ADMIN BLK,Ground,PRINICIPAL ROOM,"55"" TV",2,,Energy Audit (EB Block-1 & Admin Block),100,200
+189,ADMIN BLK,Ground,PRINICIPAL ROOM,TV (45),1,,Energy Audit (EB Block-1 & Admin Block),80,80
+190,ADMIN BLK,Ground,PRINICIPAL ROOM,AC,1,,Energy Audit (EB Block-1 & Admin Block),1500,1500
+191,ADMIN BLK,Ground,PRINICIPAL ROOM,Square Light,2,,Energy Audit (EB Block-1 & Admin Block),18,36
+192,ADMIN BLK,Ground,PRINICIPAL ROOM,Small Square Light,2,,Energy Audit (EB Block-1 & Admin Block),12,24
+193,ADMIN BLK,Ground,PRINICIPAL ROOM,Fluorescent Tube,2,,Energy Audit (EB Block-1 & Admin Block),40,80
+194,ADMIN BLK,Ground,PRINICIPAL ROOM,LED Tube,2,,Energy Audit (EB Block-1 & Admin Block),20,40
+195,ADMIN BLK,Ground,PRINICIPAL ROOM,Camera Server,2,,Energy Audit (EB Block-1 & Admin Block),150,300
+196,ADMIN BLK,Ground,PRINICIPAL ROOM,Wall Mount Fan,2,,Energy Audit (EB Block-1 & Admin Block),60,120
+197,ADMIN BLK,Ground,PRINICIPAL ROOM,Focus Light,2,,Energy Audit (EB Block-1 & Admin Block),50,100
+198,ADMIN BLK,Ground,PRINICIPAL ROOM,Fridge,1,,Energy Audit (EB Block-1 & Admin Block),200,200
+199,ADMIN BLK,Ground,ACCOUNTS ROOM,PC,4,,Energy Audit (EB Block-1 & Admin Block),200,800
+200,ADMIN BLK,Ground,ACCOUNTS ROOM,Printer,3,,Energy Audit (EB Block-1 & Admin Block),100,300
+201,ADMIN BLK,Ground,ACCOUNTS ROOM,Light,4,,Energy Audit (EB Block-1 & Admin Block),15,60
+202,ADMIN BLK,Ground,ACCOUNTS ROOM,AC,2,,Energy Audit (EB Block-1 & Admin Block),1500,3000
+203,ADMIN BLK,Ground,ACCOUNTS ROOM,BLDC Fan,1,,Energy Audit (EB Block-1 & Admin Block),30,30
+204,ADMIN BLK,Ground,ACCOUNTS ROOM,Fan,1,,Energy Audit (EB Block-1 & Admin Block),75,75
+205,ADMIN BLK,Ground,CONFERENCE ROOM,Smart Board,2,,Energy Audit (EB Block-1 & Admin Block),200,400
+206,ADMIN BLK,Ground,CONFERENCE ROOM,AC,3,,Energy Audit (EB Block-1 & Admin Block),1500,4500
+207,ADMIN BLK,Ground,CONFERENCE ROOM,Square Light,14,,Energy Audit (EB Block-1 & Admin Block),18,252
+208,ADMIN BLK,Ground,CONFERENCE ROOM,Circle Light,15,,Energy Audit (EB Block-1 & Admin Block),15,225
+209,ADMIN BLK,Ground,CONFERENCE ROOM,Focus Light,3,,Energy Audit (EB Block-1 & Admin Block),50,150
+210,ADMIN BLK,Ground,STORE ROOM,Camera Server,1,,Energy Audit (EB Block-1 & Admin Block),150,150
+211,ADMIN BLK,Ground,STORE ROOM,Network Switch,1,,Energy Audit (EB Block-1 & Admin Block),20,20
+212,ADMIN BLK,Ground,STORE ROOM,BLDC Fan,1,,Energy Audit (EB Block-1 & Admin Block),30,30
+213,ADMIN BLK,Ground,STORE ROOM,LED,1,,Energy Audit (EB Block-1 & Admin Block),15,15
+214,ADMIN BLK,Ground,RESTROOM,LED,6,,Energy Audit (EB Block-1 & Admin Block),15,90
+215,ADMIN BLK,Ground,OUTSIDE ADMIN,LED,3,,Energy Audit (EB Block-1 & Admin Block),15,45
+216,ADMIN BLK,Ground,OUTSIDE ADMIN,Focus Light,2,,Energy Audit (EB Block-1 & Admin Block),50,100
+217,ADMIN BLK,Ground,OUTSIDE ADMIN,200W Focus,1,,Energy Audit (EB Block-1 & Admin Block),200,200
+218,Block-3,Ground,Help desk,Tower Fan,1,,Block-3 Component Inventory,60,60
+219,Block-3,Ground,Help desk,AC,1,,Block-3 Component Inventory,1500,1500
+220,Block-3,Ground,Help desk,"55"" TV",1,,Block-3 Component Inventory,100,100
+221,Block-3,Ground,Help desk,Network Server,1,,Block-3 Component Inventory,300,300
+222,Block-3,Ground,Help desk,Camera,1,,Block-3 Component Inventory,10,10
+223,Block-3,Ground,Help desk,PC,3,,Block-3 Component Inventory,200,600
+224,Block-3,Ground,Help desk,Speaker,1,,Block-3 Component Inventory,20,20
+225,Block-3,Ground,Book Store,Fan,2,,Block-3 Component Inventory,75,150
+226,Block-3,Ground,Book Store,CFL,2,,Block-3 Component Inventory,15,30
+227,Block-3,Ground,Outside,CFL Tube,2,,Block-3 Component Inventory,20,40
+228,Block-3,Ground,Outside,Fire Alarm Panel,1,,Block-3 Component Inventory,50,50
+229,Block-3,Ground,Outside,LED Circular Light,6,,Block-3 Component Inventory,15,90
+230,Block-3,Ground,Outside,Med Square Light,4,,Block-3 Component Inventory,24,96
+231,Block-3,Ground,Outside,Motor (45KW-60HP),1,,Block-3 Component Inventory,45000,45000
+232,Block-3,Ground,Physics Lab-II (Research Lab),Square Ceiling Light,4,,Block-3 Component Inventory,18,72
+233,Block-3,Ground,Physics Lab-II (Research Lab),Fan,2,,Block-3 Component Inventory,75,150
+234,Block-3,Ground,Physics Lab-II (Dark Room),Square LED,4,,Block-3 Component Inventory,18,72
+235,Block-3,Ground,Physics Lab-II (Dark Room),Fan,2,,Block-3 Component Inventory,75,150
+236,Block-3,Ground,Lab-I,Fan,20,,Block-3 Component Inventory,75,1500
+237,Block-3,Ground,Lab-I,Squ. Ceiling Light,26,,Block-3 Component Inventory,18,468
+238,Block-3,Ground,Lab-I,LED Tube,2,,Block-3 Component Inventory,20,40
+239,Block-3,Ground,Lab-I (Cabin),LED,4,,Block-3 Component Inventory,15,60
+240,Block-3,Ground,Lab-I (Cabin),Fan,2,,Block-3 Component Inventory,75,150
+241,Block-3,Ground,Lab-I (Cabin),Camera Server,1,,Block-3 Component Inventory,150,150
+242,Block-3,Ground,Lab-II,Square Light,24,,Block-3 Component Inventory,18,432
+243,Block-3,Ground,Lab-II,Fan,21,,Block-3 Component Inventory,75,1575
+244,Block-3,Ground,Lab-II,LED Tube,2,,Block-3 Component Inventory,20,40
+245,Block-3,Ground,Power Room,CFL Tube,1,,Block-3 Component Inventory,20,20
+246,Block-3,Ground,Power Room,Wall Mount Fan,1,,Block-3 Component Inventory,60,60
+247,Block-3,Ground,Robotics Lab,Square Light,,,Block-3 Component Inventory,18,
+248,Block-3,Ground,Robotics Lab,PC,34,,Block-3 Component Inventory,200,6800
+249,Block-3,Ground,Robotics Lab,Fan,5,,Block-3 Component Inventory,75,375
+250,Block-3,Ground,Robotics Lab,Circle Light,5,,Block-3 Component Inventory,15,75
+251,Block-3,Ground,Robotics Lab,Centralized AC,2,,Block-3 Component Inventory,5000,10000
+252,Block-3,Ground,Robotics Lab,Projector,1,,Block-3 Component Inventory,250,250
+253,Block-3,Ground,Robotics Lab,Network Switch,1,,Block-3 Component Inventory,20,20
+254,Block-3,Ground,Robotics Lab,Camera Server,1,,Block-3 Component Inventory,150,150
+255,Block-3,Ground,Robotics Lab,20KVA Inverter,1,,Block-3 Component Inventory,200,200
+256,Block-3,Ground,Robotics Lab,Battery (40Ah 20V),20,,Block-3 Component Inventory,0,0
+257,Block-3,Ground,Robotics Lab (ABB/IRB 1200),Robotic Arm,1,,Block-3 Component Inventory,100,100
+258,Block-3,Ground,Centre of Bio-Active Glass Research,Med Square Ceiling Light,,,Block-3 Component Inventory,24,
+259,Block-3,Ground,Centre of Bio-Active Glass Research,Fan,4,,Block-3 Component Inventory,75,300
+260,Block-3,Ground,Centre of Bio-Active Glass Research,AC,3,,Block-3 Component Inventory,1500,4500
+261,Block-3,Ground,Centre of Bio-Active Glass Research,Wall Mount Fan,3,,Block-3 Component Inventory,60,180
+262,Block-3,Ground,Centre of Bio-Active Glass Research,Fridge,1,,Block-3 Component Inventory,200,200
+263,Block-3,Ground,Centre of Bio-Active Glass Research,PC,4,,Block-3 Component Inventory,200,800
+264,Block-3,Ground,Centre of Bio-Active Glass Research,Muffle Furnace,1,,Block-3 Component Inventory,2500,2500
+265,Block-3,Ground,Centre of Bio-Active Glass Research,Printer,1,,Block-3 Component Inventory,100,100
+266,Block-3,Ground,Centre of Bio-Active Glass Research,BOD Incubator,1,,Block-3 Component Inventory,200,200
+267,Block-3,First,General,CEL,2,,Block-3 Component Inventory,50,100
+268,Block-3,First,Synthesis Lab,Medi. Square Light,16,,Block-3 Component Inventory,24,384
+269,Block-3,First,Synthesis Lab,Fan,10,,Block-3 Component Inventory,75,750
+270,Block-3,First,Synthesis Lab,LED Tube,9,,Block-3 Component Inventory,20,180
+271,Block-3,First,Synthesis Lab,Exhaust,1,,Block-3 Component Inventory,40,40
+272,Block-3,First,Synthesis Lab,PC,5,,Block-3 Component Inventory,200,1000
+273,Block-3,First,Synthesis Lab,AC,2,,Block-3 Component Inventory,1500,3000
+274,Block-3,First,Synthesis Lab,Printer,1,,Block-3 Component Inventory,100,100
+275,Block-3,First,Synthesis Lab,Fluorescent Instrument,2,,Block-3 Component Inventory,100,200
+276,Block-3,First,Synthesis Lab,Scanner,1,,Block-3 Component Inventory,30,30
+277,Block-3,First,Synthesis Lab,Weight Scale,1,,Block-3 Component Inventory,5,5
+278,Block-3,First,Outside,LED Tube,1,,Block-3 Component Inventory,20,20
+279,Block-3,First,Outside,CFL Tube,3,,Block-3 Component Inventory,20,60
+280,Block-3,First,LH101,LED Tube,13,,Block-3 Component Inventory,20,260
+281,Block-3,First,LH101,Wall Fan,2,,Block-3 Component Inventory,60,120
+282,Block-3,First,LH101,Projector,1,,Block-3 Component Inventory,250,250
+283,Block-3,First,LH101,Fan,6,,Block-3 Component Inventory,75,450
+284,Block-3,First,Corridor,Square Light,6,,Block-3 Component Inventory,18,108
+285,Block-3,First,VLSI ML Lab,Wall Mount Fan,2,,Block-3 Component Inventory,60,120
+286,Block-3,First,VLSI ML Lab,AC,3,,Block-3 Component Inventory,1500,4500
+287,Block-3,First,VLSI ML Lab,Printer,1,,Block-3 Component Inventory,100,100
+288,Block-3,First,VLSI ML Lab,PC,5,,Block-3 Component Inventory,200,1000
+289,Block-3,First,VLSI ML Lab,Pedestal Fan,1,,Block-3 Component Inventory,60,60
+290,Block-3,First,VLSI ML Lab,Network Switch,1,,Block-3 Component Inventory,20,20
+291,Block-3,First,VLSI ML Lab,Light Square,6,,Block-3 Component Inventory,18,108
+292,Block-3,First,Outside,Bulb,4,,Block-3 Component Inventory,9,36
+293,Block-3,First,Outside,Small Square Light,14,,Block-3 Component Inventory,12,168
+294,Block-3,First,ISTECE Staff Room,Fan,3,,Block-3 Component Inventory,75,225
+295,Block-3,First,ISTECE Staff Room,Pedestal Fan,2,,Block-3 Component Inventory,60,120
+296,Block-3,First,ISTECE Staff Room,CFL,2,,Block-3 Component Inventory,15,30
+297,Block-3,First,ISTECE Staff Room,Square LED,4,,Block-3 Component Inventory,18,72
+298,Block-3,First,Chemistry Staff Room,Network Server,1,,Block-3 Component Inventory,300,300
+299,Block-3,First,Chemistry Staff Room,AC,1,,Block-3 Component Inventory,1500,1500
+300,Block-3,First,Chemistry Staff Room,Square LED,3,,Block-3 Component Inventory,18,54
+301,Block-3,First,Chemistry Staff Room,Printer,1,,Block-3 Component Inventory,100,100
+302,Block-3,First,Chemistry Staff Room,LED,7,,Block-3 Component Inventory,15,105
+303,Block-3,First,Chemistry Staff Room,CFL,3,,Block-3 Component Inventory,15,45
+304,Block-3,First,Chemistry Staff Room,PC,4,,Block-3 Component Inventory,200,800
+305,Block-3,First,Chemistry Staff Room,Pedestal Fan,8,,Block-3 Component Inventory,60,480
+306,Block-3,Second,Outside,CFL,16,,Block-3 Component Inventory,15,240
+307,Block-3,Second,Outside,LED,9,,Block-3 Component Inventory,15,135
+308,Block-3,Second,Physics Staff Room,Network Server,1,,Block-3 Component Inventory,300,300
+309,Block-3,Second,Physics Staff Room,AC,1,,Block-3 Component Inventory,1500,1500
+310,Block-3,Second,Physics Staff Room,Square LED,3,,Block-3 Component Inventory,18,54
+311,Block-3,Second,Physics Staff Room,Printer,1,,Block-3 Component Inventory,100,100
+312,Block-3,Second,Physics Staff Room,LED,7,,Block-3 Component Inventory,15,105
+313,Block-3,Second,Physics Staff Room,CFL,3,,Block-3 Component Inventory,15,45
+314,Block-3,Second,Physics Staff Room,PC,4,,Block-3 Component Inventory,200,800
+315,Block-3,Second,Physics Staff Room,Pedestal Fan,8,,Block-3 Component Inventory,60,480
+316,Block-3,Second,Chemistry LAB,Square Ceiling Light,4,,Block-3 Component Inventory,18,72
+317,Block-3,Second,Chemistry LAB,Fan,2,,Block-3 Component Inventory,75,150
+318,Block-3,Second,Chemistry LAB,Square LED,4,,Block-3 Component Inventory,18,72
+319,Block-3,Second,Chemistry LAB,Fan,2,,Block-3 Component Inventory,75,150
+320,Block-3,Second,Chemistry LAB,Square Ceiling Light,4,,Block-3 Component Inventory,18,72
+321,Block-3,Second,Chemistry LAB,Fan,2,,Block-3 Component Inventory,75,150
+322,Block-3,Second,Chemistry LAB,Square LED,4,,Block-3 Component Inventory,18,72
+323,Block-3,Second,Chemistry LAB,Fan,2,,Block-3 Component Inventory,75,150
+324,Block-3,Second,Chemistry LAB,Fan,20,,Block-3 Component Inventory,75,1500
+325,Block-3,Second,Chemistry LAB,Squ. Ceiling Light,26,,Block-3 Component Inventory,18,468
+326,Block-3,Second,Chemistry LAB,LED Tube,2,,Block-3 Component Inventory,20,40
+327,Block-3,Second,Chemistry LAB,LED,4,,Block-3 Component Inventory,15,60
+328,Block-3,Second,Chemistry LAB,Fan,2,,Block-3 Component Inventory,75,150
+329,Block-3,Second,Chemistry LAB,Camera Server,1,,Block-3 Component Inventory,150,150
+330,Block-3,Second,Chemistry LAB,Square Light,24,,Block-3 Component Inventory,18,432
+331,Block-3,Second,Chemistry LAB,Fan,21,,Block-3 Component Inventory,75,1575
+332,Block-3,Second,Chemistry LAB,LED Tube,2,,Block-3 Component Inventory,20,40
+333,Block-3,Second,Chemistry LAB,Exhaust,12,,Block-3 Component Inventory,40,480
+334,Block-3,First,LH 102,LED Tube,13,,Block-3 Component Inventory,20,260
+335,Block-3,First,LH102,Wall Fan,2,,Block-3 Component Inventory,60,120
+336,Block-3,First,LH102,Projector,1,,Block-3 Component Inventory,250,250
+337,Block-3,First,LH102,Fan,6,,Block-3 Component Inventory,75,450
+338,Block-3,First,LH 103,LED Tube,13,,Block-3 Component Inventory,20,260
+339,Block-3,First,LH103,Wall Fan,2,,Block-3 Component Inventory,60,120
+340,Block-3,First,LH103,Projector,1,,Block-3 Component Inventory,250,250
+341,Block-3,First,LH103,Fan,6,,Block-3 Component Inventory,75,450
+342,Block-3,First,DSP & EM Lab,Wall Mount Fan,2,,Block-3 Component Inventory,60,120
+343,Block-3,First,DSP & EM Lab,AC,3,,Block-3 Component Inventory,1500,4500
+344,Block-3,First,DSP & EM Lab,Printer,1,,Block-3 Component Inventory,100,100
+345,Block-3,First,DSP & EM Lab,PC,5,,Block-3 Component Inventory,200,1000
+346,Block-3,First,DSP & EM Lab,Pedestal Fan,1,,Block-3 Component Inventory,60,60
+347,Block-3,First,DSP & EM Lab,Network Switch,1,,Block-3 Component Inventory,20,20
+348,Block-3,First,DSP & EM Lab,Light Square,6,,Block-3 Component Inventory,18,108
+349,Block-3,Second,LH-204,LED,11,,Block-3 Component Inventory,15,165
+350,Block-3,Second,LH-204,Fan,9,,Block-3 Component Inventory,75,675
+351,Block-3,Second,LH-204,Projector,1,,Block-3 Component Inventory,250,250
+352,Block-3,Second,LH-203,LED,11,,Block-3 Component Inventory,15,165
+353,Block-3,Second,LH-203,Fan,9,,Block-3 Component Inventory,75,675
+354,Block-3,Second,LH-203,Projector,1,,Block-3 Component Inventory,250,250
+355,Block-3,Second,LH-202,LED,11,,Block-3 Component Inventory,15,165
+356,Block-3,Second,LH-202,Fan,9,,Block-3 Component Inventory,75,675
+357,Block-3,Second,LH-202,Projector,1,,Block-3 Component Inventory,250,250
+358,Block-3,Second,LH-201,LED,11,,Block-3 Component Inventory,15,165
+359,Block-3,Second,LH-201,Fan,9,,Block-3 Component Inventory,75,675
+360,Block-3,Second,LH-201,Projector,1,,Block-3 Component Inventory,250,250
