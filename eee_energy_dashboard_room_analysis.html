@@ -1,0 +1,2031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EEE Energy Audit — Easwari Engineering College</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+:root {
+  --bg:       #f0f4f8;
+  --surface:  #ffffff;
+  --surface2: #e8eef6;
+  --border:   #d1dce8;
+  --navy:     #0a1628;
+  --navy2:    #112240;
+  --gold:     #e8a214;
+  --gold2:    #ffcb47;
+  --teal:     #0d7377;
+  --teal2:    #14a085;
+  --crimson:  #c62828;
+  --slate:    #3a506b;
+  --muted:    #7a8ea8;
+  --text:     #1a2a3a;
+  --green:    #2e7d32;
+  --orange:   #e65100;
+  --purple:   #6a1b9a;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+}
+
+.header {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy2) 60%, #0d2137 100%);
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+}
+.header::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 60% 80% at 5% 50%, rgba(14,115,119,0.22) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 60% at 95% 20%, rgba(232,162,20,0.18) 0%, transparent 60%);
+  pointer-events: none;
+}
+.header-grid {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0;
+  padding: 18px 32px;
+  position: relative;
+  z-index: 1;
+}
+.crest {
+  width: 68px; height: 68px;
+  background: linear-gradient(145deg, var(--gold), var(--gold2));
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px;
+  box-shadow: 0 0 0 3px rgba(232,162,20,0.3), 0 8px 24px rgba(0,0,0,0.4);
+  margin-right: 18px;
+  flex-shrink: 0;
+}
+.college-info { flex: 1; }
+.college-name {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 20px; font-weight: 900;
+  color: #fff;
+  letter-spacing: 1.5px;
+  line-height: 1.15;
+}
+.college-name span { color: var(--gold2); }
+.dept-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-top: 6px;
+  background: rgba(232,162,20,0.15);
+  border: 1px solid rgba(232,162,20,0.4);
+  color: var(--gold2);
+  font-size: 11px; font-weight: 600;
+  padding: 3px 12px; border-radius: 20px;
+  letter-spacing: 1.5px; text-transform: uppercase;
+}
+.header-meta {
+  text-align: right;
+  border-left: 1px solid rgba(255,255,255,0.1);
+  padding-left: 24px;
+}
+.header-meta .rate {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 22px; font-weight: 700;
+  color: var(--gold2);
+}
+.header-meta .rate-label { font-size: 10px; color: rgba(255,255,255,0.5); letter-spacing: 1px; text-transform: uppercase; margin-top: 2px; }
+
+.subheader {
+  background: var(--navy);
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding: 10px 32px;
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  position: relative; z-index: 1;
+}
+.filter-label { font-size: 11px; color: rgba(255,255,255,0.35); letter-spacing: 1.5px; text-transform: uppercase; }
+.filter-btn {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.5);
+  font-size: 12px; font-weight: 500;
+  padding: 5px 16px; border-radius: 6px;
+  cursor: pointer; transition: all .2s;
+  font-family: 'DM Sans', sans-serif;
+}
+.filter-btn:hover { border-color: var(--gold); color: var(--gold); }
+.filter-btn.active { background: rgba(232,162,20,0.15); border-color: var(--gold); color: var(--gold2); font-weight: 600; }
+
+/* ── TAB NAVIGATION ── */
+.tab-nav {
+  background: var(--surface);
+  border-bottom: 2px solid var(--border);
+  padding: 0 28px;
+  display: flex; gap: 0;
+  position: sticky; top: 0; z-index: 10;
+  box-shadow: 0 2px 8px rgba(10,22,40,0.06);
+}
+.tab-btn {
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: var(--muted);
+  font-size: 12px; font-weight: 600;
+  font-family: 'DM Sans', sans-serif;
+  padding: 14px 22px;
+  cursor: pointer; transition: all .2s;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: -2px;
+}
+.tab-btn:hover { color: var(--navy); }
+.tab-btn.active { border-bottom-color: var(--teal); color: var(--teal); }
+
+/* ── MAIN ── */
+.main { padding: 22px 28px; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ── KPI STRIP ── */
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+.kpi {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 18px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(10,22,40,0.06);
+  transition: transform .2s, box-shadow .2s;
+}
+.kpi:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(10,22,40,0.1); }
+.kpi::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+  border-radius: 0 0 12px 12px;
+}
+.kpi.k1::after { background: linear-gradient(90deg, var(--navy), var(--teal)); }
+.kpi.k2::after { background: linear-gradient(90deg, var(--gold), var(--gold2)); }
+.kpi.k3::after { background: linear-gradient(90deg, var(--crimson), #ef9a9a); }
+.kpi.k4::after { background: linear-gradient(90deg, var(--teal), var(--teal2)); }
+.kpi.k5::after { background: linear-gradient(90deg, var(--orange), #ffb74d); }
+.kpi.k6::after { background: linear-gradient(90deg, var(--purple), #ce93d8); }
+
+.kpi-icon { font-size: 20px; margin-bottom: 8px; opacity: 0.8; }
+.kpi-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+.kpi-value { font-family: 'Orbitron', sans-serif; font-size: 22px; font-weight: 700; line-height: 1; }
+.kpi.k1 .kpi-value { color: var(--navy); }
+.kpi.k2 .kpi-value { color: var(--gold); }
+.kpi.k3 .kpi-value { color: var(--crimson); }
+.kpi.k4 .kpi-value { color: var(--teal); }
+.kpi.k5 .kpi-value { color: var(--orange); }
+.kpi.k6 .kpi-value { color: var(--purple); }
+.kpi-unit { font-size: 10px; color: var(--muted); margin-top: 4px; }
+
+/* ── KPI STRIP — analysis tabs ── */
+.kpi-row4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+/* ── CARDS ── */
+.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.grid2l { display: grid; grid-template-columns: 1.45fr 1fr; gap: 16px; margin-bottom: 16px; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.grid1 { display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 16px; }
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 20px;
+  box-shadow: 0 2px 8px rgba(10,22,40,0.05);
+}
+.card-hd { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px; }
+.card-title { font-family: 'Orbitron', sans-serif; font-size: 12px; font-weight: 700; color: var(--navy); letter-spacing: 0.5px; }
+.card-sub { font-size: 10px; color: var(--muted); margin-top: 3px; text-transform: uppercase; letter-spacing: 0.8px; }
+.chip {
+  font-size: 10px; font-weight: 600; padding: 2px 9px; border-radius: 10px;
+  background: var(--navy); color: var(--gold2); letter-spacing: 0.5px; white-space: nowrap;
+}
+.chip-teal { background: var(--teal); color: #fff; }
+.chip-green { background: var(--green); color: #fff; }
+.chip-purple { background: var(--purple); color: #fff; }
+
+canvas { max-height: 230px; }
+
+/* ── POWER BARS ── */
+.pbars { display: flex; flex-direction: column; gap: 9px; }
+.pbar-row { display: flex; align-items: center; gap: 10px; }
+.pbar-lbl { width: 140px; font-size: 11px; color: var(--slate); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pbar-bg { flex: 1; height: 7px; background: var(--surface2); border-radius: 4px; overflow: hidden; }
+.pbar-fill { height: 100%; border-radius: 4px; }
+.pbar-w { width: 62px; text-align: right; font-family: 'Orbitron', sans-serif; font-size: 10px; font-weight: 600; color: var(--navy); }
+.pbar-cost { width: 68px; text-align: right; font-size: 10px; font-weight: 600; color: var(--teal); }
+
+/* ── TABLE ── */
+.tbl-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+th { font-size: 9.5px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; padding: 7px 10px; border-bottom: 2px solid var(--border); font-weight: 600; background: var(--surface2); }
+th:first-child { border-radius: 6px 0 0 0; }
+th:last-child { border-radius: 0 6px 0 0; }
+td { padding: 7px 10px; border-bottom: 1px solid var(--border); }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(13,115,119,0.04); }
+.pill { display: inline-block; font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 10px; letter-spacing: 0.5px; }
+.p-h { background: rgba(198,40,40,0.12); color: var(--crimson); }
+.p-m { background: rgba(230,81,0,0.12); color: var(--orange); }
+.p-l { background: rgba(46,125,50,0.12); color: var(--green); }
+
+/* ── COST HIGHLIGHT ── */
+.cost-val { font-family: 'Orbitron', sans-serif; font-weight: 700; color: var(--teal); font-size: 12px; }
+.watt-val { font-family: 'Orbitron', sans-serif; font-weight: 700; color: var(--navy); font-size: 12px; }
+.kwh-val  { font-family: 'Orbitron', sans-serif; font-weight: 700; color: var(--purple); font-size: 12px; }
+
+/* ── COST TABLE ── */
+.cost-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.cost-box {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  text-align: center;
+}
+.cost-box-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+.cost-box-val { font-family: 'Orbitron', sans-serif; font-size: 18px; font-weight: 700; }
+.cost-box-sub { font-size: 10px; color: var(--muted); margin-top: 4px; }
+
+/* ── HOUR LABELS ── */
+.hour-note {
+  font-size: 10px; color: var(--muted);
+  background: var(--surface2);
+  border-radius: 6px; padding: 6px 10px;
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-bottom: 10px;
+}
+
+@media (max-width: 1200px) {
+  .kpi-row { grid-template-columns: repeat(3, 1fr); }
+  .kpi-row4 { grid-template-columns: repeat(2, 1fr); }
+  .grid3 { grid-template-columns: 1fr 1fr; }
+  .cost-summary-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 768px) {
+  .kpi-row { grid-template-columns: repeat(2, 1fr); }
+  .kpi-row4 { grid-template-columns: repeat(2, 1fr); }
+  .grid3, .grid2l, .grid2 { grid-template-columns: 1fr; }
+  .cost-summary-grid { grid-template-columns: 1fr; }
+  .header-grid { grid-template-columns: auto 1fr; }
+  .header-meta { display: none; }
+}
+
+/* ── ROOM ANALYSIS PANEL ── */
+.ra-controls {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 22px;
+  margin-bottom: 18px;
+  box-shadow: 0 2px 8px rgba(10,22,40,0.05);
+}
+.ra-controls-row {
+  display: flex; flex-wrap: wrap; align-items: flex-end; gap: 20px;
+}
+.ra-ctrl-group { display: flex; flex-direction: column; gap: 5px; }
+.ra-ctrl-label {
+  font-size: 10px; color: var(--muted); text-transform: uppercase;
+  letter-spacing: 1px; font-weight: 600;
+}
+.ra-input {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 13px; font-weight: 500;
+  padding: 7px 12px;
+  transition: border-color .2s;
+  min-width: 100px;
+}
+.ra-input:focus { outline: none; border-color: var(--teal); }
+.ra-input[type=number] { width: 100px; }
+.ra-select { width: 180px; }
+.ra-apply-btn {
+  background: linear-gradient(135deg, var(--teal), var(--teal2));
+  border: none; border-radius: 8px;
+  color: #fff; font-family: 'DM Sans', sans-serif;
+  font-size: 12px; font-weight: 700;
+  padding: 8px 22px; cursor: pointer;
+  transition: opacity .2s, transform .2s;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.ra-apply-btn:hover { opacity: .88; transform: translateY(-1px); }
+.ra-result-summary {
+  display: flex; flex-wrap: wrap; gap: 12px;
+  margin-bottom: 16px;
+}
+.ra-summary-pill {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 16px;
+  display: flex; flex-direction: column; gap: 2px;
+  box-shadow: 0 1px 4px rgba(10,22,40,0.06);
+  min-width: 130px;
+}
+.ra-pill-label { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+.ra-pill-val { font-family: 'Orbitron', sans-serif; font-size: 15px; font-weight: 700; }
+.ra-table-wrap { overflow-x: auto; }
+.ra-table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+.ra-table th {
+  font-size: 9.5px; color: var(--muted); text-transform: uppercase;
+  letter-spacing: 1px; padding: 8px 10px;
+  border-bottom: 2px solid var(--border);
+  background: var(--surface2); font-weight: 600;
+  cursor: pointer; user-select: none;
+  white-space: nowrap;
+}
+.ra-table th:hover { color: var(--teal); }
+.ra-table th.sort-asc::after { content: ' ▲'; font-size: 8px; }
+.ra-table th.sort-desc::after { content: ' ▼'; font-size: 8px; }
+.ra-table td { padding: 7px 10px; border-bottom: 1px solid var(--border); }
+.ra-table tr:last-child td { border-bottom: none; }
+.ra-table tr:hover td { background: rgba(13,115,119,0.04); }
+.ra-bar-cell { display: flex; align-items: center; gap: 8px; }
+.ra-mini-bar { flex: 1; height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; min-width: 60px; }
+.ra-mini-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--teal), var(--teal2)); }
+.ra-chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.ra-search {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 13px;
+  padding: 7px 12px;
+  width: 220px;
+  transition: border-color .2s;
+}
+.ra-search:focus { outline: none; border-color: var(--teal); }
+
+@keyframes fadeUp { from { opacity:0; transform: translateY(14px); } to { opacity:1; transform: translateY(0); } }
+.kpi { animation: fadeUp .45s ease both; }
+.kpi:nth-child(1){animation-delay:.05s} .kpi:nth-child(2){animation-delay:.10s}
+.kpi:nth-child(3){animation-delay:.15s} .kpi:nth-child(4){animation-delay:.20s}
+.kpi:nth-child(5){animation-delay:.25s} .kpi:nth-child(6){animation-delay:.30s}
+.card { animation: fadeUp .5s ease both; animation-delay:.3s; }
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<div class="header">
+  <div class="header-grid">
+    <div class="crest">🎓</div>
+    <div class="college-info">
+      <div class="college-name">EASWARI <span>ENGINEERING</span> COLLEGE</div>
+      <div class="dept-badge">⚡ Department of Electrical &amp; Electronics Engineering</div>
+    </div>
+    <div class="header-meta">
+      <div class="rate">₹ 9.40</div>
+      <div class="rate-label">per unit (kWh) tariff</div>
+    </div>
+  </div>
+  <div class="subheader">
+    <span class="filter-label">Filter Block →</span>
+    <button class="filter-btn active" onclick="setFilter('ALL')">All Blocks</button>
+    <button class="filter-btn" onclick="setFilter('EB Block-1')">EB Block-1</button>
+    <button class="filter-btn" onclick="setFilter('ADMIN BLK')">Admin Block</button>
+    <button class="filter-btn" onclick="setFilter('Block-3')">Block-3</button>
+  </div>
+</div>
+
+<!-- ══ TAB NAV ══ -->
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('overview')">📊 Overview</button>
+  <button class="tab-btn" onclick="switchTab('daywise')">📅 Day-wise Analysis</button>
+  <button class="tab-btn" onclick="switchTab('hourwise')">🕐 Hour-wise Analysis</button>
+  <button class="tab-btn" onclick="switchTab('cost')">₹ kWh Cost Analysis</button>
+  <button class="tab-btn" onclick="switchTab('roomanalysis')">🏠 Room Analysis</button>
+</div>
+
+<!-- ══ MAIN ══ -->
+<div class="main">
+
+<!-- ═══════════════════════════════════════════════════
+     TAB 1 — OVERVIEW
+════════════════════════════════════════════════════ -->
+<div id="tab-overview" class="tab-panel active">
+
+  <div class="kpi-row">
+    <div class="kpi k1">
+      <div class="kpi-icon">⚡</div>
+      <div class="kpi-label">Total Load</div>
+      <div class="kpi-value" id="kpiLoad">—</div>
+      <div class="kpi-unit">Watts</div>
+    </div>
+    <div class="kpi k2">
+      <div class="kpi-icon">₹</div>
+      <div class="kpi-label">Est. Cost / Hr</div>
+      <div class="kpi-value" id="kpiCost">—</div>
+      <div class="kpi-unit">@ ₹9.4 per kWh</div>
+    </div>
+    <div class="kpi k3">
+      <div class="kpi-icon">🏆</div>
+      <div class="kpi-label">Top Load Room</div>
+      <div class="kpi-value" id="kpiTop" style="font-size:13px;line-height:1.4">—</div>
+      <div class="kpi-unit" id="kpiTopW">—</div>
+    </div>
+    <div class="kpi k4">
+      <div class="kpi-icon">❄️</div>
+      <div class="kpi-label">HVAC / AC Load</div>
+      <div class="kpi-value" id="kpiHVAC">—</div>
+      <div class="kpi-unit">Watts</div>
+    </div>
+    <div class="kpi k5">
+      <div class="kpi-icon">💡</div>
+      <div class="kpi-label">Lighting Load</div>
+      <div class="kpi-value" id="kpiLight">—</div>
+      <div class="kpi-unit">Watts</div>
+    </div>
+    <div class="kpi k6">
+      <div class="kpi-icon">🖥</div>
+      <div class="kpi-label">Computing Load</div>
+      <div class="kpi-value" id="kpiPC">—</div>
+      <div class="kpi-unit">Watts</div>
+    </div>
+  </div>
+
+  <div class="grid3">
+    <div class="card">
+      <div class="card-hd">
+        <div><div class="card-title">Load by Block</div><div class="card-sub">Total Watts · Est. Cost</div></div>
+        <span class="chip">Bar</span>
+      </div>
+      <canvas id="cBlock"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-hd">
+        <div><div class="card-title">Category Breakdown</div><div class="card-sub">Appliance type split</div></div>
+        <span class="chip">Donut</span>
+      </div>
+      <canvas id="cDonut"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-hd">
+        <div><div class="card-title">Floor-wise Load</div><div class="card-sub">Stacked by category</div></div>
+        <span class="chip">Stacked</span>
+      </div>
+      <canvas id="cFloor"></canvas>
+    </div>
+  </div>
+
+  <div class="grid2l">
+    <div class="card">
+      <div class="card-hd">
+        <div><div class="card-title">Top 15 Rooms — Load &amp; Cost</div><div class="card-sub">Sorted by wattage · ₹9.4/kWh</div></div>
+        <span class="chip">Ranking</span>
+      </div>
+      <div class="pbars" id="roomBars"></div>
+    </div>
+    <div class="card">
+      <div class="card-hd">
+        <div><div class="card-title">Cost Share by Category</div><div class="card-sub">₹ estimated per category</div></div>
+        <span class="chip">Polar</span>
+      </div>
+      <canvas id="cPolar"></canvas>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="card-hd">
+        <div><div class="card-title">Top Components by Load</div><div class="card-sub">Horizontal · coloured by category</div></div>
+        <span class="chip">H-Bar</span>
+      </div>
+      <canvas id="cComp" style="max-height:310px"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-hd">
+        <div><div class="card-title">High-Load Rooms — Inventory</div><div class="card-sub">Top 12 rooms · W + ₹ cost</div></div>
+        <span class="chip">Table</span>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr>
+            <th>Block</th><th>Room</th><th>Total W</th><th>Est. ₹/hr</th><th>Level</th>
+          </tr></thead>
+          <tbody id="tBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /tab-overview -->
+
+<!-- ═══════════════════════════════════════════════════
+     TAB 2 — DAY-WISE ANALYSIS
+════════════════════════════════════════════════════ -->
+<div id="tab-daywise" class="tab-panel">
+
+  <div class="kpi-row4">
+    <div class="kpi k1">
+      <div class="kpi-icon">📅</div>
+      <div class="kpi-label">Weekday Peak Load</div>
+      <div class="kpi-value" id="dKpiPeak">—</div>
+      <div class="kpi-unit">Watts (Mon–Fri avg)</div>
+    </div>
+    <div class="kpi k2">
+      <div class="kpi-icon">₹</div>
+      <div class="kpi-label">Daily Peak Cost</div>
+      <div class="kpi-value" id="dKpiCostDay">—</div>
+      <div class="kpi-unit">Estimated per day</div>
+    </div>
+    <div class="kpi k4">
+      <div class="kpi-icon">📆</div>
+      <div class="kpi-label">Weekly kWh</div>
+      <div class="kpi-value" id="dKpiKwh">—</div>
+      <div class="kpi-unit">Mon–Sat (8hr usage)</div>
+    </div>
+    <div class="kpi k5">
+      <div class="kpi-icon">💰</div>
+      <div class="kpi-label">Weekly Cost</div>
+      <div class="kpi-value" id="dKpiWeekCost">—</div>
+      <div class="kpi-unit">@ ₹9.4/kWh</div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="card-hd">
+        <div><div class="card-title">Day-wise Load Profile</div><div class="card-sub">Estimated active load per day of week</div></div>
+        <span class="chip chip-teal">Line</span>
+      </div>
+      <canvas id="cDay" style="max-height:250px"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-hd">
+        <div><div class="card-title">Day-wise kWh Consumption</div><div class="card-sub">Energy consumed per day (8-hr working day)</div></div>
+        <span class="chip chip-teal">Bar</span>
+      </div>
+      <canvas id="cDayKwh" style="max-height:250px"></canvas>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="card-hd">
+        <div><div class="card-title">Day-wise Cost (₹)</div><div class="card-sub">Estimated daily electricity bill @ ₹9.4/kWh</div></div>
+        <span class="chip chip-green">Cost</span>
+      </div>
+      <canvas id="cDayCost" style="max-height:250px"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-hd">
+        <div><div class="card-title">Category Load by Day</div><div class="card-sub">Stacked — HVAC, Computing, Lighting, Fans</div></div>
+        <span class="chip chip-purple">Stacked</span>
+      </div>
+      <canvas id="cDayCat" style="max-height:250px"></canvas>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-hd">
+      <div><div class="card-title">Day-wise Summary Table</div><div class="card-sub">Load, kWh, and estimated cost per day</div></div>
+      <span class="chip">Table</span>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th>Day</th><th>Usage Factor</th><th>Est. Load (W)</th><th>kWh / Day</th><th>Est. Cost ₹/day</th><th>HVAC W</th><th>Computing W</th><th>Lighting W</th>
+        </tr></thead>
+        <tbody id="tDayBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div><!-- /tab-daywise -->
+
+<!-- ═══════════════════════════════════════════════════
+     TAB 3 — HOUR-WISE ANALYSIS
+════════════════════════════════════════════════════ -->
+<div id="tab-hourwise" class="tab-panel">
+
+  <div class="kpi-row4">
+    <div class="kpi k1">
+      <div class="kpi-icon">🕗</div>
+      <div class="kpi-label">Peak Hour Load</div>
+      <div class="kpi-value" id="hKpiPeak">—</div>
+      <div class="kpi-unit">Hour with max load</div>
+    </div>
+    <div class="kpi k3">
+      <div class="kpi-icon">🕕</div>
+      <div class="kpi-label">Off-Peak Load</div>
+      <div class="kpi-value" id="hKpiOffPeak">—</div>
+      <div class="kpi-unit">Early morning avg</div>
+    </div>
+    <div class="kpi k2">
+      <div class="kpi-icon">⏱</div>
+      <div class="kpi-label">Peak Hour</div>
+      <div class="kpi-value" id="hKpiHour" style="font-size:16px">—</div>
+      <div class="kpi-unit">Busiest time slot</div>
+    </div>
+    <div class="kpi k4">
+      <div class="kpi-icon">💡</div>
+      <div class="kpi-label">Avg Load / Hr</div>
+      <div class="kpi-value" id="hKpiAvg">—</div>
+      <div class="kpi-unit">During working hours</div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="card-hd">
+        <div><div class="card-title">Hourly Load Profile</div><div class="card-sub">Estimated watts active per hour slot</div></div>
+        <span class="chip chip-teal">Area</span>
+      </div>
+      <canvas id="cHour" style="max-height:250px"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-hd">
+        <div><div class="card-title">Hourly kWh &amp; Cost</div><div class="card-sub">Energy and ₹ cost per hour slot</div></div>
+        <span class="chip chip-green">Combo</span>
+      </div>
+      <canvas id="cHourCost" style="max-height:250px"></canvas>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-hd">
+      <div><div class="card-title">Category-wise Hourly Breakdown</div><div class="card-sub">HVAC, Computing, Lighting, Fans — how each category varies through the day</div></div>
+      <span class="chip chip-purple">Stacked Area</span>
+    </div>
+    <canvas id="cHourCat" style="max-height:270px"></canvas>
+  </div>
+
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-hd">
+      <div><div class="card-title">Hourly Analysis Table</div><div class="card-sub">Load factor, kWh, and cost per hour</div></div>
+      <span class="chip">Table</span>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th>Hour</th><th>Period</th><th>Load Factor</th><th>Est. Load (W)</th><th>kWh</th><th>Est. Cost ₹</th><th>Intensity</th>
+        </tr></thead>
+        <tbody id="tHourBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div><!-- /tab-hourwise -->
+
+<!-- ═══════════════════════════════════════════════════
+     TAB 4 — kWh COST ANALYSIS
+════════════════════════════════════════════════════ -->
+<div id="tab-cost" class="tab-panel">
+
+  <div class="cost-summary-grid">
+    <div class="cost-box">
+      <div class="cost-box-label">Total Installed Load</div>
+      <div class="cost-box-val" id="cKpiWatt" style="color:var(--navy)">—</div>
+      <div class="cost-box-sub">Watts (connected load)</div>
+    </div>
+    <div class="cost-box">
+      <div class="cost-box-label">Daily kWh (8 hrs)</div>
+      <div class="cost-box-val" id="cKpiKwhDay" style="color:var(--teal)">—</div>
+      <div class="cost-box-sub">kWh / working day</div>
+    </div>
+    <div class="cost-box">
+      <div class="cost-box-label">Daily Cost @ ₹9.4</div>
+      <div class="cost-box-val" id="cKpiCostDay" style="color:var(--gold)">—</div>
+      <div class="cost-box-sub">₹ per working day</div>
+    </div>
+    <div class="cost-box">
+      <div class="cost-box-label">Monthly kWh (26 days)</div>
+      <div class="cost-box-val" id="cKpiKwhMonth" style="color:var(--purple)">—</div>
+      <div class="cost-box-sub">kWh / month est.</div>
+    </div>
+    <div class="cost-box">
+      <div class="cost-box-label">Monthly Cost @ ₹9.4</div>
+      <div class="cost-box-val" id="cKpiCostMonth" style="color:var(--crimson)">—</div>
+      <div class="cost-box-sub">₹ per month est.</div>
+    </div>
+    <div class="cost-box">
+      <div class="cost-box-label">Annual Cost Est.</div>
+      <div class="cost-box-val" id="cKpiCostYear" style="color:var(--green)">—</div>
+      <div class="cost-box-sub">₹ / year (300 days)</div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="card-hd">
+        <div><div class="card-title">kWh per Category</div><div class="card-sub">Daily energy (Wh ÷ 1000) by appliance type</div></div>
+        <span class="chip chip-teal">Bar</span>
+      </div>
+      <canvas id="cCostCat" style="max-height:250px"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-hd">
+        <div><div class="card-title">₹ Cost per Category</div><div class="card-sub">Daily cost breakdown @ ₹9.4/kWh</div></div>
+        <span class="chip chip-green">Bar</span>
+      </div>
+      <canvas id="cCostCatRs" style="max-height:250px"></canvas>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="card-hd">
+        <div><div class="card-title">kWh per Block</div><div class="card-sub">Daily kWh contribution per building block</div></div>
+        <span class="chip chip-teal">Donut</span>
+      </div>
+      <canvas id="cCostBlock" style="max-height:250px"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-hd">
+        <div><div class="card-title">Monthly Cost Projection</div><div class="card-sub">Mon–Sat usage × ₹9.4/kWh</div></div>
+        <span class="chip chip-purple">Line</span>
+      </div>
+      <canvas id="cMonthProj" style="max-height:250px"></canvas>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-hd">
+      <div><div class="card-title">Per-Room kWh &amp; Cost Analysis</div><div class="card-sub">Top 15 rooms — kWh/day · ₹/day · ₹/month</div></div>
+      <span class="chip">Table</span>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th>Block</th><th>Room</th><th>Total W</th><th>kWh/day (8hr)</th><th>₹/day</th><th>₹/month (26d)</th><th>₹/year (300d)</th><th>Level</th>
+        </tr></thead>
+        <tbody id="tCostBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div><!-- /tab-cost -->
+
+<!-- ═══════════════════════════════════════════════════
+     TAB 5 — ROOM ANALYSIS (Customizable Hours & Days)
+════════════════════════════════════════════════════ -->
+<div id="tab-roomanalysis" class="tab-panel">
+
+  <!-- Controls Card -->
+  <div class="ra-controls">
+    <div style="font-family:'Orbitron',sans-serif;font-size:13px;font-weight:700;color:var(--navy);margin-bottom:14px;letter-spacing:0.5px;">
+      🏠 Customizable Room Energy Analysis
+    </div>
+    <div class="ra-controls-row">
+      <div class="ra-ctrl-group">
+        <span class="ra-ctrl-label">Hours per Day</span>
+        <input class="ra-input" type="number" id="raHours" value="8" min="1" max="24" step="0.5">
+      </div>
+      <div class="ra-ctrl-group">
+        <span class="ra-ctrl-label">Days per Month</span>
+        <input class="ra-input" type="number" id="raDaysMonth" value="26" min="1" max="31">
+      </div>
+      <div class="ra-ctrl-group">
+        <span class="ra-ctrl-label">Days per Year</span>
+        <input class="ra-input" type="number" id="raDaysYear" value="300" min="1" max="366">
+      </div>
+      <div class="ra-ctrl-group">
+        <span class="ra-ctrl-label">Filter Block</span>
+        <select class="ra-input ra-select" id="raBlock">
+          <option value="ALL">All Blocks</option>
+          <option value="EB Block-1">EB Block-1</option>
+          <option value="ADMIN BLK">Admin Block</option>
+          <option value="Block-3">Block-3</option>
+        </select>
+      </div>
+      <div class="ra-ctrl-group">
+        <span class="ra-ctrl-label">Filter Category</span>
+        <select class="ra-input ra-select" id="raCat">
+          <option value="ALL">All Categories</option>
+          <option value="HVAC/AC">HVAC / AC</option>
+          <option value="Computing">Computing</option>
+          <option value="Lighting">Lighting</option>
+          <option value="Fans">Fans</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="ra-ctrl-group">
+        <span class="ra-ctrl-label">Search Room</span>
+        <input class="ra-search" type="text" id="raSearch" placeholder="Type room name…">
+      </div>
+      <div class="ra-ctrl-group">
+        <span class="ra-ctrl-label">&nbsp;</span>
+        <button class="ra-apply-btn" onclick="buildRoomAnalysis()">⚡ Recalculate</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary Pills -->
+  <div class="ra-result-summary" id="raSummaryPills"></div>
+
+  <!-- Charts row -->
+  <div class="ra-chart-grid">
+    <div class="card">
+      <div class="card-hd">
+        <div><div class="card-title">Top Rooms — Daily kWh</div><div class="card-sub">Based on custom hours setting</div></div>
+        <span class="chip chip-teal">Bar</span>
+      </div>
+      <canvas id="raChartKwh" style="max-height:260px"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-hd">
+        <div><div class="card-title">Top Rooms — Annual Cost ₹</div><div class="card-sub">Based on custom hours &amp; days</div></div>
+        <span class="chip chip-green">Bar</span>
+      </div>
+      <canvas id="raChartCost" style="max-height:260px"></canvas>
+    </div>
+  </div>
+
+  <div class="ra-chart-grid">
+    <div class="card">
+      <div class="card-hd">
+        <div><div class="card-title">Category Split — kWh / Day</div><div class="card-sub">Filtered rooms only</div></div>
+        <span class="chip">Donut</span>
+      </div>
+      <canvas id="raChartCatKwh" style="max-height:260px"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-hd">
+        <div><div class="card-title">Block Comparison — Annual ₹</div><div class="card-sub">Which block costs most</div></div>
+        <span class="chip chip-purple">Polar</span>
+      </div>
+      <canvas id="raChartBlock" style="max-height:260px"></canvas>
+    </div>
+  </div>
+
+  <!-- Full Room Table -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-hd">
+      <div>
+        <div class="card-title">All Rooms — Detailed kWh &amp; Cost Table</div>
+        <div class="card-sub" id="raTableSub">Click column headers to sort</div>
+      </div>
+      <span class="chip">Table</span>
+    </div>
+    <div class="ra-table-wrap">
+      <table class="ra-table" id="raTable">
+        <thead>
+          <tr>
+            <th onclick="raSortBy('block')">Block</th>
+            <th onclick="raSortBy('room')">Room</th>
+            <th onclick="raSortBy('watts')">Total W</th>
+            <th onclick="raSortBy('kwhDay')">kWh / Day</th>
+            <th onclick="raSortBy('costDay')">₹ / Day</th>
+            <th onclick="raSortBy('kwhMonth')">kWh / Month</th>
+            <th onclick="raSortBy('costMonth')">₹ / Month</th>
+            <th onclick="raSortBy('kwhYear')">kWh / Year</th>
+            <th onclick="raSortBy('costYear')">₹ / Year</th>
+            <th>Load Bar</th>
+            <th onclick="raSortBy('level')">Level</th>
+          </tr>
+        </thead>
+        <tbody id="raTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div><!-- /tab-roomanalysis -->
+
+</div><!-- /main -->
+
+<script>
+const RATE = 9.4;       // ₹ per kWh
+const RATE_OLD = 9.4;   // kept for compatibility (was ₹ per watt-hour in old code; now properly ₹/kWh)
+
+const RAW = [
+{b:"EB Block-1",f:"Ground",r:"corridor",c:"LED TV",n:1,w:60,t:60},
+{b:"EB Block-1",f:"Ground",r:"corridor",c:"LED Panel Lamp",n:6,w:15,t:90},
+{b:"EB Block-1",f:"Ground",r:"corridor",c:"Fire Alarm Panel",n:1,w:50,t:50},
+{b:"EB Block-1",f:"First Floor",r:"LH-32",c:"Induction Fan",n:8,w:75,t:600},
+{b:"EB Block-1",f:"First Floor",r:"LH-32",c:"LED Tube",n:6,w:20,t:120},
+{b:"EB Block-1",f:"First Floor",r:"LH-32",c:"Fluorescent Tube",n:2,w:40,t:80},
+{b:"EB Block-1",f:"First Floor",r:"LH-31",c:"Induction Fan",n:8,w:75,t:600},
+{b:"EB Block-1",f:"First Floor",r:"LH-31",c:"LED Tube",n:7,w:20,t:140},
+{b:"EB Block-1",f:"First Floor",r:"LH-31",c:"Fluorescent Tube",n:1,w:40,t:40},
+{b:"EB Block-1",f:"First Floor",r:"LH-30",c:"Induction Fan",n:8,w:75,t:600},
+{b:"EB Block-1",f:"First Floor",r:"LH-30",c:"LED Tube",n:5,w:20,t:100},
+{b:"EB Block-1",f:"First Floor",r:"LH-30",c:"Fluorescent Tube",n:3,w:40,t:120},
+{b:"EB Block-1",f:"First Floor",r:"LH-29",c:"Induction Fan",n:8,w:75,t:600},
+{b:"EB Block-1",f:"First Floor",r:"LH-29",c:"LED Tube",n:4,w:20,t:80},
+{b:"EB Block-1",f:"First Floor",r:"LH-29",c:"Fluorescent Tube",n:4,w:40,t:160},
+{b:"EB Block-1",f:"First Floor",r:"HOD & Staff Room",c:"PC",n:5,w:200,t:1000},
+{b:"EB Block-1",f:"First Floor",r:"HOD & Staff Room",c:"Printer",n:2,w:100,t:200},
+{b:"EB Block-1",f:"First Floor",r:"HOD & Staff Room",c:"Induction Fan",n:5,w:75,t:375},
+{b:"EB Block-1",f:"First Floor",r:"HOD & Staff Room",c:"Network Switch",n:1,w:20,t:20},
+{b:"EB Block-1",f:"Second Floor",r:"LH-36",c:"Fluorescent Tube",n:4,w:40,t:160},
+{b:"EB Block-1",f:"Second Floor",r:"LH-36",c:"LED Tube",n:5,w:20,t:100},
+{b:"EB Block-1",f:"Second Floor",r:"LH-36",c:"Induction Fan",n:8,w:75,t:600},
+{b:"EB Block-1",f:"Second Floor",r:"LH-35",c:"Induction Fan",n:8,w:75,t:600},
+{b:"EB Block-1",f:"Second Floor",r:"LH-35",c:"LED Tube",n:5,w:20,t:100},
+{b:"EB Block-1",f:"Second Floor",r:"LH-35",c:"Fluorescent Tube",n:5,w:40,t:200},
+{b:"EB Block-1",f:"Second Floor",r:"Staff Room",c:"PC",n:5,w:200,t:1000},
+{b:"EB Block-1",f:"Second Floor",r:"Staff Room",c:"Printer",n:2,w:100,t:200},
+{b:"EB Block-1",f:"Second Floor",r:"Staff Room",c:"Induction Fan",n:5,w:75,t:375},
+{b:"EB Block-1",f:"Second Floor",r:"Staff Room",c:"Network Switch",n:1,w:20,t:20},
+{b:"EB Block-1",f:"Second Floor",r:"LH-34",c:"Fluorescent Tube",n:4,w:40,t:160},
+{b:"EB Block-1",f:"Second Floor",r:"LH-34",c:"LED Tube",n:6,w:20,t:120},
+{b:"EB Block-1",f:"Second Floor",r:"LH-34",c:"Induction Fan",n:8,w:75,t:600},
+{b:"EB Block-1",f:"Second Floor",r:"LH-33",c:"Fluorescent Tube",n:4,w:40,t:160},
+{b:"EB Block-1",f:"Second Floor",r:"LH-33",c:"LED Tube",n:6,w:20,t:120},
+{b:"EB Block-1",f:"Second Floor",r:"LH-33",c:"Induction Fan",n:8,w:75,t:600},
+{b:"EB Block-1",f:"Third Floor",r:"Chip Design Lab",c:"PC",n:30,w:200,t:6000},
+{b:"EB Block-1",f:"Third Floor",r:"Chip Design Lab",c:"Smart Board",n:1,w:200,t:200},
+{b:"EB Block-1",f:"Third Floor",r:"Chip Design Lab",c:"BLDC Fan",n:9,w:30,t:270},
+{b:"EB Block-1",f:"Third Floor",r:"Chip Design Lab",c:"Wall Mount Fan",n:1,w:60,t:60},
+{b:"EB Block-1",f:"Third Floor",r:"Chip Design Lab",c:"AC",n:2,w:1500,t:3000},
+{b:"EB Block-1",f:"Third Floor",r:"Chip Design Lab",c:"Network Switch",n:1,w:20,t:20},
+{b:"EB Block-1",f:"Third Floor",r:"Chip Design Lab",c:"Square Ceiling Light",n:19,w:18,t:342},
+{b:"EB Block-1",f:"Third Floor",r:"Chip Design Lab",c:"LED Tube",n:1,w:20,t:20},
+{b:"EB Block-1",f:"Third Floor",r:"Microprocessor Lab",c:"AC",n:3,w:1500,t:4500},
+{b:"EB Block-1",f:"Third Floor",r:"Microprocessor Lab",c:"PC",n:26,w:200,t:5200},
+{b:"EB Block-1",f:"Third Floor",r:"Microprocessor Lab",c:"Square Ceiling Light",n:27,w:18,t:486},
+{b:"EB Block-1",f:"Third Floor",r:"Microprocessor Lab",c:"Induction Fan",n:11,w:75,t:825},
+{b:"EB Block-1",f:"Third Floor",r:"Microprocessor Lab",c:"Inverter",n:2,w:50,t:100},
+{b:"EB Block-1",f:"Third Floor",r:"Microprocessor Lab",c:"Network Switch",n:1,w:20,t:20},
+{b:"EB Block-1",f:"Third Floor",r:"Microprocessor Lab",c:"LED Tube",n:5,w:20,t:100},
+{b:"EB Block-1",f:"Third Floor",r:"BME HOD Room",c:"Induction Fan",n:1,w:75,t:75},
+{b:"EB Block-1",f:"Third Floor",r:"BME HOD Room",c:"PC",n:1,w:200,t:200},
+{b:"EB Block-1",f:"Third Floor",r:"BME HOD Room",c:"AC",n:1,w:1500,t:1500},
+{b:"EB Block-1",f:"Third Floor",r:"BME HOD Room",c:"Printer",n:2,w:100,t:200},
+{b:"EB Block-1",f:"Third Floor",r:"BME Department Office",c:"PC",n:2,w:200,t:400},
+{b:"EB Block-1",f:"Third Floor",r:"BME Department Office",c:"Induction Fan",n:2,w:75,t:150},
+{b:"EB Block-1",f:"Third Floor",r:"LH-38",c:"Induction Fan",n:6,w:75,t:450},
+{b:"EB Block-1",f:"Third Floor",r:"LH-38",c:"Fluorescent Tube",n:3,w:40,t:120},
+{b:"EB Block-1",f:"Third Floor",r:"LH-37",c:"LED Tube",n:2,w:20,t:40},
+{b:"EB Block-1",f:"Third Floor",r:"LH-37",c:"Induction Fan",n:2,w:75,t:150},
+{b:"EB Block-1",f:"Fourth Floor",r:"corridor",c:"Fluorescent Tube",n:4,w:40,t:160},
+{b:"EB Block-1",f:"Fourth Floor",r:"ECE HOD Office",c:"PC",n:1,w:200,t:200},
+{b:"EB Block-1",f:"Fourth Floor",r:"ECE HOD Office",c:"Induction Fan",n:1,w:75,t:75},
+{b:"EB Block-1",f:"Fourth Floor",r:"ECE Staff Room",c:"Fluorescent Tube",n:4,w:40,t:160},
+{b:"EB Block-1",f:"Fourth Floor",r:"Maths Staff Room",c:"Induction Fan",n:9,w:75,t:675},
+{b:"EB Block-1",f:"Fourth Floor",r:"Maths Staff Room",c:"Fluorescent Tube",n:8,w:40,t:320},
+{b:"EB Block-1",f:"Fifth Floor",r:"ECE Library",c:"Induction Fan",n:1,w:75,t:75},
+{b:"EB Block-1",f:"Fifth Floor",r:"ECE Library",c:"PC",n:1,w:200,t:200},
+{b:"EB Block-1",f:"Fifth Floor",r:"ECE Library",c:"AC",n:1,w:1500,t:1500},
+{b:"EB Block-1",f:"Fifth Floor",r:"Analog Circuits Lab",c:"PC",n:15,w:200,t:3000},
+{b:"EB Block-1",f:"Fifth Floor",r:"Analog Circuits Lab",c:"AC",n:3,w:1500,t:4500},
+{b:"EB Block-1",f:"Fifth Floor",r:"Analog Circuits Lab",c:"Induction Fan",n:10,w:75,t:750},
+{b:"EB Block-1",f:"Fifth Floor",r:"Analog Circuits Lab",c:"LED Tube",n:5,w:20,t:100},
+{b:"EB Block-1",f:"Fifth Floor",r:"E-Con Lab",c:"AC",n:1,w:1500,t:1500},
+{b:"EB Block-1",f:"Fifth Floor",r:"E-Con Lab",c:"Smart Board",n:1,w:200,t:200},
+{b:"EB Block-1",f:"Fifth Floor",r:"Digital Circuits Lab",c:"PC",n:12,w:200,t:2400},
+{b:"EB Block-1",f:"Fifth Floor",r:"Digital Circuits Lab",c:"Induction Fan",n:8,w:75,t:600},
+{b:"EB Block-1",f:"Fifth Floor",r:"Digital Circuits Lab",c:"LED Focus Light",n:23,w:50,t:1150},
+{b:"EB Block-1",f:"Fifth Floor",r:"Microwave Lab",c:"BLDC Fan",n:2,w:30,t:60},
+{b:"EB Block-1",f:"Fifth Floor",r:"Microwave Lab",c:"PC",n:10,w:200,t:2000},
+{b:"EB Block-1",f:"Fifth Floor",r:"Microwave Lab",c:"Smart Board",n:1,w:200,t:200},
+{b:"EB Block-1",f:"Sixth Floor",r:"DSP Lab",c:"Induction Fan",n:8,w:75,t:600},
+{b:"EB Block-1",f:"Sixth Floor",r:"DSP Lab",c:"Square Ceiling Light",n:21,w:18,t:378},
+{b:"EB Block-1",f:"Sixth Floor",r:"DSP Lab",c:"PC",n:17,w:200,t:3400},
+{b:"EB Block-1",f:"Sixth Floor",r:"DSP Lab",c:"AC",n:3,w:1500,t:4500},
+{b:"EB Block-1",f:"Sixth Floor",r:"HVAC Lab",c:"Centralized AC",n:3,w:5000,t:15000},
+{b:"EB Block-1",f:"Sixth Floor",r:"Optical Microwave Lab",c:"PC",n:20,w:200,t:4000},
+{b:"EB Block-1",f:"Sixth Floor",r:"Optical Microwave Lab",c:"AC",n:3,w:1500,t:4500},
+{b:"EB Block-1",f:"Sixth Floor",r:"Optical Microwave Lab",c:"Induction Fan",n:7,w:75,t:525},
+{b:"EB Block-1",f:"Sixth Floor",r:"Optical Microwave Lab",c:"Square Ceiling Light",n:21,w:18,t:378},
+{b:"EB Block-1",f:"Seventh Floor",r:"Silicon Lab",c:"Smart Board",n:1,w:200,t:200},
+{b:"EB Block-1",f:"Seventh Floor",r:"Silicon Lab",c:"PC",n:16,w:200,t:3200},
+{b:"EB Block-1",f:"Seventh Floor",r:"Silicon Lab",c:"BLDC Fan",n:6,w:30,t:180},
+{b:"EB Block-1",f:"Seventh Floor",r:"Silicon Lab",c:"AC",n:3,w:1500,t:4500},
+{b:"ADMIN BLK",f:"OUTSIDE",r:"PASSAGE",c:"Fan",n:2,w:75,t:150},
+{b:"ADMIN BLK",f:"OUTSIDE",r:"PASSAGE",c:"Square Light",n:14,w:18,t:252},
+{b:"ADMIN BLK",f:"Ground",r:"REGISTER ROOM",c:"PC",n:2,w:200,t:400},
+{b:"ADMIN BLK",f:"Ground",r:"VP ROOM -A",c:"AC",n:1,w:1500,t:1500},
+{b:"ADMIN BLK",f:"Ground",r:"VP ROOM -A",c:"PC",n:2,w:200,t:400},
+{b:"ADMIN BLK",f:"Ground",r:"MANAGER ROOM",c:"PC",n:1,w:200,t:200},
+{b:"ADMIN BLK",f:"Ground",r:"ADMIN",c:"PC",n:5,w:200,t:1000},
+{b:"ADMIN BLK",f:"Ground",r:"ADMIN",c:"AC",n:1,w:1500,t:1500},
+{b:"ADMIN BLK",f:"Ground",r:"VP-ADMIN",c:"PC",n:1,w:200,t:200},
+{b:"ADMIN BLK",f:"Ground",r:"VP-ADMIN",c:"AC",n:1,w:1500,t:1500},
+{b:"ADMIN BLK",f:"Ground",r:"PS(P)",c:"AC",n:1,w:1500,t:1500},
+{b:"ADMIN BLK",f:"Ground",r:"PS(P)",c:"PC",n:3,w:200,t:600},
+{b:"ADMIN BLK",f:"Ground",r:"PRINCIPAL ROOM",c:"55in TV",n:2,w:100,t:200},
+{b:"ADMIN BLK",f:"Ground",r:"PRINCIPAL ROOM",c:"AC",n:1,w:1500,t:1500},
+{b:"ADMIN BLK",f:"Ground",r:"PRINCIPAL ROOM",c:"Camera Server",n:2,w:150,t:300},
+{b:"ADMIN BLK",f:"Ground",r:"ACCOUNTS ROOM",c:"PC",n:4,w:200,t:800},
+{b:"ADMIN BLK",f:"Ground",r:"ACCOUNTS ROOM",c:"AC",n:2,w:1500,t:3000},
+{b:"ADMIN BLK",f:"Ground",r:"CONFERENCE ROOM",c:"Smart Board",n:2,w:200,t:400},
+{b:"ADMIN BLK",f:"Ground",r:"CONFERENCE ROOM",c:"AC",n:3,w:1500,t:4500},
+{b:"ADMIN BLK",f:"Ground",r:"CONFERENCE ROOM",c:"Square Light",n:14,w:18,t:252},
+{b:"ADMIN BLK",f:"Ground",r:"CONFERENCE ROOM",c:"Circle Light",n:15,w:15,t:225},
+{b:"Block-3",f:"Ground",r:"Help desk",c:"AC",n:1,w:1500,t:1500},
+{b:"Block-3",f:"Ground",r:"Help desk",c:"Network Server",n:1,w:300,t:300},
+{b:"Block-3",f:"Ground",r:"Help desk",c:"PC",n:3,w:200,t:600},
+{b:"Block-3",f:"Ground",r:"Outside",c:"Motor (45KW)",n:1,w:45000,t:45000},
+{b:"Block-3",f:"Ground",r:"Lab-I",c:"Fan",n:20,w:75,t:1500},
+{b:"Block-3",f:"Ground",r:"Lab-I",c:"Squ. Ceiling Light",n:26,w:18,t:468},
+{b:"Block-3",f:"Ground",r:"Lab-II",c:"Square Light",n:24,w:18,t:432},
+{b:"Block-3",f:"Ground",r:"Lab-II",c:"Fan",n:21,w:75,t:1575},
+{b:"Block-3",f:"Ground",r:"Robotics Lab",c:"PC",n:34,w:200,t:6800},
+{b:"Block-3",f:"Ground",r:"Robotics Lab",c:"Centralized AC",n:2,w:5000,t:10000},
+{b:"Block-3",f:"Ground",r:"Robotics Lab",c:"Projector",n:1,w:250,t:250},
+{b:"Block-3",f:"Ground",r:"Centre of Bio-Active Glass",c:"AC",n:3,w:1500,t:4500},
+{b:"Block-3",f:"Ground",r:"Centre of Bio-Active Glass",c:"PC",n:4,w:200,t:800},
+{b:"Block-3",f:"Ground",r:"Centre of Bio-Active Glass",c:"Muffle Furnace",n:1,w:2500,t:2500},
+{b:"Block-3",f:"First",r:"Synthesis Lab",c:"Fan",n:10,w:75,t:750},
+{b:"Block-3",f:"First",r:"Synthesis Lab",c:"PC",n:5,w:200,t:1000},
+{b:"Block-3",f:"First",r:"Synthesis Lab",c:"AC",n:2,w:1500,t:3000},
+{b:"Block-3",f:"First",r:"LH101",c:"LED Tube",n:13,w:20,t:260},
+{b:"Block-3",f:"First",r:"LH101",c:"Fan",n:6,w:75,t:450},
+{b:"Block-3",f:"First",r:"LH101",c:"Projector",n:1,w:250,t:250},
+{b:"Block-3",f:"First",r:"VLSI ML Lab",c:"AC",n:3,w:1500,t:4500},
+{b:"Block-3",f:"First",r:"VLSI ML Lab",c:"PC",n:5,w:200,t:1000},
+{b:"Block-3",f:"First",r:"Chemistry Staff Room",c:"AC",n:1,w:1500,t:1500},
+{b:"Block-3",f:"First",r:"Chemistry Staff Room",c:"PC",n:4,w:200,t:800},
+{b:"Block-3",f:"First",r:"DSP & EM Lab",c:"AC",n:3,w:1500,t:4500},
+{b:"Block-3",f:"First",r:"DSP & EM Lab",c:"PC",n:5,w:200,t:1000},
+{b:"Block-3",f:"Second",r:"Physics Staff Room",c:"AC",n:1,w:1500,t:1500},
+{b:"Block-3",f:"Second",r:"Physics Staff Room",c:"PC",n:4,w:200,t:800},
+{b:"Block-3",f:"Second",r:"Chemistry LAB",c:"Fan",n:20,w:75,t:1500},
+{b:"Block-3",f:"Second",r:"Chemistry LAB",c:"Fan",n:21,w:75,t:1575},
+{b:"Block-3",f:"Second",r:"Chemistry LAB",c:"Exhaust",n:12,w:40,t:480},
+{b:"Block-3",f:"Second",r:"LH-204",c:"LED",n:11,w:15,t:165},
+{b:"Block-3",f:"Second",r:"LH-204",c:"Fan",n:9,w:75,t:675},
+{b:"Block-3",f:"Second",r:"LH-204",c:"Projector",n:1,w:250,t:250},
+{b:"Block-3",f:"Second",r:"LH-203",c:"LED",n:11,w:15,t:165},
+{b:"Block-3",f:"Second",r:"LH-203",c:"Fan",n:9,w:75,t:675},
+{b:"Block-3",f:"Second",r:"LH-203",c:"Projector",n:1,w:250,t:250},
+{b:"Block-3",f:"Second",r:"LH-202",c:"LED",n:11,w:15,t:165},
+{b:"Block-3",f:"Second",r:"LH-202",c:"Fan",n:9,w:75,t:675},
+{b:"Block-3",f:"Second",r:"LH-202",c:"Projector",n:1,w:250,t:250},
+{b:"Block-3",f:"Second",r:"LH-201",c:"LED",n:11,w:15,t:165},
+{b:"Block-3",f:"Second",r:"LH-201",c:"Fan",n:9,w:75,t:675},
+{b:"Block-3",f:"Second",r:"LH-201",c:"Projector",n:1,w:250,t:250},
+];
+
+const CATS = {
+  'HVAC/AC':        { test: c => /ac|hvac|centralized ac/.test(c), color:'#0a1628' },
+  'Computing':      { test: c => /pc|computer|server/.test(c),    color:'#c62828' },
+  'Fans':           { test: c => /fan|exhaust/.test(c),           color:'#0d7377' },
+  'Lighting':       { test: c => /led|light|lamp|tube|fluorescent|cfl|bulb|focus/.test(c), color:'#e8a214' },
+  'AV Equipment':   { test: c => /smart board|projector|tv|monitor/.test(c), color:'#6a1b9a' },
+  'Heavy Equipment':{ test: c => /motor|furnace|incubator/.test(c), color:'#bf360c' },
+  'Printers/Office':{ test: c => /printer|scanner/.test(c),       color:'#2e7d32' },
+  'Other':          { test: ()=>true,                              color:'#7a8ea8' },
+};
+
+function catOf(comp) {
+  const cl = comp.toLowerCase();
+  for (const [k,v] of Object.entries(CATS)) if (v.test(cl)) return k;
+  return 'Other';
+}
+
+const CAT_COLORS = Object.fromEntries(Object.entries(CATS).map(([k,v])=>[k,v.color]));
+const BLOCK_COLORS = { 'EB Block-1':'#0a1628', 'ADMIN BLK':'#0d7377', 'Block-3':'#e8a214' };
+
+// ── DAY-WISE USAGE FACTORS ──
+// Weekdays: full usage; Saturday: ~70%; Sunday: 0 (closed)
+// Per category multiplier per day
+const DAY_FACTORS = {
+  Monday:    { label:'Mon', hvac:1.0, computing:1.0, lighting:0.95, fans:1.0,  av:0.9,  heavy:1.0, other:0.9 },
+  Tuesday:   { label:'Tue', hvac:1.0, computing:1.0, lighting:0.95, fans:1.0,  av:0.85, heavy:1.0, other:0.9 },
+  Wednesday: { label:'Wed', hvac:1.0, computing:1.0, lighting:0.95, fans:1.0,  av:1.0,  heavy:0.8, other:0.9 },
+  Thursday:  { label:'Thu', hvac:1.0, computing:1.0, lighting:0.95, fans:1.0,  av:0.9,  heavy:1.0, other:0.9 },
+  Friday:    { label:'Fri', hvac:0.95,computing:0.95,lighting:0.90, fans:0.95, av:0.8,  heavy:0.7, other:0.85},
+  Saturday:  { label:'Sat', hvac:0.6, computing:0.5, lighting:0.55, fans:0.6,  av:0.4,  heavy:0.3, other:0.5 },
+  Sunday:    { label:'Sun', hvac:0.0, computing:0.0, lighting:0.0,  fans:0.0,  av:0.0,  heavy:0.0, other:0.0 },
+};
+
+const CAT_TO_DAY_KEY = {
+  'HVAC/AC':'hvac', 'Computing':'computing', 'Lighting':'lighting',
+  'Fans':'fans', 'AV Equipment':'av', 'Heavy Equipment':'heavy',
+  'Printers/Office':'other', 'Other':'other',
+};
+
+// ── HOUR-WISE USAGE FACTORS ──
+// College working hours: 8 AM to 8 PM (13 slots: 8,9,...,20)
+const HOUR_SLOTS = [
+  { label:'8 AM',  period:'Early',     hvac:0.3, computing:0.2, lighting:0.4, fans:0.3, av:0.1, heavy:0.0, other:0.1 },
+  { label:'9 AM',  period:'Morning',   hvac:0.7, computing:0.7, lighting:0.8, fans:0.7, av:0.6, heavy:0.5, other:0.5 },
+  { label:'10 AM', period:'Morning',   hvac:1.0, computing:0.9, lighting:1.0, fans:1.0, av:0.9, heavy:1.0, other:0.8 },
+  { label:'11 AM', period:'Peak',      hvac:1.0, computing:1.0, lighting:1.0, fans:1.0, av:1.0, heavy:1.0, other:1.0 },
+  { label:'12 PM', period:'Peak',      hvac:1.0, computing:1.0, lighting:1.0, fans:1.0, av:0.9, heavy:1.0, other:1.0 },
+  { label:'1 PM',  period:'Lunch',     hvac:0.8, computing:0.6, lighting:0.7, fans:0.8, av:0.3, heavy:0.5, other:0.6 },
+  { label:'2 PM',  period:'Afternoon', hvac:1.0, computing:0.95,lighting:0.9, fans:1.0, av:0.9, heavy:1.0, other:0.9 },
+  { label:'3 PM',  period:'Afternoon', hvac:1.0, computing:1.0, lighting:0.9, fans:1.0, av:1.0, heavy:1.0, other:1.0 },
+  { label:'4 PM',  period:'Afternoon', hvac:0.9, computing:0.95,lighting:0.85,fans:0.9, av:0.8, heavy:0.8, other:0.9 },
+  { label:'5 PM',  period:'Evening',   hvac:0.6, computing:0.7, lighting:0.8, fans:0.6, av:0.5, heavy:0.4, other:0.7 },
+  { label:'6 PM',  period:'Evening',   hvac:0.3, computing:0.4, lighting:0.7, fans:0.3, av:0.2, heavy:0.2, other:0.4 },
+  { label:'7 PM',  period:'Late',      hvac:0.1, computing:0.2, lighting:0.5, fans:0.2, av:0.1, heavy:0.0, other:0.2 },
+  { label:'8 PM',  period:'Late',      hvac:0.05,computing:0.1, lighting:0.3, fans:0.1, av:0.0, heavy:0.0, other:0.1 },
+];
+
+let filter = 'ALL', charts = {};
+
+function fd() { return filter === 'ALL' ? RAW : RAW.filter(d=>d.b===filter); }
+
+function setFilter(f) {
+  filter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => {
+    const t = b.textContent.trim();
+    b.classList.toggle('active', t === f || (f==='ALL' && t==='All Blocks'));
+  });
+  updateAll();
+}
+
+function switchTab(name) {
+  document.querySelectorAll('.tab-btn').forEach((b,i) => {
+    const tabs = ['overview','daywise','hourwise','cost','roomanalysis'];
+    b.classList.toggle('active', tabs[i]===name);
+  });
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  if (name === 'roomanalysis') { buildRoomAnalysis(); return; }
+  updateAll();
+}
+
+function fmt(n) {
+  if (n >= 1e6) return (n/1e6).toFixed(2)+'M';
+  if (n >= 1e3) return (n/1e3).toFixed(1)+'k';
+  return Math.round(n).toLocaleString('en-IN');
+}
+function fmtRs(val) {
+  if (val >= 1e6) return '₹'+(val/1e6).toFixed(2)+'M';
+  if (val >= 1e3) return '₹'+(val/1e3).toFixed(1)+'k';
+  return '₹'+Math.round(val).toLocaleString('en-IN');
+}
+// Cost from watts (per hour): W/1000 * RATE
+function costFromW(watts) { return (watts / 1000) * RATE; }
+// Legacy wrapper matching original fmtCost but now using kWh properly
+function fmtCost(w) { return fmtRs(costFromW(w)); }
+
+function kill(id) { if (charts[id]) { charts[id].destroy(); delete charts[id]; } }
+
+// ── Compute day-wise loads ──
+function getDayData(d) {
+  const catLoads = {};
+  Object.keys(CATS).forEach(k => catLoads[k]=0);
+  d.forEach(x => { catLoads[catOf(x.c)] = (catLoads[catOf(x.c)]||0) + x.t; });
+
+  return Object.keys(DAY_FACTORS).map(day => {
+    const f = DAY_FACTORS[day];
+    let total = 0;
+    const byCat = {};
+    Object.keys(CATS).forEach(cat => {
+      const fkey = CAT_TO_DAY_KEY[cat];
+      const load = catLoads[cat] * (f[fkey]||0);
+      byCat[cat] = load;
+      total += load;
+    });
+    return { day, label:f.label, total, byCat };
+  });
+}
+
+// ── Compute hourly loads ──
+function getHourData(d) {
+  const catLoads = {};
+  Object.keys(CATS).forEach(k => catLoads[k]=0);
+  d.forEach(x => { catLoads[catOf(x.c)] = (catLoads[catOf(x.c)]||0) + x.t; });
+
+  return HOUR_SLOTS.map(slot => {
+    let total = 0;
+    const byCat = {};
+    Object.keys(CATS).forEach(cat => {
+      const fkey = CAT_TO_DAY_KEY[cat];
+      const load = catLoads[cat] * (slot[fkey]||0);
+      byCat[cat] = load;
+      total += load;
+    });
+    return { label:slot.label, period:slot.period, total, byCat };
+  });
+}
+
+function updateAll() {
+  const d = fd();
+  const activeTab = document.querySelector('.tab-panel.active')?.id;
+
+  if (!activeTab || activeTab==='tab-overview') {
+    updateKPIs(d); buildBlock(d); buildDonut(d); buildFloor(d);
+    buildRoomBars(d); buildPolar(d); buildComp(d); buildTable(d);
+  }
+  if (activeTab==='tab-daywise')  buildDaywise(d);
+  if (activeTab==='tab-hourwise') buildHourwise(d);
+  if (activeTab==='tab-cost')     buildCostAnalysis(d);
+}
+
+// ════════════════════════════════
+//  OVERVIEW FUNCTIONS
+// ════════════════════════════════
+
+function updateKPIs(d) {
+  const tot = d.reduce((s,x)=>s+x.t,0);
+  const roomMap = {};
+  d.forEach(x=>{ roomMap[x.r]=(roomMap[x.r]||0)+x.t; });
+  const top = Object.entries(roomMap).sort((a,b)=>b[1]-a[1])[0];
+  const hvac = d.filter(x=>catOf(x.c)==='HVAC/AC').reduce((s,x)=>s+x.t,0);
+  const light= d.filter(x=>catOf(x.c)==='Lighting').reduce((s,x)=>s+x.t,0);
+  const pc   = d.filter(x=>catOf(x.c)==='Computing').reduce((s,x)=>s+x.t,0);
+
+  document.getElementById('kpiLoad').textContent = fmt(tot)+'W';
+  document.getElementById('kpiCost').textContent = fmtCost(tot);
+  if(top){ document.getElementById('kpiTop').textContent=top[0]; document.getElementById('kpiTopW').textContent=fmt(top[1])+'W · '+fmtCost(top[1]); }
+  document.getElementById('kpiHVAC').textContent = fmt(hvac)+'W';
+  document.getElementById('kpiLight').textContent = fmt(light)+'W';
+  document.getElementById('kpiPC').textContent = fmt(pc)+'W';
+}
+
+function buildBlock(d) {
+  const bk = {};
+  d.forEach(x=>{ bk[x.b]=(bk[x.b]||0)+x.t; });
+  const labels = Object.keys(bk), vals = labels.map(l=>bk[l]);
+  const costs = vals.map(v=>+costFromW(v).toFixed(2));
+  kill('cBlock');
+  charts['cBlock'] = new Chart(document.getElementById('cBlock').getContext('2d'),{
+    type:'bar',
+    data:{ labels,
+      datasets:[
+        { label:'Load (W)', data:vals, backgroundColor:labels.map(l=>BLOCK_COLORS[l]||'#3a506b'), borderRadius:5, borderSkipped:false, yAxisID:'y' },
+        { label:'Cost ₹/hr', data:costs, type:'line', borderColor:'#e8a214', backgroundColor:'rgba(232,162,20,0.1)', tension:0.4, pointRadius:4, pointBackgroundColor:'#e8a214', yAxisID:'y1' }
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:true,
+      plugins:{ legend:{ labels:{ color:'#3a506b', font:{size:10} } } },
+      scales:{
+        x:{ ticks:{color:'#7a8ea8',font:{size:10}}, grid:{color:'#e8eef6'} },
+        y:{ ticks:{color:'#7a8ea8',font:{size:9},callback:v=>fmt(v)}, grid:{color:'#e8eef6'} },
+        y1:{ position:'right', ticks:{color:'#e8a214',font:{size:9},callback:v=>'₹'+v.toFixed(0)}, grid:{display:false} }
+      }
+    }
+  });
+}
+
+function buildDonut(d) {
+  const cm = {};
+  d.forEach(x=>{ const c=catOf(x.c); cm[c]=(cm[c]||0)+x.t; });
+  const labels=Object.keys(cm), vals=labels.map(l=>cm[l]);
+  kill('cDonut');
+  charts['cDonut'] = new Chart(document.getElementById('cDonut').getContext('2d'),{
+    type:'doughnut',
+    data:{ labels, datasets:[{ data:vals, backgroundColor:labels.map(l=>CAT_COLORS[l]||'#7a8ea8'), borderColor:'#fff', borderWidth:3 }] },
+    options:{
+      responsive:true, maintainAspectRatio:true, cutout:'62%',
+      plugins:{ legend:{ position:'right', labels:{ color:'#3a506b', font:{size:9.5}, boxWidth:11, padding:8 } } }
+    }
+  });
+}
+
+function buildFloor(d) {
+  const floors = [...new Set(d.map(x=>x.f))];
+  const catKeys = Object.keys(CATS);
+  const datasets = catKeys.map(cat=>({
+    label:cat,
+    data: floors.map(f=>d.filter(x=>x.f===f&&catOf(x.c)===cat).reduce((s,x)=>s+x.t,0)),
+    backgroundColor: CAT_COLORS[cat]+'cc',
+    borderColor: CAT_COLORS[cat],
+    borderWidth:1
+  }));
+  kill('cFloor');
+  charts['cFloor'] = new Chart(document.getElementById('cFloor').getContext('2d'),{
+    type:'bar',
+    data:{ labels: floors.map(f=>f.length>9?f.slice(0,9)+'…':f), datasets },
+    options:{
+      responsive:true, maintainAspectRatio:true,
+      plugins:{ legend:{ labels:{ color:'#7a8ea8', font:{size:9}, boxWidth:10 } } },
+      scales:{
+        x:{ stacked:true, ticks:{color:'#7a8ea8',font:{size:9}}, grid:{color:'#e8eef6'} },
+        y:{ stacked:true, ticks:{color:'#7a8ea8',font:{size:9},callback:v=>fmt(v)}, grid:{color:'#e8eef6'} }
+      }
+    }
+  });
+}
+
+function buildRoomBars(d) {
+  const rm={};
+  d.forEach(x=>{ rm[x.r]=(rm[x.r]||0)+x.t; });
+  const sorted = Object.entries(rm).sort((a,b)=>b[1]-a[1]).slice(0,15);
+  const max = sorted[0]?.[1]||1;
+  const palette = ['#0a1628','#c62828','#0d7377','#e8a214','#6a1b9a','#2e7d32','#e65100','#1565c0','#37474f','#558b2f','#6d4c41','#00838f','#ad1457','#5e35b1','#2e7d32'];
+  document.getElementById('roomBars').innerHTML = sorted.map(([room,val],i)=>`
+    <div class="pbar-row">
+      <div class="pbar-lbl" title="${room}">${room}</div>
+      <div class="pbar-bg"><div class="pbar-fill" style="width:${(val/max*100).toFixed(1)}%;background:${palette[i]||'#0d7377'}"></div></div>
+      <div class="pbar-w">${fmt(val)}W</div>
+      <div class="pbar-cost">${fmtCost(val)}</div>
+    </div>
+  `).join('');
+}
+
+function buildPolar(d) {
+  const cm={};
+  d.forEach(x=>{ const c=catOf(x.c); cm[c]=(cm[c]||0)+costFromW(x.t); });
+  const labels=Object.keys(cm), vals=labels.map(l=>+cm[l].toFixed(2));
+  kill('cPolar');
+  charts['cPolar'] = new Chart(document.getElementById('cPolar').getContext('2d'),{
+    type:'polarArea',
+    data:{ labels, datasets:[{ data:vals, backgroundColor:labels.map(l=>CAT_COLORS[l]+'bb'), borderColor:labels.map(l=>CAT_COLORS[l]), borderWidth:2 }] },
+    options:{
+      responsive:true, maintainAspectRatio:true,
+      plugins:{ legend:{ position:'right', labels:{ color:'#3a506b', font:{size:9}, boxWidth:10 } } },
+      scales:{ r:{ ticks:{ color:'#7a8ea8', font:{size:9}, backdropColor:'transparent', callback:v=>'₹'+v.toFixed(1) }, grid:{ color:'#d1dce8' } } }
+    }
+  });
+}
+
+function buildComp(d) {
+  const cm={};
+  d.forEach(x=>{ cm[x.c]=(cm[x.c]||0)+x.t; });
+  const sorted=Object.entries(cm).sort((a,b)=>b[1]-a[1]).slice(0,14);
+  kill('cComp');
+  charts['cComp'] = new Chart(document.getElementById('cComp').getContext('2d'),{
+    type:'bar',
+    data:{
+      labels: sorted.map(([c])=>c.length>20?c.slice(0,20)+'…':c),
+      datasets:[{
+        data:sorted.map(([,v])=>v),
+        backgroundColor:sorted.map(([c])=>CAT_COLORS[catOf(c)]+'cc'),
+        borderColor:sorted.map(([c])=>CAT_COLORS[catOf(c)]),
+        borderWidth:1, borderRadius:4
+      }]
+    },
+    options:{
+      indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false} },
+      scales:{
+        x:{ ticks:{color:'#7a8ea8',font:{size:9},callback:v=>fmt(v)}, grid:{color:'#e8eef6'} },
+        y:{ ticks:{color:'#3a506b',font:{size:10.5}}, grid:{color:'#e8eef6'} }
+      }
+    }
+  });
+}
+
+function buildTable(d) {
+  const rm={};
+  d.forEach(x=>{ const k=x.b+'|'+x.r; if(!rm[k]) rm[k]={b:x.b,r:x.r,t:0}; rm[k].t+=x.t; });
+  const sorted=Object.values(rm).sort((a,b)=>b.t-a.t).slice(0,12);
+  document.getElementById('tBody').innerHTML = sorted.map(row=>{
+    const [lbl,cls] = row.t>10000?['HIGH','p-h']:row.t>3000?['MED','p-m']:['LOW','p-l'];
+    return `<tr>
+      <td style="color:var(--muted);font-size:11px">${row.b}</td>
+      <td style="font-weight:500">${row.r}</td>
+      <td><span class="watt-val">${row.t.toLocaleString('en-IN')}</span></td>
+      <td><span class="cost-val">${fmtCost(row.t)}</span></td>
+      <td><span class="pill ${cls}">${lbl}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+// ════════════════════════════════
+//  DAY-WISE ANALYSIS
+// ════════════════════════════════
+
+function buildDaywise(d) {
+  const dayData = getDayData(d);
+  const labels = dayData.map(x=>x.label);
+  const totalW = dayData.map(x=>Math.round(x.total));
+  const kwhDay = dayData.map(x=>+((x.total/1000)*8).toFixed(1));  // 8-hour day
+  const costDay = kwhDay.map(k=>+(k*RATE).toFixed(0));
+
+  // KPIs
+  const weekdays = dayData.filter((_,i)=>i<5);
+  const peakDay = weekdays.reduce((a,b)=>b.total>a.total?b:a);
+  const weeklyKwh = kwhDay.slice(0,6).reduce((a,b)=>a+b,0); // Mon-Sat
+  const weeklyCost = weeklyKwh * RATE;
+
+  document.getElementById('dKpiPeak').textContent = fmt(peakDay.total)+'W';
+  document.getElementById('dKpiCostDay').textContent = fmtRs((peakDay.total/1000)*8*RATE);
+  document.getElementById('dKpiKwh').textContent = weeklyKwh.toFixed(0)+' kWh';
+  document.getElementById('dKpiWeekCost').textContent = fmtRs(weeklyCost);
+
+  // Chart 1 — Day-wise Load Line
+  kill('cDay');
+  charts['cDay'] = new Chart(document.getElementById('cDay').getContext('2d'),{
+    type:'line',
+    data:{
+      labels,
+      datasets:[{
+        label:'Active Load (W)',
+        data:totalW,
+        borderColor:'#0d7377', backgroundColor:'rgba(13,115,119,0.12)',
+        tension:0.4, pointRadius:5, pointBackgroundColor:'#0d7377',
+        fill:true, borderWidth:2.5
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:true,
+      plugins:{ legend:{ labels:{ color:'#3a506b', font:{size:10} } } },
+      scales:{
+        x:{ ticks:{color:'#7a8ea8',font:{size:10}}, grid:{color:'#e8eef6'} },
+        y:{ ticks:{color:'#7a8ea8',font:{size:9},callback:v=>fmt(v)+'W'}, grid:{color:'#e8eef6'} }
+      }
+    }
+  });
+
+  // Chart 2 — kWh per day Bar
+  kill('cDayKwh');
+  charts['cDayKwh'] = new Chart(document.getElementById('cDayKwh').getContext('2d'),{
+    type:'bar',
+    data:{
+      labels,
+      datasets:[{
+        label:'kWh / Day',
+        data:kwhDay,
+        backgroundColor:labels.map((_,i)=>i===6?'rgba(198,40,40,0.25)':i===5?'rgba(232,162,20,0.7)':'rgba(13,115,119,0.75)'),
+        borderColor:labels.map((_,i)=>i===6?'#c62828':i===5?'#e8a214':'#0d7377'),
+        borderWidth:1.5, borderRadius:5
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:true,
+      plugins:{ legend:{ labels:{ color:'#3a506b', font:{size:10} } } },
+      scales:{
+        x:{ ticks:{color:'#7a8ea8',font:{size:10}}, grid:{color:'#e8eef6'} },
+        y:{ ticks:{color:'#7a8ea8',font:{size:9},callback:v=>v+' kWh'}, grid:{color:'#e8eef6'} }
+      }
+    }
+  });
+
+  // Chart 3 — Cost per day
+  kill('cDayCost');
+  charts['cDayCost'] = new Chart(document.getElementById('cDayCost').getContext('2d'),{
+    type:'bar',
+    data:{
+      labels,
+      datasets:[{
+        label:'Cost ₹/Day',
+        data:costDay,
+        backgroundColor:labels.map((_,i)=>i===6?'rgba(198,40,40,0.25)':i===5?'rgba(232,162,20,0.7)':'rgba(46,125,50,0.75)'),
+        borderColor:labels.map((_,i)=>i===6?'#c62828':i===5?'#e8a214':'#2e7d32'),
+        borderWidth:1.5, borderRadius:5
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:true,
+      plugins:{ legend:{ labels:{ color:'#3a506b', font:{size:10} } } },
+      scales:{
+        x:{ ticks:{color:'#7a8ea8',font:{size:10}}, grid:{color:'#e8eef6'} },
+        y:{ ticks:{color:'#7a8ea8',font:{size:9},callback:v=>'₹'+fmt(v)}, grid:{color:'#e8eef6'} }
+      }
+    }
+  });
+
+  // Chart 4 — Category stacked by day
+  const mainCats = ['HVAC/AC','Computing','Lighting','Fans'];
+  const catColors = { 'HVAC/AC':'#0a1628', 'Computing':'#c62828', 'Lighting':'#e8a214', 'Fans':'#0d7377' };
+  kill('cDayCat');
+  charts['cDayCat'] = new Chart(document.getElementById('cDayCat').getContext('2d'),{
+    type:'bar',
+    data:{
+      labels,
+      datasets: mainCats.map(cat=>({
+        label:cat,
+        data: dayData.map(x=>Math.round(x.byCat[cat]||0)),
+        backgroundColor:catColors[cat]+'bb',
+        borderColor:catColors[cat],
+        borderWidth:1
+      }))
+    },
+    options:{
+      responsive:true, maintainAspectRatio:true,
+      plugins:{ legend:{ labels:{ color:'#3a506b', font:{size:9}, boxWidth:10 } } },
+      scales:{
+        x:{ stacked:true, ticks:{color:'#7a8ea8',font:{size:10}}, grid:{color:'#e8eef6'} },
+        y:{ stacked:true, ticks:{color:'#7a8ea8',font:{size:9},callback:v=>fmt(v)}, grid:{color:'#e8eef6'} }
+      }
+    }
+  });
+
+  // Table
+  const catLoads = {};
+  Object.keys(CATS).forEach(k => catLoads[k]=0);
+  d.forEach(x => { catLoads[catOf(x.c)] = (catLoads[catOf(x.c)]||0) + x.t; });
+
+  const dayNames = Object.keys(DAY_FACTORS);
+  document.getElementById('tDayBody').innerHTML = dayNames.map((day,i) => {
+    const f = DAY_FACTORS[day];
+    const rec = dayData[i];
+    const kwh = +((rec.total/1000)*8).toFixed(1);
+    const cost = +(kwh*RATE).toFixed(0);
+    const fPct = Math.round(Object.values(f).filter(v=>typeof v==='number').reduce((a,b)=>a+b,0) / 7 * 100);
+    const [lbl,cls] = i===6?['Closed','p-h']:i===5?['Half','p-m']:['Full','p-l'];
+    return `<tr>
+      <td style="font-weight:600">${day}</td>
+      <td><span class="pill ${cls}">${lbl}</span></td>
+      <td><span class="watt-val">${fmt(rec.total)}W</span></td>
+      <td><span class="kwh-val">${kwh}</span></td>
+      <td><span class="cost-val">${fmtRs(cost)}</span></td>
+      <td>${fmt(rec.byCat['HVAC/AC']||0)}W</td>
+      <td>${fmt(rec.byCat['Computing']||0)}W</td>
+      <td>${fmt(rec.byCat['Lighting']||0)}W</td>
+    </tr>`;
+  }).join('');
+}
+
+// ════════════════════════════════
+//  HOUR-WISE ANALYSIS
+// ════════════════════════════════
+
+function buildHourwise(d) {
+  const hourData = getHourData(d);
+  const labels = hourData.map(x=>x.label);
+  const totalW = hourData.map(x=>Math.round(x.total));
+  const kwhSlot = hourData.map(x=>+((x.total/1000)*1).toFixed(2)); // 1 hour each slot
+  const costSlot = kwhSlot.map(k=>+(k*RATE).toFixed(2));
+
+  const peakIdx = totalW.indexOf(Math.max(...totalW));
+  const offPeakW = Math.min(...totalW.filter(v=>v>0));
+  const avgW = Math.round(totalW.filter(v=>v>0).reduce((a,b)=>a+b,0)/totalW.filter(v=>v>0).length);
+
+  document.getElementById('hKpiPeak').textContent = fmt(totalW[peakIdx])+'W';
+  document.getElementById('hKpiOffPeak').textContent = fmt(offPeakW)+'W';
+  document.getElementById('hKpiHour').textContent = labels[peakIdx];
+  document.getElementById('hKpiAvg').textContent = fmt(avgW)+'W';
+
+  // Chart 1 — Hourly load area
+  kill('cHour');
+  charts['cHour'] = new Chart(document.getElementById('cHour').getContext('2d'),{
+    type:'line',
+    data:{
+      labels,
+      datasets:[{
+        label:'Load (W)',
+        data:totalW,
+        borderColor:'#0d7377', backgroundColor:'rgba(13,115,119,0.15)',
+        tension:0.4, pointRadius:4, pointBackgroundColor:totalW.map((_,i)=>i===peakIdx?'#c62828':'#0d7377'),
+        pointRadius:totalW.map((_,i)=>i===peakIdx?7:4),
+        fill:true, borderWidth:2.5
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:true,
+      plugins:{ legend:{ labels:{ color:'#3a506b', font:{size:10} } } },
+      scales:{
+        x:{ ticks:{color:'#7a8ea8',font:{size:9}}, grid:{color:'#e8eef6'} },
+        y:{ ticks:{color:'#7a8ea8',font:{size:9},callback:v=>fmt(v)+'W'}, grid:{color:'#e8eef6'} }
+      }
+    }
+  });
+
+  // Chart 2 — Hourly kWh + cost combo
+  kill('cHourCost');
+  charts['cHourCost'] = new Chart(document.getElementById('cHourCost').getContext('2d'),{
+    type:'bar',
+    data:{
+      labels,
+      datasets:[
+        { label:'kWh/hr', data:kwhSlot, backgroundColor:'rgba(106,27,154,0.65)', borderColor:'#6a1b9a', borderWidth:1.5, borderRadius:4, yAxisID:'y' },
+        { label:'Cost ₹/hr', data:costSlot, type:'line', borderColor:'#e8a214', backgroundColor:'rgba(232,162,20,0.12)', tension:0.4, pointRadius:3, pointBackgroundColor:'#e8a214', yAxisID:'y1' }
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:true,
+      plugins:{ legend:{ labels:{ color:'#3a506b', font:{size:10} } } },
+      scales:{
+        x:{ ticks:{color:'#7a8ea8',font:{size:9}}, grid:{color:'#e8eef6'} },
+        y:{ ticks:{color:'#6a1b9a',font:{size:9},callback:v=>v.toFixed(1)+' kWh'}, grid:{color:'#e8eef6'} },
+        y1:{ position:'right', ticks:{color:'#e8a214',font:{size:9},callback:v=>'₹'+v.toFixed(0)}, grid:{display:false} }
+      }
+    }
+  });
+
+  // Chart 3 — Category stacked area by hour
+  const mainCats = ['HVAC/AC','Computing','Lighting','Fans'];
+  const catColors = { 'HVAC/AC':'#0a1628', 'Computing':'#c62828', 'Lighting':'#e8a214', 'Fans':'#0d7377' };
+  kill('cHourCat');
+  charts['cHourCat'] = new Chart(document.getElementById('cHourCat').getContext('2d'),{
+    type:'line',
+    data:{
+      labels,
+      datasets: mainCats.map(cat=>({
+        label:cat,
+        data: hourData.map(x=>Math.round(x.byCat[cat]||0)),
+        borderColor:catColors[cat],
+        backgroundColor:catColors[cat]+'44',
+        tension:0.4, fill:true, borderWidth:2, pointRadius:2
+      }))
+    },
+    options:{
+      responsive:true, maintainAspectRatio:true,
+      plugins:{ legend:{ labels:{ color:'#3a506b', font:{size:10}, boxWidth:12 } } },
+      scales:{
+        x:{ ticks:{color:'#7a8ea8',font:{size:9}}, grid:{color:'#e8eef6'} },
+        y:{ stacked:false, ticks:{color:'#7a8ea8',font:{size:9},callback:v=>fmt(v)+'W'}, grid:{color:'#e8eef6'} }
+      }
+    }
+  });
+
+  // Table
+  document.getElementById('tHourBody').innerHTML = hourData.map((h,i)=>{
+    const kwh = +((h.total/1000)*1).toFixed(2);
+    const cost = +(kwh*RATE).toFixed(2);
+    const isPeak = i===peakIdx;
+    const factor = (h.total / (totalW[peakIdx]||1) * 100).toFixed(0);
+    const [lbl,cls] = h.total>=(totalW[peakIdx]*0.9)?['PEAK','p-h']:h.total>=(totalW[peakIdx]*0.6)?['HIGH','p-m']:['LOW','p-l'];
+    return `<tr ${isPeak?'style="background:rgba(198,40,40,0.04)"':''}>
+      <td style="font-weight:600">${h.label}</td>
+      <td style="color:var(--muted);font-size:11px">${h.period}</td>
+      <td>${factor}%</td>
+      <td><span class="watt-val">${fmt(h.total)}W</span></td>
+      <td><span class="kwh-val">${kwh}</span></td>
+      <td><span class="cost-val">${fmtRs(cost)}</span></td>
+      <td><span class="pill ${cls}">${lbl}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+// ════════════════════════════════
+//  kWh COST ANALYSIS
+// ════════════════════════════════
+
+function buildCostAnalysis(d) {
+  const totalW = d.reduce((s,x)=>s+x.t,0);
+  const kwhDay = (totalW/1000)*8;      // 8-hour working day
+  const costDay = kwhDay * RATE;
+  const kwhMonth = kwhDay * 26;        // 26 working days/month
+  const costMonth = kwhMonth * RATE;
+  const costYear = (kwhDay * 300) * RATE;  // 300 working days/year
+
+  // KPIs
+  document.getElementById('cKpiWatt').textContent = fmt(totalW)+'W';
+  document.getElementById('cKpiKwhDay').textContent = kwhDay.toFixed(0)+' kWh';
+  document.getElementById('cKpiCostDay').textContent = fmtRs(costDay);
+  document.getElementById('cKpiKwhMonth').textContent = kwhMonth.toFixed(0)+' kWh';
+  document.getElementById('cKpiCostMonth').textContent = fmtRs(costMonth);
+  document.getElementById('cKpiCostYear').textContent = fmtRs(costYear);
+
+  // Per category kWh
+  const catW = {};
+  d.forEach(x=>{ const c=catOf(x.c); catW[c]=(catW[c]||0)+x.t; });
+  const catLabels = Object.keys(catW);
+  const catKwh = catLabels.map(l=>+((catW[l]/1000)*8).toFixed(1));
+  const catCostRs = catKwh.map(k=>+(k*RATE).toFixed(0));
+
+  kill('cCostCat');
+  charts['cCostCat'] = new Chart(document.getElementById('cCostCat').getContext('2d'),{
+    type:'bar',
+    data:{ labels:catLabels, datasets:[{
+      label:'kWh/Day', data:catKwh,
+      backgroundColor:catLabels.map(l=>CAT_COLORS[l]+'cc'),
+      borderColor:catLabels.map(l=>CAT_COLORS[l]),
+      borderWidth:1.5, borderRadius:5
+    }]},
+    options:{
+      responsive:true, maintainAspectRatio:true,
+      plugins:{ legend:{display:false} },
+      scales:{
+        x:{ ticks:{color:'#7a8ea8',font:{size:9}}, grid:{color:'#e8eef6'} },
+        y:{ ticks:{color:'#0d7377',font:{size:9},callback:v=>v+' kWh'}, grid:{color:'#e8eef6'} }
+      }
+    }
+  });
+
+  kill('cCostCatRs');
+  charts['cCostCatRs'] = new Chart(document.getElementById('cCostCatRs').getContext('2d'),{
+    type:'bar',
+    data:{ labels:catLabels, datasets:[{
+      label:'₹/Day', data:catCostRs,
+      backgroundColor:catLabels.map(l=>CAT_COLORS[l]+'cc'),
+      borderColor:catLabels.map(l=>CAT_COLORS[l]),
+      borderWidth:1.5, borderRadius:5
+    }]},
+    options:{
+      responsive:true, maintainAspectRatio:true,
+      plugins:{ legend:{display:false} },
+      scales:{
+        x:{ ticks:{color:'#7a8ea8',font:{size:9}}, grid:{color:'#e8eef6'} },
+        y:{ ticks:{color:'#2e7d32',font:{size:9},callback:v=>'₹'+fmt(v)}, grid:{color:'#e8eef6'} }
+      }
+    }
+  });
+
+  // kWh per block donut
+  const blkW = {};
+  d.forEach(x=>{ blkW[x.b]=(blkW[x.b]||0)+x.t; });
+  const blkLabels = Object.keys(blkW);
+  const blkKwh = blkLabels.map(l=>+((blkW[l]/1000)*8).toFixed(1));
+  kill('cCostBlock');
+  charts['cCostBlock'] = new Chart(document.getElementById('cCostBlock').getContext('2d'),{
+    type:'doughnut',
+    data:{ labels:blkLabels.map((l,i)=>l+' — '+blkKwh[i]+' kWh'), datasets:[{
+      data:blkKwh,
+      backgroundColor:blkLabels.map(l=>BLOCK_COLORS[l]||'#3a506b'),
+      borderColor:'#fff', borderWidth:3
+    }]},
+    options:{
+      responsive:true, maintainAspectRatio:true, cutout:'60%',
+      plugins:{ legend:{ position:'right', labels:{ color:'#3a506b', font:{size:9.5}, boxWidth:11, padding:8 } } }
+    }
+  });
+
+  // Monthly cost projection (4 weeks, Mon–Sat)
+  const weekDays = ['Mon','Tue','Wed','Thu','Fri','Sat'];
+  const weekFactors = [1.0, 1.0, 1.0, 1.0, 0.95, 0.6];
+  const monthLabels = [];
+  const monthCosts = [];
+  let cumCost = 0;
+  for (let week=1; week<=4; week++) {
+    weekDays.forEach((day,i) => {
+      monthLabels.push(`W${week} ${day}`);
+      const dayKwh = (totalW/1000)*8*weekFactors[i];
+      const dayCost = dayKwh * RATE;
+      cumCost += dayCost;
+      monthCosts.push(+cumCost.toFixed(0));
+    });
+  }
+  kill('cMonthProj');
+  charts['cMonthProj'] = new Chart(document.getElementById('cMonthProj').getContext('2d'),{
+    type:'line',
+    data:{ labels:monthLabels, datasets:[{
+      label:'Cumulative Monthly Cost ₹',
+      data:monthCosts,
+      borderColor:'#6a1b9a', backgroundColor:'rgba(106,27,154,0.12)',
+      tension:0.3, fill:true, borderWidth:2.5, pointRadius:1
+    }]},
+    options:{
+      responsive:true, maintainAspectRatio:true,
+      plugins:{ legend:{ labels:{ color:'#3a506b', font:{size:10} } } },
+      scales:{
+        x:{ ticks:{color:'#7a8ea8',font:{size:7}, maxRotation:90}, grid:{color:'#e8eef6'} },
+        y:{ ticks:{color:'#6a1b9a',font:{size:9},callback:v=>'₹'+fmt(v)}, grid:{color:'#e8eef6'} }
+      }
+    }
+  });
+
+  // Cost table per room
+  const rm={};
+  d.forEach(x=>{ const k=x.b+'|'+x.r; if(!rm[k]) rm[k]={b:x.b,r:x.r,t:0}; rm[k].t+=x.t; });
+  const sorted=Object.values(rm).sort((a,b)=>b.t-a.t).slice(0,15);
+  document.getElementById('tCostBody').innerHTML = sorted.map(row=>{
+    const kwh = +((row.t/1000)*8).toFixed(2);
+    const costD = +(kwh*RATE).toFixed(0);
+    const costM = +(kwh*26*RATE).toFixed(0);
+    const costY = +(kwh*300*RATE).toFixed(0);
+    const [lbl,cls] = row.t>10000?['HIGH','p-h']:row.t>3000?['MED','p-m']:['LOW','p-l'];
+    return `<tr>
+      <td style="color:var(--muted);font-size:11px">${row.b}</td>
+      <td style="font-weight:500">${row.r}</td>
+      <td><span class="watt-val">${row.t.toLocaleString('en-IN')}</span></td>
+      <td><span class="kwh-val">${kwh}</span></td>
+      <td><span class="cost-val">${fmtRs(costD)}</span></td>
+      <td><span class="cost-val">${fmtRs(costM)}</span></td>
+      <td><span class="cost-val">${fmtRs(costY)}</span></td>
+      <td><span class="pill ${cls}">${lbl}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+// ── Initial render ──
+updateAll();
+
+// ════════════════════════════════
+//  ROOM ANALYSIS TAB
+// ════════════════════════════════
+
+let raSort = { key: 'costYear', dir: -1 };
+
+function catOf2(c) {
+  if (/ac|hvac|centrali/i.test(c)) return 'HVAC/AC';
+  if (/pc|comput|laptop|server|smart board|printer|network|inverter/i.test(c)) return 'Computing';
+  if (/tube|lamp|led|fluore|focus|panel|ceiling light|square/i.test(c)) return 'Lighting';
+  if (/fan|bldc|induction|wall mount/i.test(c)) return 'Fans';
+  return 'Other';
+}
+
+function buildRoomAnalysis() {
+  const hours    = Math.max(0.5, parseFloat(document.getElementById('raHours').value) || 8);
+  const daysM    = Math.max(1,   parseInt(document.getElementById('raDaysMonth').value) || 26);
+  const daysY    = Math.max(1,   parseInt(document.getElementById('raDaysYear').value) || 300);
+  const blkFilt  = document.getElementById('raBlock').value;
+  const catFilt  = document.getElementById('raCat').value;
+  const search   = (document.getElementById('raSearch').value || '').toLowerCase();
+
+  // Filter raw data
+  let d = RAW.filter(x => {
+    if (blkFilt !== 'ALL' && x.b !== blkFilt) return false;
+    if (catFilt !== 'ALL' && catOf2(x.c) !== catFilt) return false;
+    if (search && !x.r.toLowerCase().includes(search)) return false;
+    return true;
+  });
+
+  // Aggregate by room
+  const rmMap = {};
+  d.forEach(x => {
+    const key = x.b + '||' + x.r;
+    if (!rmMap[key]) rmMap[key] = { block: x.b, room: x.r, watts: 0, cats: {} };
+    rmMap[key].watts += x.t;
+    const cat = catOf2(x.c);
+    rmMap[key].cats[cat] = (rmMap[key].cats[cat] || 0) + x.t;
+  });
+
+  let rooms = Object.values(rmMap).map(r => {
+    const kwhDay   = +((r.watts / 1000) * hours).toFixed(3);
+    const costDay  = +(kwhDay * RATE).toFixed(2);
+    const kwhMonth = +(kwhDay * daysM).toFixed(1);
+    const costMonth= +(costDay * daysM).toFixed(0);
+    const kwhYear  = +(kwhDay * daysY).toFixed(1);
+    const costYear = +(costDay * daysY).toFixed(0);
+    const level    = r.watts > 10000 ? 'HIGH' : r.watts > 3000 ? 'MED' : 'LOW';
+    return { ...r, kwhDay, costDay, kwhMonth, costMonth, kwhYear, costYear, level };
+  });
+
+  // Sort
+  rooms.sort((a, b) => (a[raSort.key] > b[raSort.key] ? 1 : -1) * raSort.dir);
+
+  const maxW = rooms.length ? Math.max(...rooms.map(r => r.watts)) : 1;
+  const totalW    = rooms.reduce((s, r) => s + r.watts, 0);
+  const totalKwhD = rooms.reduce((s, r) => s + r.kwhDay, 0);
+  const totalCostD= rooms.reduce((s, r) => s + r.costDay, 0);
+  const totalKwhM = rooms.reduce((s, r) => s + r.kwhMonth, 0);
+  const totalCostM= rooms.reduce((s, r) => s + r.costMonth, 0);
+  const totalKwhY = rooms.reduce((s, r) => s + r.kwhYear, 0);
+  const totalCostY= rooms.reduce((s, r) => s + r.costYear, 0);
+
+  // Summary pills
+  const pills = [
+    { label: 'Rooms Found', val: rooms.length, color: 'var(--navy)' },
+    { label: 'Total Load', val: fmt(totalW) + ' W', color: 'var(--navy)' },
+    { label: `kWh / Day (${hours}h)`, val: totalKwhD.toFixed(1) + ' kWh', color: 'var(--teal)' },
+    { label: 'Cost / Day', val: fmtRs(totalCostD), color: 'var(--gold)' },
+    { label: `kWh / Month (${daysM}d)`, val: totalKwhM.toFixed(0) + ' kWh', color: 'var(--purple)' },
+    { label: 'Cost / Month', val: fmtRs(totalCostM), color: 'var(--crimson)' },
+    { label: `kWh / Year (${daysY}d)`, val: totalKwhY.toFixed(0) + ' kWh', color: 'var(--orange)' },
+    { label: 'Cost / Year', val: fmtRs(totalCostY), color: 'var(--green)' },
+  ];
+  document.getElementById('raSummaryPills').innerHTML = pills.map(p =>
+    `<div class="ra-summary-pill">
+      <span class="ra-pill-label">${p.label}</span>
+      <span class="ra-pill-val" style="color:${p.color}">${p.val}</span>
+    </div>`
+  ).join('');
+
+  // Table sub label
+  document.getElementById('raTableSub').textContent =
+    `${rooms.length} rooms · ${hours}h/day · ${daysM} days/month · ${daysY} days/year · Click headers to sort`;
+
+  // Table body
+  document.getElementById('raTableBody').innerHTML = rooms.map(r => {
+    const pct = ((r.watts / maxW) * 100).toFixed(1);
+    const [lbl, cls] = r.level === 'HIGH' ? ['HIGH','p-h'] : r.level === 'MED' ? ['MED','p-m'] : ['LOW','p-l'];
+    return `<tr>
+      <td style="color:var(--muted);font-size:11px">${r.block}</td>
+      <td style="font-weight:500">${r.room}</td>
+      <td><span class="watt-val">${r.watts.toLocaleString('en-IN')}</span></td>
+      <td><span class="kwh-val">${r.kwhDay}</span></td>
+      <td><span class="cost-val">${fmtRs(r.costDay)}</span></td>
+      <td><span class="kwh-val">${r.kwhMonth}</span></td>
+      <td><span class="cost-val">${fmtRs(r.costMonth)}</span></td>
+      <td><span class="kwh-val">${r.kwhYear}</span></td>
+      <td><span class="cost-val">${fmtRs(r.costYear)}</span></td>
+      <td>
+        <div class="ra-bar-cell">
+          <div class="ra-mini-bar"><div class="ra-mini-fill" style="width:${pct}%"></div></div>
+          <span style="font-size:9px;color:var(--muted)">${pct}%</span>
+        </div>
+      </td>
+      <td><span class="pill ${cls}">${lbl}</span></td>
+    </tr>`;
+  }).join('');
+
+  // Update sort header classes
+  document.querySelectorAll('#raTable th').forEach(th => {
+    th.classList.remove('sort-asc', 'sort-desc');
+  });
+  const sortKeyMap = { block:0, room:1, watts:2, kwhDay:3, costDay:4, kwhMonth:5, costMonth:6, kwhYear:7, costYear:8, level:10 };
+  const idx = sortKeyMap[raSort.key];
+  if (idx !== undefined) {
+    const th = document.querySelectorAll('#raTable th')[idx];
+    if (th) th.classList.add(raSort.dir === 1 ? 'sort-asc' : 'sort-desc');
+  }
+
+  // Chart 1 — Top rooms kWh/day
+  const top15 = [...rooms].sort((a,b)=>b.kwhDay-a.kwhDay).slice(0,15);
+  kill('raChartKwh');
+  charts['raChartKwh'] = new Chart(document.getElementById('raChartKwh').getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: top15.map(r => r.room),
+      datasets: [{
+        label: 'kWh / Day',
+        data: top15.map(r => r.kwhDay),
+        backgroundColor: top15.map(r =>
+          r.level === 'HIGH' ? 'rgba(198,40,40,0.7)' :
+          r.level === 'MED'  ? 'rgba(230,81,0,0.7)'  : 'rgba(13,115,119,0.7)'),
+        borderColor: top15.map(r =>
+          r.level === 'HIGH' ? '#c62828' : r.level === 'MED' ? '#e65100' : '#0d7377'),
+        borderWidth: 1.5, borderRadius: 4
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { color: '#7a8ea8', font: { size: 9 }, callback: v => v + ' kWh' }, grid: { color: '#e8eef6' } },
+        y: { ticks: { color: '#3a506b', font: { size: 9 } }, grid: { color: '#e8eef6' } }
+      }
+    }
+  });
+  document.getElementById('raChartKwh').style.maxHeight = '260px';
+  document.getElementById('raChartKwh').style.height = Math.max(200, top15.length * 22) + 'px';
+
+  // Chart 2 — Top rooms Annual cost
+  const top15c = [...rooms].sort((a,b)=>b.costYear-a.costYear).slice(0,15);
+  kill('raChartCost');
+  charts['raChartCost'] = new Chart(document.getElementById('raChartCost').getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: top15c.map(r => r.room),
+      datasets: [{
+        label: '₹ / Year',
+        data: top15c.map(r => r.costYear),
+        backgroundColor: 'rgba(106,27,154,0.65)',
+        borderColor: '#6a1b9a',
+        borderWidth: 1.5, borderRadius: 4
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { color: '#7a8ea8', font: { size: 9 }, callback: v => '₹' + fmt(v) }, grid: { color: '#e8eef6' } },
+        y: { ticks: { color: '#3a506b', font: { size: 9 } }, grid: { color: '#e8eef6' } }
+      }
+    }
+  });
+  document.getElementById('raChartCost').style.maxHeight = '260px';
+  document.getElementById('raChartCost').style.height = Math.max(200, top15c.length * 22) + 'px';
+
+  // Chart 3 — Category donut kWh/day
+  const catAgg = {};
+  rooms.forEach(r => { Object.entries(r.cats).forEach(([cat, w]) => {
+    catAgg[cat] = (catAgg[cat] || 0) + (w / 1000) * hours;
+  }); });
+  const catL = Object.keys(catAgg);
+  kill('raChartCatKwh');
+  charts['raChartCatKwh'] = new Chart(document.getElementById('raChartCatKwh').getContext('2d'), {
+    type: 'doughnut',
+    data: {
+      labels: catL.map(l => l + ' — ' + catAgg[l].toFixed(1) + ' kWh'),
+      datasets: [{ data: catL.map(l => +catAgg[l].toFixed(2)),
+        backgroundColor: catL.map(l => CAT_COLORS[l] || '#3a506b'),
+        borderColor: '#fff', borderWidth: 3
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: true, cutout: '60%',
+      plugins: { legend: { position: 'right', labels: { color: '#3a506b', font: { size: 9.5 }, boxWidth: 11, padding: 8 } } }
+    }
+  });
+
+  // Chart 4 — Block annual cost polar
+  const blkAgg = {};
+  rooms.forEach(r => { blkAgg[r.block] = (blkAgg[r.block] || 0) + r.costYear; });
+  const blkL = Object.keys(blkAgg);
+  kill('raChartBlock');
+  charts['raChartBlock'] = new Chart(document.getElementById('raChartBlock').getContext('2d'), {
+    type: 'polarArea',
+    data: {
+      labels: blkL.map(l => l + ' — ' + fmtRs(blkAgg[l])),
+      datasets: [{ data: blkL.map(l => blkAgg[l]),
+        backgroundColor: blkL.map(l => (BLOCK_COLORS[l] || '#3a506b') + 'bb'),
+        borderColor: blkL.map(l => BLOCK_COLORS[l] || '#3a506b'),
+        borderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: true,
+      plugins: { legend: { position: 'right', labels: { color: '#3a506b', font: { size: 9.5 }, boxWidth: 11, padding: 8 } } },
+      scales: { r: { ticks: { display: false }, grid: { color: '#e8eef6' } } }
+    }
+  });
+}
+
+function raSortBy(key) {
+  if (raSort.key === key) raSort.dir *= -1;
+  else { raSort.key = key; raSort.dir = -1; }
+  buildRoomAnalysis();
+}
+
+// Live search re-trigger
+document.getElementById('raSearch').addEventListener('input', () => buildRoomAnalysis());
+
+</script>
+</body>
+</html>
