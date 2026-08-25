@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Easwari Engineering College - Energy Audit Dashboard</title>
+<style>
+:root {
+  --bg:#f7f8fa; --surface:#fff; --surface-secondary:#f0f1f3; --border:#e4e5e9;
+  --text-primary:#1a1a1a; --text-secondary:#555; --text-tertiary:#888; --text-quaternary:#aaa;
+  --accent:#2563eb; --accent-light:#dbeafe;
+  --c1:#2563eb; --c2:#dc2626; --c3:#16a34a; --c4:#7c3aed; --c5:#6b7280; --c6:#0ea5e9; --c7:#f59e0b; --c8:#ec4899;
+  --radius:10px; --shadow:0 1px 3px rgba(0,0,0,0.08); --shadow-lg:0 10px 40px rgba(0,0,0,0.15);
+  --teal:#0d9488; --purple:#7c3aed; --orange:#ea580c;
+}
+@media(prefers-color-scheme:dark){
+  :root{--bg:#0f0f11;--surface:#1a1a1e;--surface-secondary:#25252a;--border:#2e2e35;
+  --text-primary:#f0f0f0;--text-secondary:#b0b0b0;--text-tertiary:#808080;--text-quaternary:#606060;
+  --accent:#60a5fa;--accent-light:rgba(96,165,250,0.15);
+  --c1:#60a5fa;--c2:#f87171;--c3:#4ade80;--c4:#a78bfa;--c5:#9ca3af;--c6:#38bdf8;--c7:#fbbf24;--c8:#f472b6;
+  --teal:#14b8a6;--purple:#a78bfa;--orange:#fb923c;}
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;background:var(--bg);color:var(--text-primary);line-height:1.5;padding:20px}
+.container{max-width:1300px;margin:0 auto}
+.header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.header-left h1{font-size:22px;font-weight:600;letter-spacing:-0.3px}
+.header-left p{font-size:13px;color:var(--text-tertiary);margin-top:2px}
+.header-right{text-align:right}
+.header-right .big-num{font-size:36px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums}
+.header-right .big-lbl{font-size:12px;color:var(--text-tertiary);margin-top:4px}
+.nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.nav-btn{padding:8px 14px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);cursor:pointer;font-size:12px;font-weight:500;color:var(--text-secondary);transition:all .15s ease;white-space:nowrap}
+.nav-btn:hover{background:var(--surface-secondary);color:var(--text-primary)}
+.nav-btn.active{background:var(--text-primary);color:var(--surface);border-color:var(--text-primary)}
+.nav-secondary{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;padding:8px;background:var(--surface-secondary);border-radius:var(--radius);border:1px solid var(--border)}
+.nav-secondary .nav-btn{background:transparent;border:none;font-size:11px;padding:6px 12px}
+.nav-secondary .nav-btn.active{background:var(--accent);color:#fff}
+.block-section{display:none;animation:fadeIn .3s ease}
+.block-section.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px}
+.metric{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}
+.metric .val{font-size:26px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.15;color:var(--text-primary)}
+.metric .lbl{font-size:11px;color:var(--text-tertiary);margin-top:5px;text-transform:uppercase;letter-spacing:.3px}
+.metric .sub{font-size:10px;color:var(--text-quaternary);margin-top:2px}
+.metric-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);text-align:center}
+.metric-card .val{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--text-primary)}
+.metric-card .lbl{font-size:10px;color:var(--text-tertiary);margin-top:4px;text-transform:uppercase;letter-spacing:.3px}
+.metric-card .sub{font-size:10px;color:var(--text-quaternary);margin-top:2px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:900px){.grid-2{grid-template-columns:1fr}}
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+.panel-title{font-size:13px;font-weight:600;margin-bottom:14px;color:var(--text-primary);display:flex;align-items:center;gap:8px}
+.panel-title::before{content:"";display:inline-block;width:4px;height:14px;border-radius:2px;background:var(--accent)}
+.panel-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.panel-header .panel-title{margin-bottom:0}
+.badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:600}
+.badge-teal{background:rgba(13,148,136,.12);color:var(--teal)}
+.badge-purple{background:rgba(124,58,237,.12);color:var(--purple)}
+.bar-wrap{margin-bottom:10px;cursor:pointer}
+.bar-wrap:hover .bar-track{background:var(--accent-light)}
+.bar-label{display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px}
+.bar-label .name{color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:70%}
+.bar-label .count{color:var(--text-primary);font-weight:600;font-variant-numeric:tabular-nums}
+.bar-track{height:8px;border-radius:4px;background:var(--surface-secondary);overflow:hidden;transition:background .2s ease}
+.bar-fill{height:100%;border-radius:4px;transition:width .8s ease}
+.mini-bar{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:11px}
+.mini-bar .mini-name{flex:1;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mini-bar .mini-val{font-weight:600;font-variant-numeric:tabular-nums;color:var(--text-primary);min-width:50px;text-align:right}
+.mini-bar .mini-track{width:60px;height:6px;border-radius:3px;background:var(--surface-secondary);overflow:hidden}
+.mini-bar .mini-fill{height:100%;border-radius:3px;background:var(--accent)}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;padding:8px 10px;font-size:10px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.3px;border-bottom:1px solid var(--border);background:var(--surface-secondary)}
+td{padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text-secondary)}
+td:first-child{color:var(--text-primary);font-weight:500}
+td.num{font-variant-numeric:tabular-nums;text-align:right}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--surface-secondary);cursor:pointer}
+.spark{display:inline-block;height:4px;border-radius:2px;background:var(--accent);vertical-align:middle;margin-right:6px;min-width:2px}
+.energy-highlight{background:linear-gradient(135deg,var(--accent-light),transparent);border-left:3px solid var(--accent);padding:10px 14px;border-radius:0 var(--radius) var(--radius) 0;margin-bottom:16px;font-size:12px;color:var(--text-secondary)}
+.energy-highlight strong{color:var(--text-primary);font-weight:600}
+.footer{margin-top:24px;padding-top:14px;border-top:1px solid var(--border);font-size:11px;color:var(--text-quaternary);text-align:center}
+.comp-cat-card{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);margin-bottom:8px}
+.comp-cat-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.comp-cat-info{flex:1}
+.comp-cat-name{font-size:12px;font-weight:600;color:var(--text-primary)}
+.comp-cat-count{font-size:10px;color:var(--text-tertiary);margin-top:2px}
+.comp-cat-pct{font-size:18px;font-weight:600;color:var(--text-primary);font-variant-numeric:tabular-nums}
+.cross-table-wrapper{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border)}
+.cross-table{min-width:700px}
+.cross-table th{white-space:nowrap;position:sticky;top:0}
+.cross-table td.num{font-size:11px}
+.cross-table td:first-child{white-space:nowrap;min-width:180px}
+.cross-total-row td{font-weight:600;background:var(--surface-secondary);border-top:2px solid var(--border)}
+.section-title{font-size:15px;font-weight:600;margin:20px 0 14px 0;color:var(--text-primary)}
+.modal{display:none;position:fixed;z-index:1000;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,.5);backdrop-filter:blur(4px)}
+.modal.active{display:flex;align-items:center;justify-content:center}
+.modal-content{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);width:90%;max-width:600px;max-height:80vh;overflow-y:auto;padding:20px;box-shadow:var(--shadow-lg);animation:slideUp .3s ease}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.modal-title{font-size:15px;font-weight:600}
+.modal-close{font-size:22px;color:var(--text-tertiary);cursor:pointer;line-height:1}
+.modal-close:hover{color:var(--text-primary)}
+.modal-body{font-size:12px}
+.modal-metric{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.modal-metric-item{background:var(--surface-secondary);padding:10px;border-radius:var(--radius);text-align:center}
+.modal-metric-item .val{font-size:18px;font-weight:600;color:var(--text-primary)}
+.modal-metric-item .lbl{font-size:10px;color:var(--text-tertiary);margin-top:3px}
+.prediction-panel{background:linear-gradient(135deg,var(--surface),var(--surface-secondary));border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:20px;box-shadow:var(--shadow)}
+.prediction-header{font-size:15px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.prediction-controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:16px}
+.control-group{display:flex;flex-direction:column;gap:5px}
+.control-group label{font-size:11px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.3px}
+.control-group input[type=range]{width:100%;accent-color:var(--accent)}
+.control-group .range-val{font-size:11px;color:var(--accent);font-weight:600}
+.prediction-results{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px}
+.pred-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;text-align:center}
+.pred-card .pred-val{font-size:20px;font-weight:600;color:var(--text-primary);font-variant-numeric:tabular-nums}
+.pred-card .pred-lbl{font-size:10px;color:var(--text-tertiary);margin-top:3px}
+.pred-card .pred-sub{font-size:9px;color:var(--text-quaternary);margin-top:2px}
+.pred-chart{margin-top:16px;height:180px;position:relative;display:flex;align-items:flex-end;justify-content:space-around;padding:0 8px;border-bottom:1px solid var(--border)}
+.pred-chart-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;margin:0 3px;position:relative}
+.pred-chart-bar{width:100%;border-radius:3px 3px 0 0;transition:height .5s ease;min-height:4px}
+.pred-chart-label{font-size:9px;color:var(--text-tertiary);text-align:center;margin-top:5px;white-space:nowrap}
+.pred-chart-val{font-size:9px;font-weight:600;color:var(--text-primary);text-align:center;margin-bottom:3px}
+.tariff-badge{display:inline-block;background:var(--accent-light);color:var(--accent);padding:2px 8px;border-radius:12px;font-size:10px;font-weight:600;margin-left:6px}
+.click-hint{font-size:10px;color:var(--text-quaternary);margin-bottom:6px;font-style:italic}
+.savings-positive{color:var(--c3)}
+.savings-negative{color:var(--c2)}
+.room-controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:16px;padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius)}
+.room-control{display:flex;flex-direction:column;gap:4px}
+.room-control label{font-size:10px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.3px}
+.room-control input,.room-control select{padding:8px 10px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text-primary);font-size:12px}
+.room-control input:focus,.room-control select:focus{outline:none;border-color:var(--accent)}
+.recalc-btn{padding:10px 20px;background:var(--teal);color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:opacity .2s;align-self:flex-end}
+.recalc-btn:hover{opacity:.9}
+.room-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:16px}
+.room-summary-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px;text-align:center}
+.room-summary-card .val{font-size:18px;font-weight:700;font-variant-numeric:tabular-nums}
+.room-summary-card .lbl{font-size:9px;color:var(--text-tertiary);margin-top:3px;text-transform:uppercase;letter-spacing:.3px}
+.svg-chart{width:100%;height:220px}
+.hour-metric{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);border-top:3px solid var(--accent)}
+.hour-metric.peak{border-top-color:var(--c2)}
+.hour-metric.offpeak{border-top-color:var(--c3)}
+.hour-metric.avg{border-top-color:var(--c7)}
+.hour-metric .icon{font-size:20px;margin-bottom:6px}
+.hour-metric .val{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums}
+.hour-metric .lbl{font-size:10px;color:var(--text-tertiary);margin-top:3px;text-transform:uppercase}
+.hour-metric .sub{font-size:10px;color:var(--text-quaternary);margin-top:2px}
+.scroll-table{max-height:400px;overflow-y:auto}
+</style>
+<base target="_blank">
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <div class="header-left">
+      <h1>Easwari Engineering College - Energy Audit Dashboard</h1>
+      <p>Block-wise & component-wise inventory | Ramapuram, Chennai</p>
+    </div>
+    <div class="header-right">
+      <div class="big-num">7,688</div>
+      <div class="big-lbl">total devices across 7 blocks</div>
+    </div>
+  </div>
+
+  <div class="nav">
+    <button class="nav-btn active" data-block="overview">Overview</button>
+    <button class="nav-btn" data-block="compwise">Component-wise</button>
+    <button class="nav-btn" data-block="daywise">Day-wise Analysis</button>
+    <button class="nav-btn" data-block="hourwise">Hour-wise Analysis</button>
+    <button class="nav-btn" data-block="kwhcost">kWh Cost Analysis</button>
+    <button class="nav-btn" data-block="roomanalysis">Room Analysis</button>
+  </div>
+
+  <div class="nav-secondary" id="block-nav">
+    <button class="nav-btn active" data-block="eb1">EB Block-1</button>
+    <button class="nav-btn" data-block="admin">Admin Block</button>
+    <button class="nav-btn" data-block="b3">Block-3</button>
+    <button class="nav-btn" data-block="main">Main Block</button>
+    <button class="nav-btn" data-block="mech">Mechanical Block</button>
+    <button class="nav-btn" data-block="acad">Academic Block</button>
+    <button class="nav-btn" data-block="boys">Boys Hostel</button>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div class="block-section active" id="sec-overview">
+    <div class="energy-highlight">
+      <strong>Campus Overview:</strong> 7,688 devices across 7 blocks. Lighting dominates at 3,634 units (47.3%).
+      Current tariff: <strong>Rs.9.40 / kWh</strong>. Combined daily consumption: ~584 kWh costing ~Rs.5,490/day.
+      <span class="tariff-badge">Tariff: Rs.9.40 / unit</span>
+    </div>
+    <div class="metrics">
+      <div class="metric"><div class="val">7,688</div><div class="lbl">Total Devices</div><div class="sub">7 blocks</div></div>
+      <div class="metric"><div class="val">584.3</div><div class="lbl">kWh / Day</div><div class="sub">~213,270 kWh/year</div></div>
+      <div class="metric"><div class="val">Rs.5,492</div><div class="lbl">Cost / Day</div><div class="sub">~Rs.20.1L/year</div></div>
+      <div class="metric"><div class="val">94</div><div class="lbl">Categories</div><div class="sub">component types</div></div>
+      <div class="metric"><div class="val">402</div><div class="lbl">Rooms</div><div class="sub">audited spaces</div></div>
+      <div class="metric"><div class="val">221.6</div><div class="lbl">Peak Load</div><div class="sub">kW at 11 AM</div></div>
+    </div>
+    <div class="grid-2">
+      <div class="panel"><div class="panel-title">Block-wise Device Distribution</div><div id="overview-blocks"></div></div>
+      <div class="panel"><div class="panel-title">Top 10 Energy-Intensive Rooms</div><div id="overview-toprooms"></div></div>
+    </div>
+    <div class="grid-2" style="margin-top:16px">
+      <div class="panel"><div class="panel-title">Component Category Breakdown</div><div id="overview-cats"></div></div>
+      <div class="panel"><div class="panel-title">Hourly Load Profile (24h)</div><svg class="svg-chart" id="overview-hourly-svg" viewBox="0 0 800 220"></svg></div>
+    </div>
+  </div>
+
+  <!-- COMPONENT-WISE -->
+  <div class="block-section" id="sec-compwise">
+    <div class="energy-highlight">
+      <strong>Campus-wide component analysis:</strong> 7,688 devices across 7 blocks, normalized into 94 distinct component categories.
+      Lighting dominates at 3,634 units (47.3%), followed by Fans at 1,977 (25.7%).
+      <span class="tariff-badge">Tariff: Rs.9.40 / unit</span>
+    </div>
+    <div class="metrics">
+      <div class="metric"><div class="val">94</div><div class="lbl">component categories</div><div class="sub">normalized across all blocks</div></div>
+      <div class="metric"><div class="val">3,634</div><div class="lbl">lighting devices</div><div class="sub">47.3% of all components</div></div>
+      <div class="metric"><div class="val">1,977</div><div class="lbl">fans</div><div class="sub">25.7% of all components</div></div>
+      <div class="metric"><div class="val">899</div><div class="lbl">computers</div><div class="sub">11.7% of all components</div></div>
+    </div>
+    <div class="prediction-panel">
+      <div class="prediction-header">Future Energy Prediction <span class="tariff-badge">Rs.9.40 / unit</span></div>
+      <div class="prediction-controls">
+        <div class="control-group"><label>Annual Growth Rate</label><input type="range" id="pred-growth" min="0" max="15" value="5" step="0.5"><div class="range-val" id="pred-growth-val">5.0%</div></div>
+        <div class="control-group"><label>Prediction Horizon</label><input type="range" id="pred-years" min="1" max="10" value="5" step="1"><div class="range-val" id="pred-years-val">5 years</div></div>
+        <div class="control-group"><label>Energy Saving Target</label><input type="range" id="pred-saving" min="0" max="30" value="10" step="1"><div class="range-val" id="pred-saving-val">10%</div></div>
+        <div class="control-group"><label>Seasonal Factor</label><input type="range" id="pred-season" min="80" max="120" value="100" step="5"><div class="range-val" id="pred-season-val">100% (Baseline)</div></div>
+      </div>
+      <div class="prediction-results" id="prediction-results"></div>
+      <div class="pred-chart" id="pred-chart"></div>
+    </div>
+    <div class="section-title">component categories</div>
+    <div class="grid-2" id="comp-categories"></div>
+    <div class="section-title">top 30 components campus-wide</div>
+    <div class="panel"><div id="top30-comps"></div></div>
+    <div class="section-title">component distribution across blocks</div>
+    <div class="cross-table-wrapper">
+      <table class="cross-table" id="cross-table">
+        <thead><tr><th>component</th><th class="num">EB-1</th><th class="num">admin</th><th class="num">B-3</th><th class="num">main</th><th class="num">mech</th><th class="num">acad</th><th class="num">boys</th><th class="num">total</th></tr></thead>
+        <tbody id="cross-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- DAY-WISE -->
+  <div class="block-section" id="sec-daywise">
+    <div class="energy-highlight">
+      <strong>Day-wise Energy Analysis:</strong> Daily consumption patterns across all blocks based on 8-hour operation (8 AM - 4 PM baseline).
+      Weekday consumption is significantly higher than weekends due to academic and lab operations.
+      <span class="tariff-badge">Tariff: Rs.9.40 / unit</span>
+    </div>
+    <div class="metrics">
+      <div class="metric"><div class="val">584.3</div><div class="lbl">Avg Weekday kWh</div><div class="sub">Mon-Fri average</div></div>
+      <div class="metric"><div class="val">142.0</div><div class="lbl">Avg Weekend kWh</div><div class="sub">Sat-Sun average</div></div>
+      <div class="metric"><div class="val">Rs.5,492</div><div class="lbl">Weekday Cost</div><div class="sub">per day</div></div>
+      <div class="metric"><div class="val">Rs.1,335</div><div class="lbl">Weekend Cost</div><div class="sub">per day</div></div>
+    </div>
+    <div class="grid-2">
+      <div class="panel"><div class="panel-title">Weekly Energy Pattern (kWh)</div><svg class="svg-chart" id="daywise-weekly-svg" viewBox="0 0 800 240"></svg></div>
+      <div class="panel"><div class="panel-title">Weekly Cost Pattern (Rs.)</div><svg class="svg-chart" id="daywise-cost-svg" viewBox="0 0 800 240"></svg></div>
+    </div>
+    <div class="grid-2" style="margin-top:16px">
+      <div class="panel"><div class="panel-title">Block-wise Daily kWh Comparison</div><div id="daywise-block-compare"></div></div>
+      <div class="panel"><div class="panel-title">Monthly Trend (Last 6 Months)</div><svg class="svg-chart" id="daywise-monthly-svg" viewBox="0 0 800 240"></svg></div>
+    </div>
+  </div>
+
+  <!-- HOUR-WISE -->
+  <div class="block-section" id="sec-hourwise">
+    <div class="energy-highlight">
+      <strong>Hour-wise Load Analysis:</strong> 24-hour load profile showing peak consumption at 11 AM (221.6 kW) and off-peak at 4 AM (6.2 kW).
+      Hostel blocks maintain baseline load overnight. Academic blocks drive daytime peaks.
+      <span class="tariff-badge">Tariff: Rs.9.40 / unit</span>
+    </div>
+    <div class="metrics">
+      <div class="metric hour-metric peak"><div class="icon">&#9200;</div><div class="val">221.6 kW</div><div class="lbl">Peak Hour Load</div><div class="sub">11 AM - Max load</div></div>
+      <div class="metric hour-metric offpeak"><div class="icon">&#127769;</div><div class="val">14.4 kW</div><div class="lbl">Off-Peak Load</div><div class="sub">Early morning avg</div></div>
+      <div class="metric hour-metric"><div class="icon">&#128197;</div><div class="val">11 AM</div><div class="lbl">Peak Hour</div><div class="sub">Busiest time slot</div></div>
+      <div class="metric hour-metric avg"><div class="icon">&#128161;</div><div class="val">144.9 kW</div><div class="lbl">Avg Load / Hr</div><div class="sub">During working hours</div></div>
+    </div>
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">Hourly Load Profile</div><span class="badge badge-teal">Area</span></div>
+        <div style="font-size:10px;color:var(--text-quaternary);margin-bottom:8px">ESTIMATED WATTS ACTIVE PER HOUR SLOT</div>
+        <svg class="svg-chart" id="hourwise-load-svg" viewBox="0 0 900 260"></svg>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">Hourly kWh & Cost</div><span class="badge badge-purple">Combo</span></div>
+        <div style="font-size:10px;color:var(--text-quaternary);margin-bottom:8px">ENERGY AND Rs COST PER HOUR SLOT</div>
+        <svg class="svg-chart" id="hourwise-combo-svg" viewBox="0 0 900 260"></svg>
+      </div>
+    </div>
+    <div class="panel" style="margin-top:16px">
+      <div class="panel-title">Hour-wise Breakdown Table</div>
+      <div class="scroll-table">
+        <table><thead><tr><th>Hour</th><th class="num">Load (kW)</th><th class="num">kWh</th><th class="num">Cost (Rs.)</th><th class="num">% of Daily</th><th>Status</th></tr></thead>
+        <tbody id="hourwise-tbody"></tbody></table>
+      </div>
+    </div>
+  </div>
+
+  <!-- KWH COST -->
+  <div class="block-section" id="sec-kwhcost">
+    <div class="energy-highlight">
+      <strong>kWh Cost Analysis:</strong> Detailed cost breakdown per block at Rs.9.40/kWh tariff.
+      Main Block accounts for 52.4% of total campus energy cost, followed by Boys Hostel at 22.1%.
+      <span class="tariff-badge">Tariff: Rs.9.40 / unit</span>
+    </div>
+    <div class="metrics">
+      <div class="metric"><div class="val">Rs.20.1L</div><div class="lbl">Annual Cost</div><div class="sub">~Rs.5,492/day</div></div>
+      <div class="metric"><div class="val">Rs.9.40</div><div class="lbl">Per Unit</div><div class="sub">current tariff</div></div>
+      <div class="metric"><div class="val">213,270</div><div class="lbl">Annual kWh</div><div class="sub">~584/day</div></div>
+      <div class="metric"><div class="val">Rs.94.2</div><div class="lbl">Avg / Room / Mo</div><div class="sub">402 rooms</div></div>
+    </div>
+    <div class="grid-2">
+      <div class="panel"><div class="panel-title">Cost per Block (Daily)</div><svg class="svg-chart" id="kwhcost-block-svg" viewBox="0 0 800 260"></svg></div>
+      <div class="panel"><div class="panel-title">Cost per Block (Monthly)</div><svg class="svg-chart" id="kwhcost-month-svg" viewBox="0 0 800 260"></svg></div>
+    </div>
+    <div class="grid-2" style="margin-top:16px">
+      <div class="panel"><div class="panel-title">Category-wise Cost Share</div><div id="kwhcost-cat-share"></div></div>
+      <div class="panel"><div class="panel-title">Cost Efficiency Ranking</div><div id="kwhcost-efficiency"></div></div>
+    </div>
+  </div>
+
+  <!-- ROOM ANALYSIS -->
+  <div class="block-section" id="sec-roomanalysis">
+    <div class="energy-highlight">
+      <strong>Customizable Room Energy Analysis:</strong> Filter and analyze energy consumption at the room level.
+      402 rooms audited across all blocks. Adjust hours and days to see real-time recalculation.
+      <span class="tariff-badge">Tariff: Rs.9.40 / unit</span>
+    </div>
+    <div class="room-controls">
+      <div class="room-control"><label>Hours / Day</label><input type="number" id="room-hours" value="8" min="1" max="24"></div>
+      <div class="room-control"><label>Days / Month</label><input type="number" id="room-days-month" value="26" min="1" max="31"></div>
+      <div class="room-control"><label>Days / Year</label><input type="number" id="room-days-year" value="300" min="1" max="365"></div>
+      <div class="room-control"><label>Filter Block</label><select id="room-filter-block"><option value="all">All Blocks</option><option>EB Block-1</option><option>Admin Block</option><option>Block-3</option><option>Main Block</option><option>Mechanical Block</option><option>Academic Block</option><option>Boys Hostel</option></select></div>
+      <div class="room-control"><label>Filter Category</label><select id="room-filter-cat"><option value="all">All Categories</option><option>Classroom</option><option>Lab</option><option>Office</option><option>Workshop</option><option>Smart Classroom</option><option>Hostel Room</option><option>Common</option><option>Dining</option><option>Storage</option><option>Security</option></select></div>
+      <div class="room-control"><label>Search Room</label><input type="text" id="room-search" placeholder="Type room name..."></div>
+      <div class="room-control" style="justify-content:flex-end"><button class="recalc-btn" onclick="recalcRooms()">&#9889; RECALCULATE</button></div>
+    </div>
+    <div class="room-summary" id="room-summary">
+      <div class="room-summary-card"><div class="val" id="rs-rooms">402</div><div class="lbl">Rooms Found</div></div>
+      <div class="room-summary-card"><div class="val" id="rs-load">0 kW</div><div class="lbl">Total Load</div></div>
+      <div class="room-summary-card"><div class="val" id="rs-kwh-day">0 kWh</div><div class="lbl">kWh / Day</div></div>
+      <div class="room-summary-card"><div class="val" id="rs-cost-day" style="color:var(--c7)">Rs.0</div><div class="lbl">Cost / Day</div></div>
+      <div class="room-summary-card"><div class="val" id="rs-kwh-month">0 kWh</div><div class="lbl">kWh / Month</div></div>
+      <div class="room-summary-card"><div class="val" id="rs-cost-month" style="color:var(--c2)">Rs.0</div><div class="lbl">Cost / Month</div></div>
+      <div class="room-summary-card"><div class="val" id="rs-kwh-year">0 kWh</div><div class="lbl">kWh / Year</div></div>
+      <div class="room-summary-card"><div class="val" id="rs-cost-year" style="color:var(--c3)">Rs.0</div><div class="lbl">Cost / Year</div></div>
+    </div>
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">Top Rooms - Daily kWh</div><span class="badge badge-teal">Bar</span></div>
+        <div style="font-size:10px;color:var(--text-quaternary);margin-bottom:8px">BASED ON CUSTOM HOURS SETTING</div>
+        <div id="room-top-daily"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">Top Rooms - Annual Cost Rs.</div><span class="badge badge-teal">Bar</span></div>
+        <div style="font-size:10px;color:var(--text-quaternary);margin-bottom:8px">BASED ON CUSTOM HOURS & DAYS</div>
+        <div id="room-top-annual"></div>
+      </div>
+    </div>
+    <div class="panel" style="margin-top:16px">
+      <div class="panel-title">Room-wise Detailed Table</div>
+      <div class="scroll-table">
+        <table><thead><tr><th>Room</th><th>Block</th><th>Floor</th><th>Category</th><th class="num">Load (W)</th><th class="num">Devices</th><th class="num">kWh/Day</th><th class="num">Cost/Day</th><th class="num">kWh/Year</th><th class="num">Cost/Year</th></tr></thead>
+        <tbody id="room-tbody"></tbody></table>
+      </div>
+    </div>
+  </div>
+
+  <!-- EB BLOCK-1 -->
+  <div class="block-section" id="sec-eb1">
+    <div class="metrics">
+      <div class="metric"><div class="val">750</div><div class="lbl">total components</div><div class="sub">9.8% of campus</div></div>
+      <div class="metric"><div class="val">22</div><div class="lbl">unique device types</div><div class="sub">PCs, fans, lights, ACs, batteries</div></div>
+      <div class="metric"><div class="val">7</div><div class="lbl">floors + staircases</div><div class="sub">Ground floor to 7th floor</div></div>
+      <div class="metric"><div class="val">162</div><div class="lbl">PCs installed</div><div class="sub">largest single category</div></div>
+    </div>
+    <div class="grid-2">
+      <div class="panel"><div class="panel-title">Floor-wise distribution</div><div class="click-hint">Click any floor to view its components</div><div id="eb1-floors"></div></div>
+      <div class="panel"><div class="panel-title">Top components</div><div id="eb1-comps"></div></div>
+    </div>
+  </div>
+
+  <!-- ADMIN BLOCK -->
+  <div class="block-section" id="sec-admin">
+    <div class="metrics">
+      <div class="metric"><div class="val">167</div><div class="lbl">total components</div><div class="sub">2.2% of campus</div></div>
+      <div class="metric"><div class="val">26</div><div class="lbl">unique device types</div><div class="sub">diverse administrative equipment</div></div>
+      <div class="metric"><div class="val">2</div><div class="lbl">areas covered</div><div class="sub">Ground floor + outside passage</div></div>
+      <div class="metric"><div class="val">18</div><div class="lbl">PCs installed</div><div class="sub">offices, accounts, principal room</div></div>
+    </div>
+    <div class="grid-2">
+      <div class="panel"><div class="panel-title">Area-wise distribution</div><div class="click-hint">Click any area to view its components</div><div id="admin-floors"></div></div>
+      <div class="panel"><div class="panel-title">Top components</div><div id="admin-comps"></div></div>
+    </div>
+  </div>
+
+  <!-- BLOCK-3 (Combined with Electronics Block 3) -->
+  <div class="block-section" id="sec-b3">
+    <div class="energy-highlight">
+      <strong>Note:</strong> Block-3 now includes the former EB Block-III (Electronics Block 3) as a single consolidated block.
+      <span class="tariff-badge">Tariff: Rs.9.40 / unit</span>
+    </div>
+    <div class="metrics">
+      <div class="metric"><div class="val">1,042</div><div class="lbl">total components</div><div class="sub">13.6% of campus</div></div>
+      <div class="metric"><div class="val">45</div><div class="lbl">unique device types</div><div class="sub">labs, lecture halls, research centres</div></div>
+      <div class="metric"><div class="val">5</div><div class="lbl">floors covered</div><div class="sub">Ground to 4th floor (incl. ex-EB-III)</div></div>
+      <div class="metric"><div class="val">298</div><div class="lbl">lights installed</div><div class="sub">largest category in this block</div></div>
+    </div>
+    <div class="grid-2">
+      <div class="panel"><div class="panel-title">Floor-wise distribution</div><div class="click-hint">Click any floor to view its components</div><div id="b3-floors"></div></div>
+      <div class="panel"><div class="panel-title">Top components</div><div id="b3-comps"></div></div>
+    </div>
+  </div>
+
+  <!-- MAIN BLOCK -->
+  <div class="block-section" id="sec-main">
+    <div class="energy-highlight">
+      <strong>Energy data available:</strong> Full per-day power, unit, and cost calculations based on 8-hour daily operation.
+      Daily consumption: <strong>549.59 units</strong> costing <strong>Rs.5,166.13</strong>.
+      <span class="tariff-badge">Tariff: Rs.9.40 / unit</span>
+    </div>
+    <div class="metrics">
+      <div class="metric"><div class="val">2,024</div><div class="lbl">total devices</div><div class="sub">26.3% of campus</div></div>
+      <div class="metric"><div class="val">549.6</div><div class="lbl">units per day</div><div class="sub">~164,880 units/year</div></div>
+      <div class="metric"><div class="val">Rs.5,166</div><div class="lbl">cost per day</div><div class="sub">~Rs.18.9L/year @ Rs.9.40/unit</div></div>
+      <div class="metric"><div class="val">6</div><div class="lbl">floors (0-5)</div><div class="sub">West, South, North, East wings</div></div>
+    </div>
+    <div class="grid-2">
+      <div class="panel"><div class="panel-title">Floor-wise energy breakdown</div><div class="click-hint">Click any floor to view its components</div>
+        <table><thead><tr><th>Floor</th><th class="num">Devices</th><th class="num">Units/day</th><th class="num">Cost/day</th></tr></thead><tbody id="main-floors-tbody"></tbody></table>
+      </div>
+      <div class="panel"><div class="panel-title">Device categories</div><div id="main-cats"></div></div>
+    </div>
+  </div>
+
+
+  <!-- MECHANICAL BLOCK -->
+  <div class="block-section" id="sec-mech">
+    <div class="metrics">
+      <div class="metric"><div class="val">622</div><div class="lbl">total components</div><div class="sub">8.1% of campus</div></div>
+      <div class="metric"><div class="val">~40</div><div class="lbl">unique types</div><div class="sub">machine tools, lab equipment</div></div>
+      <div class="metric"><div class="val">7</div><div class="lbl">floors covered</div><div class="sub">Ground floor to 6th floor</div></div>
+      <div class="metric"><div class="val">178</div><div class="lbl">lights installed</div><div class="sub">CFL + LED combined</div></div>
+    </div>
+    <div class="grid-2">
+      <div class="panel"><div class="panel-title">Floor-wise distribution</div><div class="click-hint">Click any floor to view its components</div><div id="mech-floors"></div></div>
+      <div class="panel"><div class="panel-title">Top components</div><div id="mech-comps"></div></div>
+    </div>
+  </div>
+
+  <!-- ACADEMIC BLOCK -->
+  <div class="block-section" id="sec-acad">
+    <div class="metrics">
+      <div class="metric"><div class="val">1,074</div><div class="lbl">total components</div><div class="sub">14.0% of campus</div></div>
+      <div class="metric"><div class="val">16</div><div class="lbl">unique device types</div><div class="sub">smart boards, CCTV, servers, ACs</div></div>
+      <div class="metric"><div class="val">10</div><div class="lbl">areas covered</div><div class="sub">4th-6th floors, labs, stairways</div></div>
+      <div class="metric"><div class="val">326</div><div class="lbl">LED square lights</div><div class="sub">largest single category</div></div>
+    </div>
+    <div class="grid-2">
+      <div class="panel"><div class="panel-title">Area-wise distribution</div><div class="click-hint">Click any area to view its components</div><div id="acad-floors"></div></div>
+      <div class="panel"><div class="panel-title">Top components</div><div id="acad-comps"></div></div>
+    </div>
+  </div>
+
+  <!-- BOYS HOSTEL -->
+  <div class="block-section" id="sec-boys">
+    <div class="metrics">
+      <div class="metric"><div class="val">2,009</div><div class="lbl">total components</div><div class="sub">26.1% of campus - largest block</div></div>
+      <div class="metric"><div class="val">12</div><div class="lbl">unique device types</div><div class="sub">rooms, corridors, dining, ground floor</div></div>
+      <div class="metric"><div class="val">3</div><div class="lbl">areas covered</div><div class="sub">140 rooms, corridors, ground floor</div></div>
+      <div class="metric"><div class="val">980</div><div class="lbl">LED circular lights</div><div class="sub">largest single category campus-wide</div></div>
+    </div>
+    <div class="grid-2">
+      <div class="panel"><div class="panel-title">Area-wise distribution</div><div class="click-hint">Click any area to view its components</div><div id="boys-floors"></div></div>
+      <div class="panel"><div class="panel-title">Top components</div><div id="boys-comps"></div></div>
+    </div>
+  </div>
+
+  <div class="footer">
+    Data sourced from Combined Component Inventory, Energy Audit Final, Energy Audit, and DOC-20260804-WA0011 spreadsheets
+    | Easwari Engineering College, Ramapuram, Chennai | Audit Period: Jan-Mar 2025
+    | Tariff: Rs.9.40 / kWh | Block-3 includes former EB Block-III
+  </div>
+</div>
+
+<div class="modal" id="drill-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title">Area Components</div>
+      <span class="modal-close" onclick="closeModal()">&times;</span>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+(function() {
+
+const TARIFF = 9.40;
+const colors = ['#2563eb','#dc2626','#16a34a','#7c3aed','#6b7280','#0ea5e9','#f59e0b','#ec4899'];
+const catColors = {'Lighting':'#f59e0b','Fans':'#0ea5e9','Computing':'#2563eb','AC & Cooling':'#dc2626','Power':'#16a34a','Security':'#7c3aed','Network':'#ec4899','Other':'#6b7280'};
+const blockDailyKwh = {"Main Block":306.2,"Boys Hostel":129.1,"Academic Block":62.4,"EB Block-1":43.5,"Block-3":26.7,"Mechanical Block":14.6,"Admin Block":1.8};
+const grandTotal = 7688;
+const catTotals = {"Lighting":3634,"Fans":1977,"Computing":899,"AC & Cooling":312,"Power":245,"Security":178,"Network":156,"Other":287};
+
+const hourlyData = [
+  {hour:"12 AM",load:6.2,kwh:6.2,cost:58.3},{hour:"1 AM",load:6.2,kwh:6.2,cost:58.3},{hour:"2 AM",load:6.2,kwh:6.2,cost:58.3},{hour:"3 AM",load:6.2,kwh:6.2,cost:58.3},
+  {hour:"4 AM",load:6.2,kwh:6.2,cost:58.3},{hour:"5 AM",load:14.4,kwh:14.4,cost:135.4},{hour:"6 AM",load:28.8,kwh:28.8,cost:270.7},{hour:"7 AM",load:72.0,kwh:72.0,cost:676.8},
+  {hour:"8 AM",load:144.0,kwh:144.0,cost:1353.6},{hour:"9 AM",load:180.0,kwh:180.0,cost:1692.0},{hour:"10 AM",load:201.6,kwh:201.6,cost:1895.0},{hour:"11 AM",load:221.6,kwh:221.6,cost:2083.0},
+  {hour:"12 PM",load:216.0,kwh:216.0,cost:2030.4},{hour:"1 PM",load:198.0,kwh:198.0,cost:1861.2},{hour:"2 PM",load:180.0,kwh:180.0,cost:1692.0},{hour:"3 PM",load:165.6,kwh:165.6,cost:1556.6},
+  {hour:"4 PM",load:144.0,kwh:144.0,cost:1353.6},{hour:"5 PM",load:100.8,kwh:100.8,cost:947.5},{hour:"6 PM",load:57.6,kwh:57.6,cost:541.4},{hour:"7 PM",load:43.2,kwh:43.2,cost:406.1},
+  {hour:"8 PM",load:28.8,kwh:28.8,cost:270.7},{hour:"9 PM",load:21.6,kwh:21.6,cost:203.0},{hour:"10 PM",load:14.4,kwh:14.4,cost:135.4},{hour:"11 PM",load:6.2,kwh:6.2,cost:58.3}
+];
+const weeklyData = [
+  {day:"Mon",kwh:584.3,cost:5492.4},{day:"Tue",kwh:584.3,cost:5492.4},{day:"Wed",kwh:584.3,cost:5492.4},
+  {day:"Thu",kwh:584.3,cost:5492.4},{day:"Fri",kwh:584.3,cost:5492.4},{day:"Sat",kwh:142.0,cost:1334.8},{day:"Sun",kwh:142.0,cost:1334.8}
+];
+const monthlyData = [
+  {month:"Oct",kwh:14200},{month:"Nov",kwh:13800},{month:"Dec",kwh:12500},{month:"Jan",kwh:15200},{month:"Feb",kwh:14800},{month:"Mar",kwh:15500}
+];
+
+const rooms = [
+  {name:"Boys Hostel - Room 101",block:"Boys Hostel",floor:"1st",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 102",block:"Boys Hostel",floor:"1st",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 103",block:"Boys Hostel",floor:"1st",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 104",block:"Boys Hostel",floor:"1st",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 105",block:"Boys Hostel",floor:"1st",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 106",block:"Boys Hostel",floor:"1st",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 107",block:"Boys Hostel",floor:"1st",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 108",block:"Boys Hostel",floor:"1st",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 109",block:"Boys Hostel",floor:"1st",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 110",block:"Boys Hostel",floor:"1st",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 111",block:"Boys Hostel",floor:"1st",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 112",block:"Boys Hostel",floor:"1st",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 113",block:"Boys Hostel",floor:"1st",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 114",block:"Boys Hostel",floor:"1st",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 115",block:"Boys Hostel",floor:"1st",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 116",block:"Boys Hostel",floor:"1st",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 117",block:"Boys Hostel",floor:"1st",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 118",block:"Boys Hostel",floor:"1st",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 119",block:"Boys Hostel",floor:"1st",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 120",block:"Boys Hostel",floor:"1st",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 201",block:"Boys Hostel",floor:"2nd",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 202",block:"Boys Hostel",floor:"2nd",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 203",block:"Boys Hostel",floor:"2nd",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 204",block:"Boys Hostel",floor:"2nd",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 205",block:"Boys Hostel",floor:"2nd",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 206",block:"Boys Hostel",floor:"2nd",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 207",block:"Boys Hostel",floor:"2nd",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 208",block:"Boys Hostel",floor:"2nd",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 209",block:"Boys Hostel",floor:"2nd",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 210",block:"Boys Hostel",floor:"2nd",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 211",block:"Boys Hostel",floor:"2nd",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 212",block:"Boys Hostel",floor:"2nd",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 213",block:"Boys Hostel",floor:"2nd",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 214",block:"Boys Hostel",floor:"2nd",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 215",block:"Boys Hostel",floor:"2nd",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 216",block:"Boys Hostel",floor:"2nd",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 217",block:"Boys Hostel",floor:"2nd",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 218",block:"Boys Hostel",floor:"2nd",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 219",block:"Boys Hostel",floor:"2nd",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 220",block:"Boys Hostel",floor:"2nd",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 301",block:"Boys Hostel",floor:"3rd",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 302",block:"Boys Hostel",floor:"3rd",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 303",block:"Boys Hostel",floor:"3rd",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 304",block:"Boys Hostel",floor:"3rd",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 305",block:"Boys Hostel",floor:"3rd",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 306",block:"Boys Hostel",floor:"3rd",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 307",block:"Boys Hostel",floor:"3rd",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 308",block:"Boys Hostel",floor:"3rd",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 309",block:"Boys Hostel",floor:"3rd",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 310",block:"Boys Hostel",floor:"3rd",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 311",block:"Boys Hostel",floor:"3rd",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 312",block:"Boys Hostel",floor:"3rd",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 313",block:"Boys Hostel",floor:"3rd",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 314",block:"Boys Hostel",floor:"3rd",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 315",block:"Boys Hostel",floor:"3rd",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 316",block:"Boys Hostel",floor:"3rd",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 317",block:"Boys Hostel",floor:"3rd",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 318",block:"Boys Hostel",floor:"3rd",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 319",block:"Boys Hostel",floor:"3rd",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Room 320",block:"Boys Hostel",floor:"3rd",category:"Hostel Room",load:280,devices:4},
+  {name:"Boys Hostel - Dining Hall",block:"Boys Hostel",floor:"Ground",category:"Dining",load:2500,devices:20},
+  {name:"Boys Hostel - Kitchen",block:"Boys Hostel",floor:"Ground",category:"Dining",load:1800,devices:15},
+  {name:"Boys Hostel - TV Room",block:"Boys Hostel",floor:"Ground",category:"Common",load:800,devices:6},
+  {name:"Boys Hostel - Corridor G",block:"Boys Hostel",floor:"Ground",category:"Common",load:1200,devices:24},
+  {name:"Boys Hostel - Corridor 1",block:"Boys Hostel",floor:"1st",category:"Common",load:1200,devices:24},
+  {name:"Boys Hostel - Corridor 2",block:"Boys Hostel",floor:"2nd",category:"Common",load:1200,devices:24},
+  {name:"Boys Hostel - Corridor 3",block:"Boys Hostel",floor:"3rd",category:"Common",load:1200,devices:24},
+  {name:"Boys Hostel - Warden Office",block:"Boys Hostel",floor:"Ground",category:"Office",load:600,devices:8},
+  {name:"Boys Hostel - Security Room",block:"Boys Hostel",floor:"Ground",category:"Security",load:200,devices:3},
+  {name:"Main Block - GF West Wing",block:"Main Block",floor:"Ground",category:"Classroom",load:3200,devices:45},
+  {name:"Main Block - GF South Wing",block:"Main Block",floor:"Ground",category:"Classroom",load:3200,devices:45},
+  {name:"Main Block - GF North Wing",block:"Main Block",floor:"Ground",category:"Classroom",load:3200,devices:45},
+  {name:"Main Block - GF East Wing",block:"Main Block",floor:"Ground",category:"Classroom",load:3200,devices:45},
+  {name:"Main Block - 1F West Wing",block:"Main Block",floor:"1st",category:"Classroom",load:3200,devices:45},
+  {name:"Main Block - 1F South Wing",block:"Main Block",floor:"1st",category:"Classroom",load:3200,devices:45},
+  {name:"Main Block - 1F North Wing",block:"Main Block",floor:"1st",category:"Classroom",load:3200,devices:45},
+  {name:"Main Block - 1F East Wing",block:"Main Block",floor:"1st",category:"Classroom",load:3200,devices:45},
+  {name:"Main Block - 2F West Wing",block:"Main Block",floor:"2nd",category:"Classroom",load:3200,devices:45},
+  {name:"Main Block - 2F South Wing",block:"Main Block",floor:"2nd",category:"Classroom",load:3200,devices:45},
+  {name:"Main Block - 2F North Wing",block:"Main Block",floor:"2nd",category:"Classroom",load:3200,devices:45},
+  {name:"Main Block - 2F East Wing",block:"Main Block",floor:"2nd",category:"Classroom",load:3200,devices:45},
+  {name:"Main Block - 3F West Wing",block:"Main Block",floor:"3rd",category:"Classroom",load:3200,devices:45},
+  {name:"Main Block - 3F South Wing",block:"Main Block",floor:"3rd",category:"Classroom",load:3200,devices:45},
+  {name:"Main Block - 3F North Wing",block:"Main Block",floor:"3rd",category:"Classroom",load:3200,devices:45},
+  {name:"Main Block - 3F East Wing",block:"Main Block",floor:"3rd",category:"Classroom",load:3200,devices:45},
+  {name:"Main Block - 4F West Wing",block:"Main Block",floor:"4th",category:"Classroom",load:3200,devices:45},
+  {name:"Main Block - 4F South Wing",block:"Main Block",floor:"4th",category:"Classroom",load:3200,devices:45},
+  {name:"Main Block - 4F North Wing",block:"Main Block",floor:"4th",category:"Classroom",load:3200,devices:45},
+  {name:"Main Block - 4F East Wing",block:"Main Block",floor:"4th",category:"Classroom",load:3200,devices:45},
+  {name:"Main Block - 5F West Wing",block:"Main Block",floor:"5th",category:"Classroom",load:3200,devices:45},
+  {name:"Main Block - 5F South Wing",block:"Main Block",floor:"5th",category:"Classroom",load:3200,devices:45},
+  {name:"Main Block - 5F North Wing",block:"Main Block",floor:"5th",category:"Classroom",load:3200,devices:45},
+  {name:"Main Block - 5F East Wing",block:"Main Block",floor:"5th",category:"Classroom",load:3200,devices:45},
+  {name:"Main Block - Staff Room GF",block:"Main Block",floor:"Ground",category:"Office",load:1500,devices:20},
+  {name:"Main Block - Staff Room 1F",block:"Main Block",floor:"1st",category:"Office",load:1500,devices:20},
+  {name:"Main Block - Staff Room 2F",block:"Main Block",floor:"2nd",category:"Office",load:1500,devices:20},
+  {name:"Main Block - Staff Room 3F",block:"Main Block",floor:"3rd",category:"Office",load:1500,devices:20},
+  {name:"Main Block - Staff Room 4F",block:"Main Block",floor:"4th",category:"Office",load:1500,devices:20},
+  {name:"Main Block - Staff Room 5F",block:"Main Block",floor:"5th",category:"Office",load:1500,devices:20},
+  {name:"Main Block - Lab Physics",block:"Main Block",floor:"Ground",category:"Lab",load:5000,devices:60},
+  {name:"Main Block - Lab Chemistry",block:"Main Block",floor:"1st",category:"Lab",load:5000,devices:60},
+  {name:"Main Block - Lab Biology",block:"Main Block",floor:"2nd",category:"Lab",load:5000,devices:60},
+  {name:"Main Block - Lab Computer 1",block:"Main Block",floor:"3rd",category:"Lab",load:8000,devices:80},
+  {name:"Main Block - Lab Computer 2",block:"Main Block",floor:"4th",category:"Lab",load:8000,devices:80},
+  {name:"Main Block - Lab Electronics",block:"Main Block",floor:"5th",category:"Lab",load:6000,devices:70},
+  {name:"Main Block - Server Room",block:"Main Block",floor:"Ground",category:"Computing",load:12000,devices:15},
+  {name:"Main Block - Library",block:"Main Block",floor:"2nd",category:"Common",load:4000,devices:50},
+  {name:"Main Block - Auditorium",block:"Main Block",floor:"Ground",category:"Common",load:15000,devices:80},
+  {name:"Main Block - Staircase W",block:"Main Block",floor:"All",category:"Common",load:800,devices:20},
+  {name:"Main Block - Staircase S",block:"Main Block",floor:"All",category:"Common",load:800,devices:20},
+  {name:"Main Block - Staircase N",block:"Main Block",floor:"All",category:"Common",load:800,devices:20},
+  {name:"Main Block - Staircase E",block:"Main Block",floor:"All",category:"Common",load:800,devices:20},
+  {name:"Main Block - Corridor GF",block:"Main Block",floor:"Ground",category:"Common",load:2000,devices:40},
+  {name:"Main Block - Corridor 1F",block:"Main Block",floor:"1st",category:"Common",load:2000,devices:40},
+  {name:"Main Block - Corridor 2F",block:"Main Block",floor:"2nd",category:"Common",load:2000,devices:40},
+  {name:"Main Block - Corridor 3F",block:"Main Block",floor:"3rd",category:"Common",load:2000,devices:40},
+  {name:"Main Block - Corridor 4F",block:"Main Block",floor:"4th",category:"Common",load:2000,devices:40},
+  {name:"Main Block - Corridor 5F",block:"Main Block",floor:"5th",category:"Common",load:2000,devices:40},
+  {name:"Academic Block - 4F Smart Class 1",block:"Academic Block",floor:"4th",category:"Smart Classroom",load:4500,devices:35},
+  {name:"Academic Block - 4F Smart Class 2",block:"Academic Block",floor:"4th",category:"Smart Classroom",load:4500,devices:35},
+  {name:"Academic Block - 4F Smart Class 3",block:"Academic Block",floor:"4th",category:"Smart Classroom",load:4500,devices:35},
+  {name:"Academic Block - 4F Smart Class 4",block:"Academic Block",floor:"4th",category:"Smart Classroom",load:4500,devices:35},
+  {name:"Academic Block - 5F Smart Class 1",block:"Academic Block",floor:"5th",category:"Smart Classroom",load:4500,devices:35},
+  {name:"Academic Block - 5F Smart Class 2",block:"Academic Block",floor:"5th",category:"Smart Classroom",load:4500,devices:35},
+  {name:"Academic Block - 5F Smart Class 3",block:"Academic Block",floor:"5th",category:"Smart Classroom",load:4500,devices:35},
+  {name:"Academic Block - 5F Smart Class 4",block:"Academic Block",floor:"5th",category:"Smart Classroom",load:4500,devices:35},
+  {name:"Academic Block - 6F Smart Class 1",block:"Academic Block",floor:"6th",category:"Smart Classroom",load:4500,devices:35},
+  {name:"Academic Block - 6F Smart Class 2",block:"Academic Block",floor:"6th",category:"Smart Classroom",load:4500,devices:35},
+  {name:"Academic Block - 6F Smart Class 3",block:"Academic Block",floor:"6th",category:"Smart Classroom",load:4500,devices:35},
+  {name:"Academic Block - 6F Smart Class 4",block:"Academic Block",floor:"6th",category:"Smart Classroom",load:4500,devices:35},
+  {name:"Academic Block - Lab CS 1",block:"Academic Block",floor:"4th",category:"Lab",load:7000,devices:65},
+  {name:"Academic Block - Lab CS 2",block:"Academic Block",floor:"5th",category:"Lab",load:7000,devices:65},
+  {name:"Academic Block - Lab CS 3",block:"Academic Block",floor:"6th",category:"Lab",load:7000,devices:65},
+  {name:"Academic Block - Server Room",block:"Academic Block",floor:"6th",category:"Computing",load:8000,devices:12},
+  {name:"Academic Block - Staff Room 4F",block:"Academic Block",floor:"4th",category:"Office",load:1200,devices:15},
+  {name:"Academic Block - Staff Room 5F",block:"Academic Block",floor:"5th",category:"Office",load:1200,devices:15},
+  {name:"Academic Block - Staff Room 6F",block:"Academic Block",floor:"6th",category:"Office",load:1200,devices:15},
+  {name:"Academic Block - Corridor 4F",block:"Academic Block",floor:"4th",category:"Common",load:1500,devices:30},
+  {name:"Academic Block - Corridor 5F",block:"Academic Block",floor:"5th",category:"Common",load:1500,devices:30},
+  {name:"Academic Block - Corridor 6F",block:"Academic Block",floor:"6th",category:"Common",load:1500,devices:30},
+  {name:"Academic Block - Stairway",block:"Academic Block",floor:"All",category:"Common",load:600,devices:15},
+  {name:"Academic Block - CCTV Room",block:"Academic Block",floor:"4th",category:"Security",load:400,devices:5},
+  {name:"EB Block-1 - GF Lab 1",block:"EB Block-1",floor:"Ground",category:"Lab",load:4000,devices:40},
+  {name:"EB Block-1 - GF Lab 2",block:"EB Block-1",floor:"Ground",category:"Lab",load:4000,devices:40},
+  {name:"EB Block-1 - 1F Lab 1",block:"EB Block-1",floor:"1st",category:"Lab",load:4000,devices:40},
+  {name:"EB Block-1 - 1F Lab 2",block:"EB Block-1",floor:"1st",category:"Lab",load:4000,devices:40},
+  {name:"EB Block-1 - 2F Lab 1",block:"EB Block-1",floor:"2nd",category:"Lab",load:4000,devices:40},
+  {name:"EB Block-1 - 2F Lab 2",block:"EB Block-1",floor:"2nd",category:"Lab",load:4000,devices:40},
+  {name:"EB Block-1 - 3F Lab 1",block:"EB Block-1",floor:"3rd",category:"Lab",load:4000,devices:40},
+  {name:"EB Block-1 - 3F Lab 2",block:"EB Block-1",floor:"3rd",category:"Lab",load:4000,devices:40},
+  {name:"EB Block-1 - 4F Lab 1",block:"EB Block-1",floor:"4th",category:"Lab",load:4000,devices:40},
+  {name:"EB Block-1 - 4F Lab 2",block:"EB Block-1",floor:"4th",category:"Lab",load:4000,devices:40},
+  {name:"EB Block-1 - 5F Lab 1",block:"EB Block-1",floor:"5th",category:"Lab",load:4000,devices:40},
+  {name:"EB Block-1 - 5F Lab 2",block:"EB Block-1",floor:"5th",category:"Lab",load:4000,devices:40},
+  {name:"EB Block-1 - 6F Lab 1",block:"EB Block-1",floor:"6th",category:"Lab",load:4000,devices:40},
+  {name:"EB Block-1 - 6F Lab 2",block:"EB Block-1",floor:"6th",category:"Lab",load:4000,devices:40},
+  {name:"EB Block-1 - 7F Lab 1",block:"EB Block-1",floor:"7th",category:"Lab",load:4000,devices:40},
+  {name:"EB Block-1 - 7F Lab 2",block:"EB Block-1",floor:"7th",category:"Lab",load:4000,devices:40},
+  {name:"EB Block-1 - GF Classroom 1",block:"EB Block-1",floor:"Ground",category:"Classroom",load:2500,devices:30},
+  {name:"EB Block-1 - GF Classroom 2",block:"EB Block-1",floor:"Ground",category:"Classroom",load:2500,devices:30},
+  {name:"EB Block-1 - 1F Classroom 1",block:"EB Block-1",floor:"1st",category:"Classroom",load:2500,devices:30},
+  {name:"EB Block-1 - 1F Classroom 2",block:"EB Block-1",floor:"1st",category:"Classroom",load:2500,devices:30},
+  {name:"EB Block-1 - 2F Classroom 1",block:"EB Block-1",floor:"2nd",category:"Classroom",load:2500,devices:30},
+  {name:"EB Block-1 - 2F Classroom 2",block:"EB Block-1",floor:"2nd",category:"Classroom",load:2500,devices:30},
+  {name:"EB Block-1 - 3F Classroom 1",block:"EB Block-1",floor:"3rd",category:"Classroom",load:2500,devices:30},
+  {name:"EB Block-1 - 3F Classroom 2",block:"EB Block-1",floor:"3rd",category:"Classroom",load:2500,devices:30},
+  {name:"EB Block-1 - 4F Classroom 1",block:"EB Block-1",floor:"4th",category:"Classroom",load:2500,devices:30},
+  {name:"EB Block-1 - 4F Classroom 2",block:"EB Block-1",floor:"4th",category:"Classroom",load:2500,devices:30},
+  {name:"EB Block-1 - 5F Classroom 1",block:"EB Block-1",floor:"5th",category:"Classroom",load:2500,devices:30},
+  {name:"EB Block-1 - 5F Classroom 2",block:"EB Block-1",floor:"5th",category:"Classroom",load:2500,devices:30},
+  {name:"EB Block-1 - 6F Classroom 1",block:"EB Block-1",floor:"6th",category:"Classroom",load:2500,devices:30},
+  {name:"EB Block-1 - 6F Classroom 2",block:"EB Block-1",floor:"6th",category:"Classroom",load:2500,devices:30},
+  {name:"EB Block-1 - 7F Classroom 1",block:"EB Block-1",floor:"7th",category:"Classroom",load:2500,devices:30},
+  {name:"EB Block-1 - 7F Classroom 2",block:"EB Block-1",floor:"7th",category:"Classroom",load:2500,devices:30},
+  {name:"EB Block-1 - Staff Room",block:"EB Block-1",floor:"Ground",category:"Office",load:1000,devices:12},
+  {name:"EB Block-1 - Server Room",block:"EB Block-1",floor:"1st",category:"Computing",load:5000,devices:8},
+  {name:"EB Block-1 - Staircase",block:"EB Block-1",floor:"All",category:"Common",load:500,devices:12},
+  {name:"Block-3 - GF Lab 1",block:"Block-3",floor:"Ground",category:"Lab",load:3500,devices:35},
+  {name:"Block-3 - GF Lab 2",block:"Block-3",floor:"Ground",category:"Lab",load:3500,devices:35},
+  {name:"Block-3 - GF Lab 3",block:"Block-3",floor:"Ground",category:"Lab",load:3500,devices:35},
+  {name:"Block-3 - 1F Lab 1",block:"Block-3",floor:"1st",category:"Lab",load:3500,devices:35},
+  {name:"Block-3 - 1F Lab 2",block:"Block-3",floor:"1st",category:"Lab",load:3500,devices:35},
+  {name:"Block-3 - 1F Lab 3",block:"Block-3",floor:"1st",category:"Lab",load:3500,devices:35},
+  {name:"Block-3 - 2F Lab 1",block:"Block-3",floor:"2nd",category:"Lab",load:3500,devices:35},
+  {name:"Block-3 - 2F Lab 2",block:"Block-3",floor:"2nd",category:"Lab",load:3500,devices:35},
+  {name:"Block-3 - 2F Lab 3",block:"Block-3",floor:"2nd",category:"Lab",load:3500,devices:35},
+  {name:"Block-3 - GF Classroom 1",block:"Block-3",floor:"Ground",category:"Classroom",load:2200,devices:28},
+  {name:"Block-3 - GF Classroom 2",block:"Block-3",floor:"Ground",category:"Classroom",load:2200,devices:28},
+  {name:"Block-3 - 1F Classroom 1",block:"Block-3",floor:"1st",category:"Classroom",load:2200,devices:28},
+  {name:"Block-3 - 1F Classroom 2",block:"Block-3",floor:"1st",category:"Classroom",load:2200,devices:28},
+  {name:"Block-3 - 2F Classroom 1",block:"Block-3",floor:"2nd",category:"Classroom",load:2200,devices:28},
+  {name:"Block-3 - 2F Classroom 2",block:"Block-3",floor:"2nd",category:"Classroom",load:2200,devices:28},
+  {name:"Block-3 - Research Centre",block:"Block-3",floor:"2nd",category:"Lab",load:6000,devices:50},
+  {name:"Block-3 - Staff Room",block:"Block-3",floor:"Ground",category:"Office",load:800,devices:10},
+  {name:"Block-3 - Corridor G",block:"Block-3",floor:"Ground",category:"Common",load:1000,devices:20},
+  {name:"Block-3 - Corridor 1",block:"Block-3",floor:"1st",category:"Common",load:1000,devices:20},
+  {name:"Block-3 - Corridor 2",block:"Block-3",floor:"2nd",category:"Common",load:1000,devices:20},
+  {name:"Block-3 - Staircase",block:"Block-3",floor:"All",category:"Common",load:400,devices:10},
+  {name:"Block-3 - 3F Lab 1",block:"Block-3",floor:"3rd",category:"Lab",load:3000,devices:30},
+  {name:"Block-3 - 3F Lab 2",block:"Block-3",floor:"3rd",category:"Lab",load:3000,devices:30},
+  {name:"Block-3 - 3F Lab 3",block:"Block-3",floor:"3rd",category:"Lab",load:3000,devices:30},
+  {name:"Block-3 - 4F Lab 1",block:"Block-3",floor:"4th",category:"Lab",load:3000,devices:30},
+  {name:"Block-3 - 4F Lab 2",block:"Block-3",floor:"4th",category:"Lab",load:3000,devices:30},
+  {name:"Block-3 - 4F Lab 3",block:"Block-3",floor:"4th",category:"Lab",load:3000,devices:30},
+  {name:"Block-3 - 3F Classroom 1",block:"Block-3",floor:"3rd",category:"Classroom",load:1800,devices:22},
+  {name:"Block-3 - 3F Classroom 2",block:"Block-3",floor:"3rd",category:"Classroom",load:1800,devices:22},
+  {name:"Block-3 - 4F Classroom 1",block:"Block-3",floor:"4th",category:"Classroom",load:1800,devices:22},
+  {name:"Block-3 - 4F Classroom 2",block:"Block-3",floor:"4th",category:"Classroom",load:1800,devices:22},
+  {name:"Block-3 - Staff Room",block:"Block-3",floor:"3rd",category:"Office",load:600,devices:8},
+  {name:"Block-3 - Corridor 3",block:"Block-3",floor:"3rd",category:"Common",load:800,devices:16},
+  {name:"Block-3 - Corridor 4",block:"Block-3",floor:"4th",category:"Common",load:800,devices:16},
+  {name:"Block-3 - Staircase",block:"Block-3",floor:"All",category:"Common",load:300,devices:8},
+  {name:"Mechanical Block - GF Workshop 1",block:"Mechanical Block",floor:"Ground",category:"Workshop",load:8000,devices:60},
+  {name:"Mechanical Block - GF Workshop 2",block:"Mechanical Block",floor:"Ground",category:"Workshop",load:8000,devices:60},
+  {name:"Mechanical Block - 1F Workshop 1",block:"Mechanical Block",floor:"1st",category:"Workshop",load:7000,devices:55},
+  {name:"Mechanical Block - 1F Workshop 2",block:"Mechanical Block",floor:"1st",category:"Workshop",load:7000,devices:55},
+  {name:"Mechanical Block - 2F Lab 1",block:"Mechanical Block",floor:"2nd",category:"Lab",load:4500,devices:40},
+  {name:"Mechanical Block - 2F Lab 2",block:"Mechanical Block",floor:"2nd",category:"Lab",load:4500,devices:40},
+  {name:"Mechanical Block - 3F Lab 1",block:"Mechanical Block",floor:"3rd",category:"Lab",load:4500,devices:40},
+  {name:"Mechanical Block - 3F Lab 2",block:"Mechanical Block",floor:"3rd",category:"Lab",load:4500,devices:40},
+  {name:"Mechanical Block - 4F Lab 1",block:"Mechanical Block",floor:"4th",category:"Lab",load:4500,devices:40},
+  {name:"Mechanical Block - 4F Lab 2",block:"Mechanical Block",floor:"4th",category:"Lab",load:4500,devices:40},
+  {name:"Mechanical Block - 5F Lab 1",block:"Mechanical Block",floor:"5th",category:"Lab",load:4500,devices:40},
+  {name:"Mechanical Block - 5F Lab 2",block:"Mechanical Block",floor:"5th",category:"Lab",load:4500,devices:40},
+  {name:"Mechanical Block - 6F Lab 1",block:"Mechanical Block",floor:"6th",category:"Lab",load:4500,devices:40},
+  {name:"Mechanical Block - 6F Lab 2",block:"Mechanical Block",floor:"6th",category:"Lab",load:4500,devices:40},
+  {name:"Mechanical Block - Staff Room",block:"Mechanical Block",floor:"Ground",category:"Office",load:800,devices:10},
+  {name:"Mechanical Block - Corridor G",block:"Mechanical Block",floor:"Ground",category:"Common",load:600,devices:12},
+  {name:"Mechanical Block - Corridor 1",block:"Mechanical Block",floor:"1st",category:"Common",load:600,devices:12},
+  {name:"Mechanical Block - Corridor 2",block:"Mechanical Block",floor:"2nd",category:"Common",load:600,devices:12},
+  {name:"Mechanical Block - Corridor 3",block:"Mechanical Block",floor:"3rd",category:"Common",load:600,devices:12},
+  {name:"Mechanical Block - Corridor 4",block:"Mechanical Block",floor:"4th",category:"Common",load:600,devices:12},
+  {name:"Mechanical Block - Corridor 5",block:"Mechanical Block",floor:"5th",category:"Common",load:600,devices:12},
+  {name:"Mechanical Block - Corridor 6",block:"Mechanical Block",floor:"6th",category:"Common",load:600,devices:12},
+  {name:"Mechanical Block - Staircase",block:"Mechanical Block",floor:"All",category:"Common",load:400,devices:10},
+  {name:"Admin Block - Principal Office",block:"Admin Block",floor:"Ground",category:"Office",load:1200,devices:15},
+  {name:"Admin Block - Accounts Office",block:"Admin Block",floor:"Ground",category:"Office",load:1000,devices:12},
+  {name:"Admin Block - Admin Office",block:"Admin Block",floor:"Ground",category:"Office",load:800,devices:10},
+  {name:"Admin Block - Conference Room",block:"Admin Block",floor:"Ground",category:"Office",load:2000,devices:20},
+  {name:"Admin Block - Reception",block:"Admin Block",floor:"Ground",category:"Office",load:600,devices:8},
+  {name:"Admin Block - Storage",block:"Admin Block",floor:"Ground",category:"Storage",load:300,devices:5},
+  {name:"Admin Block - Security Room",block:"Admin Block",floor:"Outside",category:"Security",load:200,devices:3},
+  {name:"Admin Block - Passage Lights",block:"Admin Block",floor:"Outside",category:"Common",load:400,devices:8},
+  {name:"Admin Block - Parking Lights",block:"Admin Block",floor:"Outside",category:"Common",load:300,devices:6}
+];
+
+const data = {
+  eb1: {
+    floors: [
+      {name:"Ground Floor",count:120,devices:["PC:45","Fan:30","Light:35","AC:4","Battery:6"]},
+      {name:"1st Floor",count:110,devices:["PC:40","Fan:28","Light:32","AC:4","Battery:6"]},
+      {name:"2nd Floor",count:105,devices:["PC:38","Fan:27","Light:30","AC:4","Battery:6"]},
+      {name:"3rd Floor",count:100,devices:["PC:35","Fan:26","Light:29","AC:4","Battery:6"]},
+      {name:"4th Floor",count:95,devices:["PC:32","Fan:25","Light:28","AC:4","Battery:6"]},
+      {name:"5th Floor",count:90,devices:["PC:30","Fan:24","Light:26","AC:4","Battery:6"]},
+      {name:"6th Floor",count:85,devices:["PC:28","Fan:23","Light:24","AC:4","Battery:6"]},
+      {name:"7th Floor",count:45,devices:["PC:14","Fan:12","Light:13","AC:2","Battery:4"]}
+    ],
+    comps: [
+      {name:"PC / Desktop",count:162,pct:21.6},{name:"Ceiling Fan",count:145,pct:19.3},{name:"LED Tube Light",count:138,pct:18.4},
+      {name:"AC Unit",count:28,pct:3.7},{name:"UPS Battery",count:44,pct:5.9},{name:"Projector",count:22,pct:2.9},
+      {name:"Printer",count:18,pct:2.4},{name:"Router",count:15,pct:2.0},{name:"Monitor",count:45,pct:6.0},{name:"Keyboard",count:45,pct:6.0}
+    ]
+  },
+  admin: {
+    floors: [
+      {name:"Ground Floor",count:140,devices:["PC:18","Fan:25","Light:35","AC:6","Printer:8","Fax:2"]},
+      {name:"Outside Passage",count:27,devices:["Light:15","Fan:5","CCTV:4","Speaker:3"]}
+    ],
+    comps: [
+      {name:"LED Tube Light",count:50,pct:29.9},{name:"Ceiling Fan",count:30,pct:18.0},{name:"PC / Desktop",count:18,pct:10.8},
+      {name:"AC Unit",count:6,pct:3.6},{name:"Printer",count:8,pct:4.8},{name:"CCTV Camera",count:4,pct:2.4},
+      {name:"Fax Machine",count:2,pct:1.2},{name:"Speaker",count:3,pct:1.8},{name:"Water Dispenser",count:4,pct:2.4},{name:"Shredder",count:3,pct:1.8}
+    ]
+  },
+  b3: {
+    floors: [
+      {name:"Ground Floor",count:260,devices:["Fan:60","Light:70","PC:40","Lab Equipment:50","AC:8","Projector:12"]},
+      {name:"1st Floor",count:250,devices:["Fan:58","Light:68","PC:38","Lab Equipment:48","AC:8","Projector:12"]},
+      {name:"2nd Floor",count:218,devices:["Fan:58","Light:62","PC:36","Lab Equipment:42","AC:8","Projector:12"]},
+      {name:"3rd Floor (ex-EB-III)",count:160,devices:["Light:50","Fan:40","PC:30","Lab:25","AC:5","Other:10"]},
+      {name:"4th Floor (ex-EB-III)",count:154,devices:["Light:48","Fan:38","PC:28","Lab:24","AC:5","Other:11"]}
+    ],
+    comps: [
+      {name:"LED Tube Light",count:298,pct:28.6},{name:"Ceiling Fan",count:234,pct:22.5},{name:"PC / Desktop",count:142,pct:13.6},
+      {name:"Lab Equipment",count:189,pct:18.1},{name:"AC Unit",count:34,pct:3.3},{name:"Projector",count:36,pct:3.5},
+      {name:"Smart Board",count:18,pct:1.7},{name:"Router",count:12,pct:1.2},{name:"Printer",count:8,pct:0.8},
+      {name:"Other",count:31,pct:3.0}
+    ]
+  },
+  main: {
+    floors: [
+      {name:"Ground Floor",count:420,units:120.5,cost:1132.7,devices:["Light:120","Fan:80","PC:60","AC:15","Lab:80","Server:25","Other:40"]},
+      {name:"1st Floor",count:380,units:105.2,cost:988.9,devices:["Light:110","Fan:75","PC:55","AC:14","Lab:75","Other:51"]},
+      {name:"2nd Floor",count:360,units:98.4,cost:925.0,devices:["Light:105","Fan:72","PC:50","AC:13","Lab:70","Other:50"]},
+      {name:"3rd Floor",count:340,units:92.1,cost:865.7,devices:["Light:100","Fan:70","PC:48","AC:12","Lab:65","Other:45"]},
+      {name:"4th Floor",count:320,units:85.6,cost:804.6,devices:["Light:95","Fan:68","PC:45","AC:11","Lab:60","Other:41"]},
+      {name:"5th Floor",count:204,units:47.7,cost:448.4,devices:["Light:60","Fan:45","PC:30","AC:8","Lab:35","Other:26"]}
+    ],
+    cats: [
+      {name:"Lighting",count:590,pct:29.2},{name:"Fans",count:410,pct:20.3},{name:"Computing",count:288,pct:14.2},
+      {name:"AC & Cooling",count:73,pct:3.6},{name:"Lab Equipment",count:385,pct:19.0},{name:"Server/Network",count:78,pct:3.9},{name:"Other",count:200,pct:9.9}
+    ]
+  },
+  mech: {
+    floors: [
+      {name:"Ground Floor",count:110,devices:["Machine Tool:25","Light:30","Fan:20","AC:5","Compressor:8","Drill:12","Lathe:10"]},
+      {name:"1st Floor",count:105,devices:["Machine Tool:22","Light:28","Fan:19","AC:5","Compressor:7","Drill:11","Lathe:9","Grinder:4"]},
+      {name:"2nd Floor",count:95,devices:["Light:25","Fan:18","PC:15","AC:4","Lab:20","Projector:8","Other:5"]},
+      {name:"3rd Floor",count:90,devices:["Light:24","Fan:17","PC:14","AC:4","Lab:19","Projector:8","Other:4"]},
+      {name:"4th Floor",count:85,devices:["Light:23","Fan:16","PC:13","AC:4","Lab:18","Projector:8","Other:3"]},
+      {name:"5th Floor",count:80,devices:["Light:22","Fan:15","PC:12","AC:4","Lab:17","Projector:8","Other:2"]},
+      {name:"6th Floor",count:57,devices:["Light:18","Fan:12","PC:10","AC:3","Lab:10","Projector:4"]}
+    ],
+    comps: [
+      {name:"LED Tube Light",count:178,pct:28.6},{name:"Ceiling Fan",count:117,pct:18.8},{name:"Machine Tool",count:47,pct:7.6},
+      {name:"PC / Desktop",count:64,pct:10.3},{name:"AC Unit",count:29,pct:4.7},{name:"Air Compressor",count:15,pct:2.4},
+      {name:"Drill Machine",count:23,pct:3.7},{name:"Lathe Machine",count:19,pct:3.1},{name:"Grinder",count:4,pct:0.6},
+      {name:"Lab Equipment",count:65,pct:10.5},{name:"Projector",count:28,pct:4.5},{name:"CNC Machine",count:8,pct:1.3},
+      {name:"Welding Set",count:6,pct:1.0},{name:"Other",count:19,pct:3.1}
+    ]
+  },
+  acad: {
+    floors: [
+      {name:"4th Floor",count:280,devices:["Smart Board:16","LED Light:80","Fan:50","PC:40","AC:12","CCTV:20","Server:8","Projector:16","Other:38"]},
+      {name:"5th Floor",count:280,devices:["Smart Board:16","LED Light:80","Fan:50","PC:40","AC:12","CCTV:20","Server:8","Projector:16","Other:38"]},
+      {name:"6th Floor",count:280,devices:["Smart Board:16","LED Light:80","Fan:50","PC:40","AC:12","CCTV:20","Server:8","Projector:16","Other:38"]},
+      {name:"4th Floor Stairway",count:78,devices:["LED Light:20","Fan:12","CCTV:8","Fire Alarm:6","Speaker:10","Other:22"]},
+      {name:"5th Floor Stairway",count:78,devices:["LED Light:20","Fan:12","CCTV:8","Fire Alarm:6","Speaker:10","Other:22"]},
+      {name:"6th Floor Stairway",count:78,devices:["LED Light:20","Fan:12","CCTV:8","Fire Alarm:6","Speaker:10","Other:22"]},
+      {name:"4th Floor Corridor",count:120,devices:["LED Light:40","Fan:25","CCTV:15","AC:8","Water Cooler:5","Other:27"]},
+      {name:"5th Floor Corridor",count:120,devices:["LED Light:40","Fan:25","CCTV:15","AC:8","Water Cooler:5","Other:27"]},
+      {name:"6th Floor Corridor",count:120,devices:["LED Light:40","Fan:25","CCTV:15","AC:8","Water Cooler:5","Other:27"]},
+      {name:"Server Room",count:40,devices:["Server:12","UPS:4","AC:6","Router:8","Switch:6","Monitor:4"]}
+    ],
+    comps: [
+      {name:"LED Square Light",count:326,pct:30.4},{name:"Ceiling Fan",count:214,pct:19.9},{name:"Smart Board",count:64,pct:6.0},
+      {name:"PC / Desktop",count:128,pct:11.9},{name:"AC Unit",count:48,pct:4.5},{name:"CCTV Camera",count:78,pct:7.3},
+      {name:"Server",count:28,pct:2.6},{name:"Projector",count:48,pct:4.5},{name:"Router/Switch",count:38,pct:3.5},
+      {name:"Fire Alarm",count:18,pct:1.7},{name:"Speaker",count:30,pct:2.8},{name:"Water Cooler",count:15,pct:1.4},
+      {name:"UPS",count:8,pct:0.7},{name:"Monitor",count:12,pct:1.1},{name:"Other",count:27,pct:2.5}
+    ]
+  },
+  boys: {
+    floors: [
+      {name:"Ground Floor",count:480,devices:["LED Circular:280","Fan:80","Light:60","AC:12","TV:8","Water Heater:15","Exhaust:25"]},
+      {name:"1st Floor (Rooms 101-120)",count:520,devices:["LED Circular:240","Fan:80","Light:60","AC:12","Exhaust:20","Socket:108"]},
+      {name:"2nd Floor (Rooms 201-220)",count:520,devices:["LED Circular:240","Fan:80","Light:60","AC:12","Exhaust:20","Socket:108"]},
+      {name:"3rd Floor (Rooms 301-320)",count:489,devices:["LED Circular:220","Fan:75","Light:55","AC:12","Exhaust:19","Socket:108"]}
+    ],
+    comps: [
+      {name:"LED Circular Light",count:980,pct:48.8},{name:"Ceiling Fan",count:315,pct:15.7},{name:"LED Tube Light",count:235,pct:11.7},
+      {name:"AC Unit",count:48,pct:2.4},{name:"TV",count:8,pct:0.4},{name:"Water Heater",count:15,pct:0.7},
+      {name:"Exhaust Fan",count:84,pct:4.2},{name:"Power Socket",count:324,pct:16.1},{name:"Washing Machine",count:4,pct:0.2},
+      {name:"Refrigerator",count:6,pct:0.3},{name:"Microwave",count:4,pct:0.2},{name:"Other",count:20,pct:1.0}
+    ]
+  }
+};
+
+// === HELPER FUNCTIONS ===
+function renderMiniBars(containerId, items, maxVal) {
+  const el = document.getElementById(containerId);
+  if(!el) return;
+  el.innerHTML = items.map(([name,val],i) => {
+    const pct = (val/maxVal*100).toFixed(1);
+    return '<div class="mini-bar"><span class="mini-name">' + name + '</span><span class="mini-val">' + val.toLocaleString() + '</span><div class="mini-track"><div class="mini-fill" style="width:' + pct + '%;background:' + colors[i%colors.length] + '"></div></div></div>';
+  }).join('');
+}
+
+function renderBars(containerId, items, blockKey) {
+  const el = document.getElementById(containerId);
+  if(!el) return;
+  const max = Math.max(...items.map(x => x.count));
+  el.innerHTML = items.map((item,i) => {
+    const pct = (item.count/max*100).toFixed(1);
+    const extra = item.units ? ' | ' + item.units + ' units/day | Rs.' + item.cost + '/day' : '';
+    const dataAttr = blockKey ? ' data-block="' + blockKey + '" data-index="' + i + '"' : '';
+    return '<div class="bar-wrap drillable"' + dataAttr + '><div class="bar-label"><span class="name">' + item.name + extra + '</span><span class="count">' + item.count.toLocaleString() + '</span></div><div class="bar-track"><div class="bar-fill" style="width:' + pct + '%;background:' + colors[i%colors.length] + '"></div></div></div>';
+  }).join('');
+}
+
+function renderTable(tbodyId, items, blockKey) {
+  const tbody = document.getElementById(tbodyId);
+  if(!tbody) return;
+  tbody.innerHTML = items.map((item,i) => {
+    return '<tr class="drillable" data-block="' + blockKey + '" data-index="' + i + '"><td>' + item.name + '</td><td class="num">' + item.count + '</td><td class="num">' + item.units + '</td><td class="num">Rs.' + item.cost + '</td></tr>';
+  }).join('');
+}
+
+function openDrillModal(blockKey, index) {
+  const item = data[blockKey].floors[index];
+  if(!item || !item.devices) return;
+  document.getElementById('modal-title').textContent = item.name + ' - Components';
+  const devices = item.devices.map(d => {
+    const parts = d.split(':');
+    return '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)"><span>' + parts[0] + '</span><span style="font-weight:600">' + parts[1] + '</span></div>';
+  }).join('');
+  let metricsHtml = '<div class="modal-metric"><div class="modal-metric-item"><div class="val">' + item.count + '</div><div class="lbl">Total Devices</div></div>';
+  if(item.units) {
+    metricsHtml += '<div class="modal-metric-item"><div class="val">' + item.units + '</div><div class="lbl">Units/Day</div></div><div class="modal-metric-item"><div class="val">Rs.' + item.cost + '</div><div class="lbl">Cost/Day</div></div>';
+  }
+  metricsHtml += '</div>';
+  document.getElementById('modal-body').innerHTML = metricsHtml + '<div style="margin-top:12px;font-weight:600;font-size:12px;margin-bottom:8px">Component Breakdown</div>' + devices;
+  document.getElementById('drill-modal').classList.add('active');
+}
+
+function closeModal() {
+  document.getElementById('drill-modal').classList.remove('active');
+}
+
+document.getElementById('drill-modal').addEventListener('click', function(e) {
+  if(e.target === this) closeModal();
+});
+
+// Delegated click handler for drill-down
+document.addEventListener('click', function(e) {
+  const el = e.target.closest('.drillable');
+  if(!el) return;
+  const blockKey = el.dataset.block;
+  const index = parseInt(el.dataset.index, 10);
+  if(blockKey !== undefined && !isNaN(index)) {
+    openDrillModal(blockKey, index);
+  }
+});
+
+// === SVG CHART HELPERS ===
+function svgLineChart(svgId, data, xKey, yKey, color, fillArea) {
+  const svg = document.getElementById(svgId);
+  if(!svg) return;
+  const w = 800, h = 220, pad = 40;
+  const vals = data.map(d => d[yKey]);
+  const max = Math.max(...vals) * 1.1;
+  const min = Math.min(...vals) * 0.9;
+  const range = max - min;
+  const dx = (w - pad*2) / (data.length - 1);
+  let path = '';
+  data.forEach((d,i) => {
+    const x = pad + i*dx;
+    const y = h - pad - ((d[yKey]-min)/range)*(h-pad*2);
+    path += (i===0 ? 'M' : 'L') + x + ',' + y;
+  });
+  let areaPath = path + ' L' + (pad + (data.length-1)*dx) + ',' + (h-pad) + ' L' + pad + ',' + (h-pad) + ' Z';
+  let html = '<rect width="100%" height="100%" fill="none"/>';
+  if(fillArea) html += '<path d="' + areaPath + '" fill="' + color + '" opacity="0.15"/>';
+  html += '<path d="' + path + '" fill="none" stroke="' + color + '" stroke-width="2.5"/>';
+  data.forEach((d,i) => {
+    const x = pad + i*dx;
+    const y = h - pad - ((d[yKey]-min)/range)*(h-pad*2);
+    html += '<circle cx="' + x + '" cy="' + y + '" r="3" fill="' + color + '"/>';
+    if(i%4===0 || i===data.length-1) {
+      html += '<text x="' + x + '" y="' + (h-10) + '" text-anchor="middle" font-size="10" fill="var(--text-quaternary)">' + d[xKey] + '</text>';
+    }
+  });
+  html += '<text x="10" y="20" font-size="10" fill="var(--text-quaternary)">' + max.toFixed(1) + '</text>';
+  html += '<text x="10" y="' + (h-10) + '" font-size="10" fill="var(--text-quaternary)">' + min.toFixed(1) + '</text>';
+  svg.innerHTML = html;
+}
+
+function svgBarChart(svgId, data, xKey, yKey, color) {
+  const svg = document.getElementById(svgId);
+  if(!svg) return;
+  const w = 800, h = 240, pad = 40;
+  const vals = data.map(d => d[yKey]);
+  const max = Math.max(...vals) * 1.15;
+  const barW = (w - pad*2) / data.length * 0.6;
+  const gap = (w - pad*2) / data.length;
+  let html = '<rect width="100%" height="100%" fill="none"/>';
+  data.forEach((d,i) => {
+    const x = pad + i*gap + (gap-barW)/2;
+    const bh = ((d[yKey]/max)*(h-pad*2));
+    const y = h - pad - bh;
+    html += '<rect x="' + x + '" y="' + y + '" width="' + barW + '" height="' + bh + '" fill="' + color + '" rx="3" opacity="0.85"/>';
+    html += '<text x="' + (x+barW/2) + '" y="' + (h-10) + '" text-anchor="middle" font-size="10" fill="var(--text-quaternary)">' + d[xKey] + '</text>';
+    html += '<text x="' + (x+barW/2) + '" y="' + (y-5) + '" text-anchor="middle" font-size="9" fill="var(--text-secondary)">' + (d[yKey]<1000 ? d[yKey].toFixed(1) : d[yKey].toFixed(0)) + '</text>';
+  });
+  svg.innerHTML = html;
+}
+
+function svgComboChart(svgId, data, xKey, barKey, lineKey, barColor, lineColor) {
+  const svg = document.getElementById(svgId);
+  if(!svg) return;
+  const w = 900, h = 260, pad = 40;
+  const barVals = data.map(d => d[barKey]);
+  const lineVals = data.map(d => d[lineKey]);
+  const maxBar = Math.max(...barVals) * 1.15;
+  const maxLine = Math.max(...lineVals) * 1.15;
+  const gap = (w - pad*2) / data.length;
+  const barW = gap * 0.5;
+  let html = '<rect width="100%" height="100%" fill="none"/>';
+  data.forEach((d,i) => {
+    const x = pad + i*gap + (gap-barW)/2;
+    const bh = ((d[barKey]/maxBar)*(h-pad*2));
+    const y = h - pad - bh;
+    html += '<rect x="' + x + '" y="' + y + '" width="' + barW + '" height="' + bh + '" fill="' + barColor + '" rx="2" opacity="0.7"/>';
+    if(i%3===0 || i===data.length-1) {
+      html += '<text x="' + (x+barW/2) + '" y="' + (h-10) + '" text-anchor="middle" font-size="9" fill="var(--text-quaternary)">' + d[xKey] + '</text>';
+    }
+  });
+  let path = '';
+  data.forEach((d,i) => {
+    const x = pad + i*gap + gap/2;
+    const y = h - pad - ((d[lineKey]/maxLine)*(h-pad*2));
+    path += (i===0 ? 'M' : 'L') + x + ',' + y;
+  });
+  html += '<path d="' + path + '" fill="none" stroke="' + lineColor + '" stroke-width="2.5"/>';
+  data.forEach((d,i) => {
+    const x = pad + i*gap + gap/2;
+    const y = h - pad - ((d[lineKey]/maxLine)*(h-pad*2));
+    if(i%4===0) html += '<circle cx="' + x + '" cy="' + y + '" r="3" fill="' + lineColor + '"/>';
+  });
+  svg.innerHTML = html;
+}
+
+// === COMPONENT-WISE RENDERING ===
+function renderCategories() {
+  const container = document.getElementById('comp-categories');
+  if(!container) return;
+  const entries = Object.entries(catTotals).sort((a,b) => b[1]-a[1]);
+  container.innerHTML = entries.map(([cat,count],i) => {
+    const pct = ((count/grandTotal)*100).toFixed(1);
+    const icons = {'Lighting':'&#128161;','Fans':'&#127788;','Computing':'&#128187;','AC & Cooling':'&#10052;','Power':'&#9889;','Security':'&#128248;','Network':'&#127760;','Other':'&#128295;'};
+    return '<div class="comp-cat-card"><div class="comp-cat-icon" style="background:' + (catColors[cat]||'#6b7280') + '20;color:' + (catColors[cat]||'#6b7280') + '">' + (icons[cat]||'&#128295;') + '</div><div class="comp-cat-info"><div class="comp-cat-name">' + cat + '</div><div class="comp-cat-count">' + count.toLocaleString() + ' devices</div></div><div class="comp-cat-pct">' + pct + '%</div></div>';
+  }).join('');
+}
+
+function renderTop30() {
+  const container = document.getElementById('top30-comps');
+  if(!container) return;
+  const allComps = [];
+  Object.entries(data).forEach(([blockKey,block]) => {
+    if(block.comps) {
+      block.comps.forEach(c => { allComps.push({name:c.name, count:c.count, block:blockKey}); });
+    }
+  });
+  const top30 = allComps.sort((a,b) => b.count - a.count).slice(0,30);
+  const maxCount = top30[0].count;
+  const blockNames = {eb1:"EB-1",admin:"Admin",b3:"B-3",main:"Main",mech:"Mech",acad:"Acad",boys:"Boys"};
+  container.innerHTML = top30.map((c,i) => {
+    const pct = (c.count/maxCount*100).toFixed(1);
+    return '<div class="bar-wrap"><div class="bar-label"><span class="name"><span class="spark" style="width:' + pct + '%;background:' + colors[i%colors.length] + '"></span>' + c.name + ' <span style="color:var(--text-quaternary)">(' + blockNames[c.block] + ')</span></span><span class="count">' + c.count + '</span></div><div class="bar-track"><div class="bar-fill" style="width:' + pct + '%;background:' + colors[i%colors.length] + '"></div></div></div>';
+  }).join('');
+}
+
+function renderCrossTable() {
+  const tbody = document.getElementById('cross-tbody');
+  if(!tbody) return;
+  const compMap = {};
+  const blockKeys = ['eb1','admin','b3','main','b3','mech','acad','boys'];
+  blockKeys.forEach(bk => {
+    const block = data[bk];
+    if(block.comps) {
+      block.comps.forEach(c => {
+        if(!compMap[c.name]) compMap[c.name] = {};
+        compMap[c.name][bk] = c.count;
+      });
+    }
+  });
+  const sorted = Object.entries(compMap).sort((a,b) => {
+    const sumA = blockKeys.reduce((s,k) => s + (a[1][k]||0), 0);
+    const sumB = blockKeys.reduce((s,k) => s + (b[1][k]||0), 0);
+    return sumB - sumA;
+  });
+  let html = '';
+  let grand = 0;
+  sorted.forEach(([name,counts]) => {
+    const total = blockKeys.reduce((s,k) => s + (counts[k]||0), 0);
+    grand += total;
+    html += '<tr><td>' + name + '</td>';
+    blockKeys.forEach(bk => { html += '<td class="num">' + (counts[bk]||0) + '</td>'; });
+    html += '<td class="num" style="font-weight:600">' + total + '</td></tr>';
+  });
+  html += '<tr class="cross-total-row"><td>Total</td>';
+  blockKeys.forEach(bk => {
+    const block = data[bk];
+    const total = block.comps ? block.comps.reduce((s,c) => s+c.count,0) : 0;
+    html += '<td class="num">' + total + '</td>';
+  });
+  html += '<td class="num">' + grand + '</td></tr>';
+  tbody.innerHTML = html;
+}
+
+function renderPrediction() {
+  const growth = parseFloat(document.getElementById('pred-growth').value) / 100;
+  const years = parseInt(document.getElementById('pred-years').value);
+  const saving = parseFloat(document.getElementById('pred-saving').value) / 100;
+  const season = parseFloat(document.getElementById('pred-season').value) / 100;
+  const baseDaily = 584.3;
+  const baseCost = baseDaily * TARIFF;
+  const baseAnnual = baseDaily * 300;
+  const results = [];
+  for(let y=0; y<=years; y++) {
+    const factor = Math.pow(1+growth, y) * season;
+    const daily = baseDaily * factor * (1-saving);
+    const cost = daily * TARIFF;
+    const annual = daily * 300;
+    results.push({year:y, daily:daily, cost:cost, annual:annual, saving:baseDaily*factor*TARIFF*300 - cost*300});
+  }
+  const container = document.getElementById('prediction-results');
+  if(!container) return;
+  const last = results[results.length-1];
+  container.innerHTML = [
+    {val:last.daily.toFixed(1),lbl:'kWh / Day',sub:'Year ' + years},
+    {val:'Rs.' + (last.cost*300/100000).toFixed(2) + 'L',lbl:'Monthly Cost',sub:'Projected'},
+    {val:'Rs.' + (last.annual/100000).toFixed(2) + 'L',lbl:'Annual Cost',sub:'Projected'},
+    {val:'Rs.' + (results.reduce((s,r) => s+r.saving,0)/100000).toFixed(2) + 'L',lbl:'Total Savings',sub:'Over ' + years + ' years',cls:'savings-positive'}
+  ].map(d => '<div class="pred-card"><div class="pred-val ' + (d.cls||'') + '">' + d.val + '</div><div class="pred-lbl">' + d.lbl + '</div><div class="pred-sub">' + d.sub + '</div></div>').join('');
+
+  const chart = document.getElementById('pred-chart');
+  if(chart) {
+    const maxCost = Math.max(...results.map(r => r.cost*300));
+    chart.innerHTML = results.map((r,i) => {
+      const h = (r.cost*300/maxCost*160).toFixed(1);
+      const barColor = i===0 ? 'var(--text-quaternary)' : 'var(--accent)';
+      return '<div class="pred-chart-bar-wrap"><div class="pred-chart-val">Rs.' + (r.cost*300/1000).toFixed(0) + 'k</div><div class="pred-chart-bar" style="height:' + h + 'px;background:' + barColor + '"></div><div class="pred-chart-label">Y' + r.year + '</div></div>';
+    }).join('');
+  }
+}
+
+function recalcRooms() {
+  const hours = parseFloat(document.getElementById('room-hours').value) || 8;
+  const daysMonth = parseFloat(document.getElementById('room-days-month').value) || 26;
+  const daysYear = parseFloat(document.getElementById('room-days-year').value) || 300;
+  const blockFilter = document.getElementById('room-filter-block').value;
+  const catFilter = document.getElementById('room-filter-cat').value;
+  const search = document.getElementById('room-search').value.toLowerCase();
+
+  let filtered = rooms.filter(r => {
+    if(blockFilter !== 'all' && r.block !== blockFilter) return false;
+    if(catFilter !== 'all' && r.category !== catFilter) return false;
+    if(search && !r.name.toLowerCase().includes(search)) return false;
+    return true;
+  });
+
+  const totalLoad = filtered.reduce((s,r) => s+r.load, 0);
+  const kwhDay = (totalLoad * hours) / 1000;
+  const costDay = kwhDay * TARIFF;
+  const kwhMonth = kwhDay * daysMonth;
+  const costMonth = kwhMonth * TARIFF;
+  const kwhYear = (totalLoad * hours * daysYear) / 1000;
+  const costYear = kwhYear * TARIFF;
+
+  document.getElementById('rs-rooms').textContent = filtered.length;
+  document.getElementById('rs-load').textContent = (totalLoad/1000).toFixed(1) + ' kW';
+  document.getElementById('rs-kwh-day').textContent = kwhDay.toFixed(1) + ' kWh';
+  document.getElementById('rs-cost-day').textContent = 'Rs.' + costDay.toFixed(0);
+  document.getElementById('rs-kwh-month').textContent = kwhMonth.toFixed(0) + ' kWh';
+  document.getElementById('rs-cost-month').textContent = 'Rs.' + costMonth.toFixed(0);
+  document.getElementById('rs-kwh-year').textContent = kwhYear.toFixed(0) + ' kWh';
+  document.getElementById('rs-cost-year').textContent = 'Rs.' + costYear.toFixed(0);
+
+  // Top 15 daily kWh
+  const topDaily = filtered.map(r => ({name:r.name, val:(r.load*hours/1000)})).sort((a,b) => b.val-a.val).slice(0,15);
+  const maxDaily = topDaily[0] ? topDaily[0].val : 1;
+  document.getElementById('room-top-daily').innerHTML = topDaily.map((r,i) => {
+    const pct = (r.val/maxDaily*100).toFixed(1);
+    return '<div class="bar-wrap"><div class="bar-label"><span class="name">' + r.name + '</span><span class="count">' + r.val.toFixed(1) + ' kWh</span></div><div class="bar-track"><div class="bar-fill" style="width:' + pct + '%;background:' + colors[i%colors.length] + '"></div></div></div>';
+  }).join('');
+
+  // Top 15 annual cost
+  const topAnnual = filtered.map(r => ({name:r.name, val:(r.load*hours*daysYear/1000)*TARIFF})).sort((a,b) => b.val-a.val).slice(0,15);
+  const maxAnnual = topAnnual[0] ? topAnnual[0].val : 1;
+  document.getElementById('room-top-annual').innerHTML = topAnnual.map((r,i) => {
+    const pct = (r.val/maxAnnual*100).toFixed(1);
+    return '<div class="bar-wrap"><div class="bar-label"><span class="name">' + r.name + '</span><span class="count">Rs.' + r.val.toFixed(0) + '</span></div><div class="bar-track"><div class="bar-fill" style="width:' + pct + '%;background:' + colors[i%colors.length] + '"></div></div></div>';
+  }).join('');
+
+  // Full table
+  const tbody = document.getElementById('room-tbody');
+  if(tbody) {
+    tbody.innerHTML = filtered.map(r => {
+      const rKwhDay = (r.load*hours/1000).toFixed(1);
+      const rCostDay = (rKwhDay*TARIFF).toFixed(0);
+      const rKwhYear = (r.load*hours*daysYear/1000).toFixed(0);
+      const rCostYear = (rKwhYear*TARIFF).toFixed(0);
+      return '<tr><td>' + r.name + '</td><td>' + r.block + '</td><td>' + r.floor + '</td><td>' + r.category + '</td><td class="num">' + r.load + '</td><td class="num">' + r.devices + '</td><td class="num">' + rKwhDay + '</td><td class="num">Rs.' + rCostDay + '</td><td class="num">' + rKwhYear + '</td><td class="num">Rs.' + rCostYear + '</td></tr>';
+    }).join('');
+  }
+}
+
+
+// === OVERVIEW RENDERING ===
+function renderOverview() {
+  // Block distribution
+  const blockTotals = [
+    ["Main Block", 2024], ["Boys Hostel", 2009], ["Academic Block", 1074],
+    ["EB Block-1", 750], ["Block-3", 1042], ["Mechanical Block", 622],
+    ["Admin Block", 167]
+  ];
+  renderMiniBars('overview-blocks', blockTotals, 2024);
+  
+  // Top energy rooms
+  const topRooms = rooms.map(r => [r.name, r.load]).sort((a,b) => b[1]-a[1]).slice(0, 10);
+  renderMiniBars('overview-toprooms', topRooms, topRooms[0][1]);
+  
+  // Category breakdown
+  const catEntries = Object.entries(catTotals).sort((a,b) => b[1]-a[1]);
+  const maxCat = catEntries[0][1];
+  document.getElementById('overview-cats').innerHTML = catEntries.map(([cat,val],i) => {
+    const pct = (val/maxCat*100).toFixed(1);
+    const campusPct = ((val/grandTotal)*100).toFixed(1);
+    return '<div class="bar-wrap"><div class="bar-label"><span class="name">' + cat + '</span><span class="count">' + val.toLocaleString() + ' (' + campusPct + '%)</span></div><div class="bar-track"><div class="bar-fill" style="width:' + pct + '%;background:' + (catColors[cat]||'#6b7280') + '"></div></div></div>';
+  }).join('');
+  
+  // Hourly SVG
+  svgLineChart('overview-hourly-svg', hourlyData, 'hour', 'load', 'var(--teal)', true);
+}
+
+// === DAY-WISE RENDERING ===
+function renderDaywise() {
+  svgBarChart('daywise-weekly-svg', weeklyData, 'day', 'kwh', 'var(--chart-1)');
+  svgBarChart('daywise-cost-svg', weeklyData, 'day', 'cost', 'var(--chart-3)');
+  
+  const blockEntries = Object.entries(blockDailyKwh).sort((a,b) => b[1]-a[1]);
+  const maxBlock = blockEntries[0][1];
+  document.getElementById('daywise-block-compare').innerHTML = blockEntries.map(([name,val],i) => {
+    const pct = (val/maxBlock*100).toFixed(1);
+    return '<div class="bar-wrap"><div class="bar-label"><span class="name">' + name + '</span><span class="count">' + val + ' kWh</span></div><div class="bar-track"><div class="bar-fill" style="width:' + pct + '%;background:' + colors[i%colors.length] + '"></div></div></div>';
+  }).join('');
+  
+  svgLineChart('daywise-monthly-svg', monthlyData, 'month', 'kwh', 'var(--chart-4)', false);
+}
+
+// === HOUR-WISE RENDERING ===
+function renderHourwise() {
+  svgLineChart('hourwise-load-svg', hourlyData, 'hour', 'load', 'var(--teal)', true);
+  svgComboChart('hourwise-combo-svg', hourlyData, 'hour', 'kwh', 'cost', '#7c3aed', '#f59e0b');
+  
+  const tbody = document.getElementById('hourwise-tbody');
+  if(tbody) {
+    const totalKwh = hourlyData.reduce((s,d) => s+d.kwh, 0);
+    tbody.innerHTML = hourlyData.map(d => {
+      const pct = ((d.kwh/totalKwh)*100).toFixed(1);
+      let status = 'Normal';
+      if(d.load > 200) status = 'Peak';
+      else if(d.load < 15) status = 'Off-Peak';
+      else if(d.load < 50) status = 'Low';
+      return '<tr><td>' + d.hour + '</td><td class="num">' + d.load.toFixed(1) + ' kW</td><td class="num">' + d.kwh.toFixed(1) + '</td><td class="num">Rs.' + d.cost.toFixed(0) + '</td><td class="num">' + pct + '%</td><td>' + status + '</td></tr>';
+    }).join('');
+  }
+}
+
+// === KWH COST RENDERING ===
+function renderKwhCost() {
+  const blockCosts = Object.entries(blockDailyKwh).map(([name,kwh]) => ({name, cost: kwh * TARIFF}));
+  svgBarChart('kwhcost-block-svg', blockCosts, 'name', 'cost', 'var(--chart-1)');
+  
+  const blockMonthCosts = blockCosts.map(d => ({name: d.name, cost: d.cost * 26}));
+  svgBarChart('kwhcost-month-svg', blockMonthCosts, 'name', 'cost', 'var(--chart-3)');
+  
+  // Category share
+  const catCostEntries = Object.entries(catTotals).map(([cat,count]) => {
+    const avgWatts = cat === 'Lighting' ? 15 : cat === 'Fans' ? 75 : cat === 'Computing' ? 150 : cat === 'AC & Cooling' ? 2000 : 100;
+    const dailyKwh = (count * avgWatts * 8) / 1000;
+    return [cat, dailyKwh * TARIFF];
+  }).sort((a,b) => b[1]-a[1]);
+  const maxCatCost = catCostEntries[0][1];
+  document.getElementById('kwhcost-cat-share').innerHTML = catCostEntries.map(([cat,cost],i) => {
+    const pct = (cost/maxCatCost*100).toFixed(1);
+    return '<div class="bar-wrap"><div class="bar-label"><span class="name">' + cat + '</span><span class="count">Rs.' + cost.toFixed(0) + '/day</span></div><div class="bar-track"><div class="bar-fill" style="width:' + pct + '%;background:' + (catColors[cat]||'#6b7280') + '"></div></div></div>';
+  }).join('');
+  
+  // Efficiency ranking (cost per device)
+  const blockDevices = {"Main Block":2024,"Boys Hostel":2009,"Academic Block":1074,"EB Block-1":750,"Block-3":1042,"Mechanical Block":622,"Admin Block":167};
+  const effEntries = Object.entries(blockDailyKwh).map(([block,kwh]) => [block, (kwh*TARIFF)/blockDevices[block]]).sort((a,b) => a[1]-b[1]);
+  const maxEff = effEntries[effEntries.length-1][1];
+  document.getElementById('kwhcost-efficiency').innerHTML = effEntries.map(([block,val],i) => {
+    const pct = (val/maxEff*100).toFixed(1);
+    return '<div class="bar-wrap"><div class="bar-label"><span class="name">' + (i+1) + '. ' + block + '</span><span class="count">Rs.' + val.toFixed(1) + '/device</span></div><div class="bar-track"><div class="bar-fill" style="width:' + pct + '%;background:' + colors[i%colors.length] + '"></div></div></div>';
+  }).join('');
+}
+
+// === BLOCK RENDERING ===
+renderBars('eb1-floors', data.eb1.floors, 'eb1');
+renderBars('eb1-comps', data.eb1.comps);
+renderBars('admin-floors', data.admin.floors, 'admin');
+renderBars('admin-comps', data.admin.comps);
+renderBars('b3-floors', data.b3.floors, 'b3');
+renderBars('b3-comps', data.b3.comps);
+renderTable('main-floors-tbody', data.main.floors, 'main');
+renderBars('main-cats', data.main.cats);
+renderTable('b3-floors-tbody', data.b3.floors, 'b3');
+renderBars('b3-cats', data.b3.cats);
+renderBars('mech-floors', data.mech.floors, 'mech');
+renderBars('mech-comps', data.mech.comps);
+renderBars('acad-floors', data.acad.floors, 'acad');
+renderBars('acad-comps', data.acad.comps);
+renderBars('boys-floors', data.boys.floors, 'boys');
+renderBars('boys-comps', data.boys.comps);
+renderCategories();
+renderTop30();
+renderCrossTable();
+renderPrediction();
+renderOverview();
+renderDaywise();
+renderHourwise();
+renderKwhCost();
+recalcRooms();
+
+// === EVENT LISTENERS ===
+['pred-growth','pred-years','pred-saving','pred-season'].forEach(id => {
+  const el = document.getElementById(id);
+  if(el) {
+    el.addEventListener('input', function() {
+      const val = this.value;
+      const label = document.getElementById(id + '-val');
+      if(id === 'pred-growth') label.textContent = parseFloat(val).toFixed(1) + '%';
+      else if(id === 'pred-years') label.textContent = val + ' years';
+      else if(id === 'pred-saving') label.textContent = val + '%';
+      else if(id === 'pred-season') label.textContent = val + '%' + (val==100 ? ' (Baseline)' : val>100 ? ' (Summer Peak)' : ' (Winter Low)');
+      renderPrediction();
+    });
+  }
+});
+
+['room-hours','room-days-month','room-days-year','room-filter-block','room-filter-cat','room-search'].forEach(id => {
+  const el = document.getElementById(id);
+  if(el) el.addEventListener('input', recalcRooms);
+});
+
+// === TAB SWITCHING ===
+const primaryNav = document.querySelectorAll('.nav .nav-btn');
+const blockNav = document.querySelectorAll('#block-nav .nav-btn');
+const allSections = document.querySelectorAll('.block-section');
+
+function showSection(id) {
+  allSections.forEach(sec => sec.classList.toggle('active', sec.id === id));
+}
+
+primaryNav.forEach(btn => {
+  btn.addEventListener('click', () => {
+    primaryNav.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    blockNav.forEach(b => b.classList.remove('active'));
+    showSection('sec-' + btn.dataset.block);
+    if(btn.dataset.block === 'roomanalysis') recalcRooms();
+  });
+});
+
+blockNav.forEach(btn => {
+  btn.addEventListener('click', () => {
+    blockNav.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    primaryNav.forEach(b => b.classList.remove('active'));
+    showSection('sec-' + btn.dataset.block);
+  });
+});
+
+})();
+</script>
+</body>
+</html>
